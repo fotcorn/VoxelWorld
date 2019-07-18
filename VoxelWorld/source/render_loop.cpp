@@ -136,7 +136,7 @@ void Program::mainLoop() {
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
             ImGui::Checkbox("Wireframe", &wireframe);
-            ImGui::SliderFloat("Camera Speed", &this->cameraSpeed, 0.0f, 2.0f);
+            ImGui::SliderFloat("Camera Speed", &this->cameraSpeed, 0.0f, 10.0f);
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
