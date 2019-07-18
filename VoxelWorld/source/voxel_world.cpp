@@ -1,5 +1,6 @@
 #include "voxel_world.h"
 
+#include <iostream>
 #include <memory>
 #include <unordered_map>
 
@@ -16,15 +17,18 @@
 #include "shader_program.h"
 #include "texture.h"
 
-const char M = 1; // mud
-const char E = 2; // earth with gras on top
-const char S = 3; // snow
-const char R = 4; // rock
-const char W = 5; // water
+const char BLOCK_AIR = 0;
+const char BLOCK_MUD = 1;
+const char BLOCK_EARTH = 2;
+const char BLOCK_SNOW = 3;
+const char BLOCK_ROCK = 4;
+const char BLOCK_WATER = 5;
 
 const int WORLD_X = 100;
 const int WORLD_Y = 30;
 const int WORLD_Z = 100;
+
+const int WATER_HEIGHT = 6;
 
 static bool needsRender(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z) {
     if (x < 0 || y < 0 || z < 0 || x >= WORLD_X || y >= WORLD_Y || z >= WORLD_Z) {
@@ -41,25 +45,46 @@ static bool isVisible(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z
 void VoxelWorld::init() {
     siv::PerlinNoise noise(1);
 
-    char world[WORLD_X][WORLD_Y][WORLD_Z] = {{{0}}};
+    char world[WORLD_X][WORLD_Y][WORLD_Z] = {{{BLOCK_AIR}}};
 
+    // basic world generation
     for (int x = 0; x < WORLD_X; x++) {
         for (int z = 0; z < WORLD_Z; z++) {
-            const double value = noise.noise0_1(double(x) / double(WORLD_X), double(z) / double(WORLD_Y));
+            const double value = noise.noise0_1(double(x) / double(WORLD_X), double(z) / double(WORLD_Y)) * 1.6 - 0.4;
             const int height = value * WORLD_Y;
             for (int y = 0; y < height; y++) {
-                world[x][y][z] = 1;
+                if (y > WORLD_Y * 0.6) {
+                    world[x][y][z] = BLOCK_SNOW;
+                } else if (y > WORLD_Y * 0.3) {
+                    world[x][y][z] = BLOCK_ROCK;
+                } else {
+                    world[x][y][z] = BLOCK_EARTH;
+                }
+            }
+        }
+    }
+
+    // water
+    for (int x = 0; x < WORLD_X; x++) {
+        for (int z = 0; z < WORLD_Z; z++) {
+            for (int y = 0; y <= WATER_HEIGHT; y++) {
+                if (world[x][y][z] == BLOCK_AIR) {
+                    world[x][y][z] = BLOCK_WATER;
+                }
+            }
+            if (world[x][WATER_HEIGHT][z] == BLOCK_EARTH && world[x][WATER_HEIGHT + 1][z] == BLOCK_AIR) {
+                world[x][WATER_HEIGHT][z] = BLOCK_WATER;
             }
         }
     }
 
     block = std::make_shared<Mesh>(Mesh::loadFromFile("block.obj"));
 
-    textureMap[M] = std::make_shared<Texture>(Texture::loadFromFile("groundMud_base_color.gif"));
-    textureMap[E] = std::make_shared<Texture>(Texture::loadFromFile("groundEarth_base_color.gif"));
-    textureMap[S] = std::make_shared<Texture>(Texture::loadFromFile("snow_base_color.gif"));
-    textureMap[R] = std::make_shared<Texture>(Texture::loadFromFile("stone04_base_color.gif"));
-    textureMap[W] = std::make_shared<Texture>(Texture::loadFromFile("water_base_color.gif"));
+    textureMap[BLOCK_MUD] = std::make_shared<Texture>(Texture::loadFromFile("groundMud_base_color.gif"));
+    textureMap[BLOCK_EARTH] = std::make_shared<Texture>(Texture::loadFromFile("groundEarth_base_color.gif"));
+    textureMap[BLOCK_SNOW] = std::make_shared<Texture>(Texture::loadFromFile("snow_base_color.gif"));
+    textureMap[BLOCK_ROCK] = std::make_shared<Texture>(Texture::loadFromFile("stone04_base_color.gif"));
+    textureMap[BLOCK_WATER] = std::make_shared<Texture>(Texture::loadFromFile("water_base_color.gif"));
 
     Shader fragmentShader = Shader::loadFromFile("mesh.frag", Shader::Type::Fragment);
     Shader vertexShader = Shader::loadFromFile("mesh.vert", Shader::Type::Vertex);
@@ -87,6 +112,8 @@ void VoxelWorld::init() {
             }
         }
     }
+
+    std::cout << "Rendered blocks:" << blocks.size() << std::endl;
 }
 
 void VoxelWorld::render(glm::mat4 vp, bool wireframe) {
