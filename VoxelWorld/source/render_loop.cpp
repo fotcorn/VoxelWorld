@@ -22,8 +22,12 @@ static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*
     }
 }
 
-const int WINDOW_WIDTH = 1280;
-const int WINDOW_HEIGHT = 800;
+const int INITIAL_WINDOW_WIDTH = 1280;
+const int INITIAL_WINDOW_HEIGHT = 800;
+
+const float CAMERA_FOV = 45.0;
+const float NEAR_PLANE = 0.1;
+const float FAR_PLANE = 100.0;
 
 void Program::init() {
     this->initGlfw();
@@ -47,7 +51,7 @@ void Program::initGlfw() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    this->window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World", nullptr, nullptr);
+    this->window = glfwCreateWindow(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, "Voxel World", nullptr, nullptr);
 
     if (!this->window) {
         glfwTerminate();
@@ -56,8 +60,12 @@ void Program::initGlfw() {
 
     glfwMakeContextCurrent(this->window);
 
-    glfwSetFramebufferSizeCallback(
-        this->window, [](GLFWwindow* /*unused*/, int width, int height) { glViewport(0, 0, width, height); });
+    glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+        Program* program = (Program*)glfwGetWindowUserPointer(window);
+        program->projectionMatrix =
+            glm::perspective(glm::radians(CAMERA_FOV), (float)width / (float)height, NEAR_PLANE, FAR_PLANE);
+    });
 
     glfwSetWindowUserPointer(this->window, (void*)this);
 }
@@ -74,7 +82,7 @@ void Program::initOpenGL() {
     glEnable(GL_DEPTH_TEST); // enable depth testing
     glDepthFunc(GL_LESS); // smaller value is closer
     glEnable(GL_MULTISAMPLE);
-    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    glViewport(0, 0, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
 }
 
 void Program::initGui() {
@@ -153,7 +161,8 @@ void Program::initCube() {
 }
 
 void Program::initCamera() {
-    this->projectionMatrix = glm::perspective(glm::radians(45.0f), 1024.0f / 800.0f, 0.1f, 100.0f);
+    this->projectionMatrix = glm::perspective(
+        glm::radians(CAMERA_FOV), (float)INITIAL_WINDOW_WIDTH / (float)INITIAL_WINDOW_HEIGHT, NEAR_PLANE, FAR_PLANE);
 }
 
 void Program::mainLoop() {
