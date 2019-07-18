@@ -6,3 +6,5 @@ project(VoxelRendering
 
 set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+
+add_subdirectory(VoxelWorld)
