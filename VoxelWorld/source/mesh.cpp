@@ -72,12 +72,7 @@ Mesh Mesh::loadFromFile(const std::string& path) {
     return model;
 }
 
-void Mesh::addTexture(Texture texture) {
-    this->textures.push_back(texture);
-}
-
 void Mesh::draw(bool wireframe) {
-    this->textures[0].bind();
     glBindVertexArray(this->vao);
     glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
 }

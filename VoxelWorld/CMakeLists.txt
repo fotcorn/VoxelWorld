@@ -17,6 +17,7 @@ set(GLSLShaderPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/glsl)
 set(SPIRVShaderSource ${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/spir-v)
 set(SPIRVShaderPath ${CMAKE_CURRENT_BINARY_DIR})
 set(MeshPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/meshes)
+set(TexturePath ${CMAKE_CURRENT_SOURCE_DIR}/resources/textures)
 
 
 add_executable(VoxelWorld
@@ -27,6 +28,7 @@ add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/shader_program.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/mesh.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/texture.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel_world.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_glfw.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_opengl3.cpp
@@ -40,8 +42,10 @@ target_compile_definitions(VoxelWorld PRIVATE
 	GLSL_SHADER_PATH="${GLSLShaderPath}"
 	# Path for Vulkan (Spir-V) shaders
 	SPIRV_SHADER_PATH="${SPIRVShaderPath}"
-	# Path for textures
+	# Path for meshes
 	MESH_PATH="${MeshPath}"
+	# Path for textures
+	TEXTURE_PATH="${TexturePath}"
 )
 
 target_compile_features(VoxelWorld PRIVATE cxx_std_17)

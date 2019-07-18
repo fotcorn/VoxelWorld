@@ -13,7 +13,7 @@ Texture Texture::loadFromFile(const std::string& path) {
 
     int width, height, nrChannels;
 
-    std::string absPath = format("{}/{}", MESH_PATH, path);
+    std::string absPath = format("{}/{}", TEXTURE_PATH, path);
 
     unsigned char* data = stbi_load(absPath.c_str(), &width, &height, &nrChannels, STBI_rgb);
     if (!data) {

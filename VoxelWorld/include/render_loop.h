@@ -25,7 +25,6 @@ private:
     void initGlew();
     void initOpenGL();
     void initGui();
-    void initCube();
     void initCamera();
 
     void handleInput();
@@ -37,10 +36,6 @@ private:
     GLFWwindow* window = nullptr;
 
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
-
-    // cube
-    std::shared_ptr<ShaderProgram> cubeShaderProgram;
-    std::shared_ptr<Mesh> cube;
 
     bool drawGui = false;
 
