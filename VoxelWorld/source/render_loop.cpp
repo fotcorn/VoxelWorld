@@ -9,6 +9,8 @@
 
 #include <imgui.h>
 
+#include <fmt/format.h>
+
 #include "gui/imgui_impl_glfw.h"
 #include "gui/imgui_impl_opengl3.h"
 
@@ -170,6 +172,10 @@ void Program::handleInput() {
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         cameraPos += glm::vec3(0.0, 1.0f, 0.0) * this->cameraSpeed;
+        // fmt::print("{} {}\n", yaw, pitch);
+        // fmt::print("{}f, {}f, {}f\n", cameraPos.x, cameraPos.y, cameraPos.z);
+        // fmt::print("{}f, {}f, {}f\n", cameraFront.x, cameraFront.y, cameraFront.z);
+        // fmt::print("-----\n");
     }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
