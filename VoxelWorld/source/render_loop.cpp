@@ -150,8 +150,8 @@ void Program::initCube() {
             glm::vec3(1.0, 1.0, 1.0),
             glm::vec3(1.0, 1.0, 1.0),
         }));
-    Shader fragmentShader = Shader::loadFromFile("resources/shaders/glsl/cube.frag", Shader::Type::Fragment);
-    Shader vertexShader = Shader::loadFromFile("resources/shaders/glsl/cube.vert", Shader::Type::Vertex);
+    Shader fragmentShader = Shader::loadFromFile("cube.frag", Shader::Type::Fragment);
+    Shader vertexShader = Shader::loadFromFile("cube.vert", Shader::Type::Vertex);
     this->cubeShaderProgram = std::make_shared<ShaderProgram>();
     this->cubeShaderProgram->attachShader(vertexShader);
     this->cubeShaderProgram->attachShader(fragmentShader);
