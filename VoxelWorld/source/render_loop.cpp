@@ -182,10 +182,6 @@ void Program::initCamera() {
 void Program::mainLoop() {
     bool wireframe = false;
 
-    glm::vec3 eye = glm::vec3(-20.0, 0.0, 6.0);
-    glm::vec3 center = glm::vec3(-7.0, 2.5, 0.0);
-    glm::vec3 up = glm::vec3(0.0, 1.0, 0.0);
-
     glm::vec3 cubePosition = glm::vec3(-15.0, 15.0, 5.0);
 
     while (!glfwWindowShouldClose(window)) {
@@ -197,11 +193,11 @@ void Program::mainLoop() {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 view = glm::lookAt(eye, center, up);
+        glm::mat4 view = glm::lookAt(this->cameraPos, this->cameraPos + this->cameraFront, this->cameraUp);
 
         // draw cube
         glm::mat4 cubeModel = glm::mat4(1.0f);
-        cubeModel = glm::scale(cubeModel, glm::vec3(0.001, 0.001, 0.001));
+        cubeModel = glm::scale(cubeModel, glm::vec3(0.0001, 0.0001, 0.0001));
         cubeModel = glm::translate(cubeModel, cubePosition);
         auto mvp = this->projectionMatrix * view * cubeModel;
         this->cubeShaderProgram->use();
@@ -214,18 +210,7 @@ void Program::mainLoop() {
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
             ImGui::Checkbox("Wireframe", &wireframe);
-
-            ImGui::SliderFloat("Camera eye X", &eye.x, -100.0f, 100.0f);
-            ImGui::SliderFloat("Camera eye Y", &eye.y, -100.0f, 100.0f);
-            ImGui::SliderFloat("Camera eye Z", &eye.z, -100.0f, 100.0f);
-
-            ImGui::SliderFloat("Camera center X", &center.x, -100.0f, 100.0f);
-            ImGui::SliderFloat("Camera center Y", &center.y, -100.0f, 100.0f);
-            ImGui::SliderFloat("Camera center Z", &center.z, -100.0f, 100.0f);
-
-            ImGui::SliderFloat("Camera up X", &up.x, -100.0f, 100.0f);
-            ImGui::SliderFloat("Camera up Y", &up.y, -100.0f, 100.0f);
-            ImGui::SliderFloat("Camera up Z", &up.z, -100.0f, 100.0f);
+            ImGui::SliderFloat("Camera Speed", &this->cameraSpeed, 0.0f, 2.0f);
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -241,21 +226,17 @@ void Program::mainLoop() {
 void Program::handleInput() {
     static bool ctrlDown = false;
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        // this->spaceShipRotation =
-        //     glm::rotate(this->spaceShipRotation, glm::radians(-40.0f * deltaTime), glm::vec3(0.0f, 0.0f, 1.0f));
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        // this->spaceShipRotation =
-        //     glm::rotate(this->spaceShipRotation, glm::radians(40.0f * deltaTime), glm::vec3(0.0f, 0.0f, 1.0f));
-    }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        // this->spaceShipRotation =
-        //     glm::rotate(this->spaceShipRotation, glm::radians(40.0f * deltaTime), glm::vec3(1.0f, 0.0f, 0.0f));
+        cameraPos += this->cameraSpeed * cameraFront;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        // this->spaceShipRotation =
-        //     glm::rotate(this->spaceShipRotation, glm::radians(-40.0f * deltaTime), glm::vec3(1.0f, 0.0f, 0.0f));
+        cameraPos -= this->cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * this->cameraSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * this->cameraSpeed;
     }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
@@ -286,11 +267,11 @@ void Program::mouseCursorPositionCallback(double xPosition, double yPosition) {
     }
 
     float xoffset = xPosition - lastX;
-    float yoffset = yPosition - lastY; // reversed since y-coordinates go from bottom to top
+    float yoffset = lastY - yPosition; // reversed since y-coordinates go from bottom to top
     lastX = xPosition;
     lastY = yPosition;
 
-    float sensitivity = 0.1f; // change this value to your liking
+    float sensitivity = 0.05f; // change this value to your liking
     xoffset *= sensitivity;
     yoffset *= sensitivity;
 
