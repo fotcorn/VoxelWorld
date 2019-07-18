@@ -24,9 +24,9 @@ const char BLOCK_SNOW = 3;
 const char BLOCK_ROCK = 4;
 const char BLOCK_WATER = 5;
 
-const int WORLD_X = 100;
+const int WORLD_X = 500;
 const int WORLD_Y = 30;
-const int WORLD_Z = 100;
+const int WORLD_Z = 500;
 
 const int WATER_HEIGHT = 6;
 
@@ -111,7 +111,7 @@ void VoxelWorld::init() {
                 glm::vec3 cubePosition = glm::vec3(x, y, z);
                 cubeModel = glm::translate(cubeModel, cubePosition);
 
-                blocks[world[x][y][z]].push_back(cubeModel);
+                blocks[world[x][y][z]].push_back({cubeModel, glm::ivec3(x, y, z)});
             }
         }
     }
@@ -123,12 +123,16 @@ void VoxelWorld::init() {
     std::cout << "Rendered blocks:" << renderedBlocks << std::endl;
 }
 
-void VoxelWorld::render(glm::mat4 vp, bool wireframe) {
+void VoxelWorld::render(glm::mat4 vp, glm::vec3 cameraPos, bool wireframe) {
     this->shaderProgram->use();
     for (auto blockType : blocks) {
         textureMap[blockType.first]->bind();
         for (auto block : blockType.second) {
-            auto mvp = vp * block;
+            if (glm::distance(block.position, cameraPos) > 50.0) {
+                continue;
+            }
+
+            auto mvp = vp * block.model;
             this->shaderProgram->setUniform("mvp", mvp);
             this->block->draw(wireframe);
         }
