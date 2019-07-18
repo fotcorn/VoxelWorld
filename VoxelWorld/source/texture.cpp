@@ -15,7 +15,7 @@ Texture Texture::loadFromFile(const std::string& path) {
 
     std::string absPath = format("{}/{}", MESH_PATH, path);
 
-    unsigned char* data = stbi_load(absPath.c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(absPath.c_str(), &width, &height, &nrChannels, STBI_rgb);
     if (!data) {
         throw std::runtime_error(format("Failed to load texture {}", absPath));
     }
