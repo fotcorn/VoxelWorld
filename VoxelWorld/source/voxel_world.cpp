@@ -110,20 +110,27 @@ void VoxelWorld::init() {
                 glm::mat4 cubeModel = glm::mat4(1.0f);
                 glm::vec3 cubePosition = glm::vec3(x, y, z);
                 cubeModel = glm::translate(cubeModel, cubePosition);
-                blocks.push_back({world[x][y][z], cubeModel});
+
+                blocks[world[x][y][z]].push_back(cubeModel);
             }
         }
     }
 
-    std::cout << "Rendered blocks:" << blocks.size() << std::endl;
+    int renderedBlocks = 0;
+    for (auto blockType : blocks) {
+        renderedBlocks += blockType.second.size();
+    }
+    std::cout << "Rendered blocks:" << renderedBlocks << std::endl;
 }
 
 void VoxelWorld::render(glm::mat4 vp, bool wireframe) {
     this->shaderProgram->use();
-    for (auto block : blocks) {
-        auto mvp = vp * block.model;
-        this->shaderProgram->setUniform("mvp", mvp);
-        textureMap[block.textureId]->bind();
-        this->block->draw(wireframe);
+    for (auto blockType : blocks) {
+        textureMap[blockType.first]->bind();
+        for (auto block : blockType.second) {
+            auto mvp = vp * block;
+            this->shaderProgram->setUniform("mvp", mvp);
+            this->block->draw(wireframe);
+        }
     }
 }

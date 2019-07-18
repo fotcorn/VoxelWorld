@@ -10,16 +10,10 @@
 #include "shader_program.h"
 #include "texture.h"
 
-struct Block {
-    char textureId;
-    glm::mat4 model;
-};
-
 class VoxelWorld {
-
     std::unordered_map<char, std::shared_ptr<Texture>> textureMap;
+    std::unordered_map<char, std::vector<glm::mat4>> blocks;
     std::shared_ptr<Mesh> block;
-    std::vector<Block> blocks;
     std::shared_ptr<ShaderProgram> shaderProgram;
 
 public:
