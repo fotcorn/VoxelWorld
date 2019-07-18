@@ -14,14 +14,6 @@
 
 #include "shader_program.h"
 
-static void glfwErrorCallback(int /*unused*/, const char* message) {
-    std::cerr << "GLFW error:" << message << std::endl;
-}
-
-static void glfwFramebufferSizeCallback(GLFWwindow* /*unused*/, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-
 static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*/, GLenum severity, GLsizei /*unused*/,
                                 const GLchar* message, const void* /*unused*/) {
     if (severity != GL_DEBUG_SEVERITY_NOTIFICATION) {
@@ -43,7 +35,8 @@ void Program::init() {
 }
 
 void Program::initGlfw() {
-    glfwSetErrorCallback(glfwErrorCallback);
+    glfwSetErrorCallback(
+        [](int /*unused*/, const char* message) { std::cerr << "GLFW error:" << message << std::endl; });
 
     if (!glfwInit()) {
         throw std::runtime_error("Failed to initialize GLFW3");
@@ -62,7 +55,10 @@ void Program::initGlfw() {
     }
 
     glfwMakeContextCurrent(this->window);
-    glfwSetFramebufferSizeCallback(this->window, glfwFramebufferSizeCallback);
+
+    glfwSetFramebufferSizeCallback(
+        this->window, [](GLFWwindow* /*unused*/, int width, int height) { glViewport(0, 0, width, height); });
+
     glfwSetWindowUserPointer(this->window, (void*)this);
 }
 
