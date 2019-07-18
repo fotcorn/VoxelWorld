@@ -20,8 +20,8 @@ const char E = 2; // earth with gras on top
 const char S = 3; // snow
 const char R = 4; // rock
 const char W = 5; // water
-/*
-const int CHUNK_SIZE = 1;
+
+const int CHUNK_SIZE = 4;
 const char chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE] = {{
                                                             {M, M, M, M},
                                                             {M, M, M, M},
@@ -46,10 +46,6 @@ const char chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE] = {{
                                                             {E, 0, 0, 0},
                                                             {E, 0, 0, 0},
                                                         }};
-*/
-
-const int CHUNK_SIZE = 2;
-const char chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE] = {{{M, M}, {M, M}}, {{E, E}, {E, E}}};
 
 void VoxelWorld::init() {
     block = std::make_shared<Mesh>(Mesh::loadFromFile("block.obj"));
@@ -77,8 +73,7 @@ void VoxelWorld::init() {
                 }
 
                 glm::mat4 cubeModel = glm::mat4(1.0f);
-                glm::vec3 cubePosition = glm::vec3(x, y, z);
-                cubeModel = glm::scale(cubeModel, glm::vec3(0.0001, 0.0001, 0.0001));
+                glm::vec3 cubePosition = glm::vec3(y, x, z);
                 cubeModel = glm::translate(cubeModel, cubePosition);
                 blocks.push_back({chunk[x][y][z], cubeModel});
             }
