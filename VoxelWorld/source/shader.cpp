@@ -21,10 +21,8 @@ Shader Shader::loadFromFile(const std::string& path, Type shaderType) {
         throw std::runtime_error("Unknown shader type");
     }
 
-    const auto basePath = std::string(GLSL_SHADER_PATH);
-
     // search paths
-    std::ifstream in(format("{}/{}", basePath, path), std::ios::in);
+    std::ifstream in(format("{}/{}", GLSL_SHADER_PATH, path), std::ios::in);
     if (!in) {
         throw std::runtime_error(format("Failed to read shader file {}", path));
     }

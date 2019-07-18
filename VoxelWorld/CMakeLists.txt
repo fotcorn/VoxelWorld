@@ -7,6 +7,7 @@ find_package(glew REQUIRED)
 find_package(stb REQUIRED)
 find_package(fmt REQUIRED)
 find_package(imgui REQUIRED)
+find_package(Assimp REQUIRED)
 # TODO Remove
 find_package(OpenGL REQUIRED)
 
@@ -15,7 +16,7 @@ find_package(OpenGL REQUIRED)
 set(GLSLShaderPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/glsl)
 set(SPIRVShaderSource ${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/spir-v)
 set(SPIRVShaderPath ${CMAKE_CURRENT_BINARY_DIR})
-set(TexturePath ${CMAKE_CURRENT_SOURCE_DIR}/resources/textures)
+set(MeshPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/meshes)
 
 
 add_executable(VoxelWorld
@@ -24,13 +25,15 @@ add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/render_loop.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/shader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/shader_program.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/mesh.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/texture.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_glfw.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_opengl3.cpp
 )
 
 # TODO Remove OpenGL & GLEW
-target_link_libraries(VoxelWorld PRIVATE OpenGL::GL glew::glew glfw::glfw fmt::fmt stb::stb imgui::imgui Voxel::Voxel Voxel::OpenGLRenderer)
+target_link_libraries(VoxelWorld PRIVATE OpenGL::GL glew::glew glfw::glfw fmt::fmt stb::stb imgui::imgui Assimp::Assimp Voxel::Voxel Voxel::OpenGLRenderer)
 
 target_compile_definitions(VoxelWorld PRIVATE
 	# Path for OpenGL shaders
@@ -38,7 +41,7 @@ target_compile_definitions(VoxelWorld PRIVATE
 	# Path for Vulkan (Spir-V) shaders
 	SPIRV_SHADER_PATH="${SPIRVShaderPath}"
 	# Path for textures
-	TEXTURE_PATH="${TexturePath}"
+	MESH_PATH="${MeshPath}"
 )
 
 target_compile_features(VoxelWorld PRIVATE cxx_std_17)
@@ -92,3 +95,10 @@ target_sources(VoxelWorld PRIVATE ${GLSLShaders})
 #)
 #add_dependencies(VoxelWorld VoxelWorld-CompileSpirV)
 #target_sources(VoxelWorld PRIVATE ${SPIRVShaders})
+
+if(MSVC)
+  target_compile_options(VoxelWorld PRIVATE /W4 /WX)
+endif()
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER MATCHES "clang")
+  target_compile_options(VoxelWorld PRIVATE -Wall -Wextra -pedantic)
+endif()

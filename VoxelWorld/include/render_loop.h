@@ -10,6 +10,7 @@
 
 #include <memory>
 
+#include "mesh.h"
 #include "object.h"
 #include "shader_program.h"
 
@@ -39,7 +40,7 @@ private:
 
     // cube
     std::shared_ptr<ShaderProgram> cubeShaderProgram;
-    std::shared_ptr<Object> cube;
+    std::shared_ptr<Mesh> cube;
 
     bool drawGui = false;
 

@@ -104,6 +104,19 @@ void Program::initGui() {
 }
 
 void Program::initCube() {
+    this->cube = std::make_shared<Mesh>(Mesh::loadFromFile("groundEarth/groundEarth.obj"));
+    this->cube->addTexture(Texture::loadFromFile("groundEarth/groundEarth_base_color.gif"));
+
+    Shader fragmentShader = Shader::loadFromFile("mesh.frag", Shader::Type::Fragment);
+    Shader vertexShader = Shader::loadFromFile("mesh.vert", Shader::Type::Vertex);
+    this->cubeShaderProgram = std::make_shared<ShaderProgram>();
+    this->cubeShaderProgram->attachShader(vertexShader);
+    this->cubeShaderProgram->attachShader(fragmentShader);
+    this->cubeShaderProgram->setAttribLocation("vertex_position", 0);
+    this->cubeShaderProgram->setAttribLocation("texture_coordinate", 1);
+    this->cubeShaderProgram->link();
+
+    /*
     this->cube = std::make_shared<Object>(Object(
         {
             // vertices
@@ -158,6 +171,7 @@ void Program::initCube() {
     this->cubeShaderProgram->setAttribLocation("vertex_position", 0);
     // this->cubeShaderProgram->setAttribLocation("vertex_color", 1);
     this->cubeShaderProgram->link();
+    */
 }
 
 void Program::initCamera() {
@@ -168,7 +182,10 @@ void Program::initCamera() {
 void Program::mainLoop() {
     bool wireframe = false;
 
-    glm::vec3 cameraPosition = glm::vec3(-7.0, 2.5, 0.0);
+    glm::vec3 eye = glm::vec3(-20.0, 0.0, 6.0);
+    glm::vec3 center = glm::vec3(-7.0, 2.5, 0.0);
+    glm::vec3 up = glm::vec3(0.0, 1.0, 0.0);
+
     glm::vec3 cubePosition = glm::vec3(-15.0, 15.0, 5.0);
 
     while (!glfwWindowShouldClose(window)) {
@@ -180,13 +197,11 @@ void Program::mainLoop() {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::vec3 eye = glm::vec3(1.0, 1.0, 1.0);
-        glm::vec3 up = glm::vec3(0.0, 1.0, 0.0);
-        glm::mat4 view = glm::lookAt(eye, cameraPosition, up);
+        glm::mat4 view = glm::lookAt(eye, center, up);
 
         // draw cube
         glm::mat4 cubeModel = glm::mat4(1.0f);
-        cubeModel = glm::scale(cubeModel, glm::vec3(0.1, 0.1, 0.1));
+        cubeModel = glm::scale(cubeModel, glm::vec3(0.001, 0.001, 0.001));
         cubeModel = glm::translate(cubeModel, cubePosition);
         auto mvp = this->projectionMatrix * view * cubeModel;
         this->cubeShaderProgram->use();
@@ -199,9 +214,18 @@ void Program::mainLoop() {
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
             ImGui::Checkbox("Wireframe", &wireframe);
-            ImGui::SliderFloat("Camera X", &cameraPosition.x, -10.0f, 10.0f);
-            ImGui::SliderFloat("Camera Y", &cameraPosition.y, -10.0f, 10.0f);
-            ImGui::SliderFloat("Camera Z", &cameraPosition.z, -10.0f, 10.0f);
+
+            ImGui::SliderFloat("Camera eye X", &eye.x, -100.0f, 100.0f);
+            ImGui::SliderFloat("Camera eye Y", &eye.y, -100.0f, 100.0f);
+            ImGui::SliderFloat("Camera eye Z", &eye.z, -100.0f, 100.0f);
+
+            ImGui::SliderFloat("Camera center X", &center.x, -100.0f, 100.0f);
+            ImGui::SliderFloat("Camera center Y", &center.y, -100.0f, 100.0f);
+            ImGui::SliderFloat("Camera center Z", &center.z, -100.0f, 100.0f);
+
+            ImGui::SliderFloat("Camera up X", &up.x, -100.0f, 100.0f);
+            ImGui::SliderFloat("Camera up Y", &up.y, -100.0f, 100.0f);
+            ImGui::SliderFloat("Camera up Z", &up.z, -100.0f, 100.0f);
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
