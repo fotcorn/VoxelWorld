@@ -45,9 +45,6 @@ target_compile_features(VoxelWorld PRIVATE cxx_std_17)
 
 target_include_directories(VoxelWorld PRIVATE include)
 
-# Hack to make includes for fmt work
-target_include_directories(VoxelWorld PRIVATE ${fmt_INCLUDE_DIRS})
-
 # Add header files to IDE
 file(GLOB Headers ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 target_sources(VoxelWorld PRIVATE ${Headers})
