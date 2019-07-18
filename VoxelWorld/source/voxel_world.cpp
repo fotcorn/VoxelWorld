@@ -26,6 +26,18 @@ const int WORLD_X = 100;
 const int WORLD_Y = 30;
 const int WORLD_Z = 100;
 
+static bool needsRender(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z) {
+    if (x < 0 || y < 0 || z < 0 || x >= WORLD_X || y >= WORLD_Y || z >= WORLD_Z) {
+        return true;
+    }
+    return world[x][y][z] == 0;
+}
+
+static bool isVisible(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z) {
+    return needsRender(world, x - 1, y, z) || needsRender(world, x + 1, y, z) || needsRender(world, x, y - 1, z) ||
+           needsRender(world, x, y + 1, z) || needsRender(world, x, y, z - 1) || needsRender(world, x, y, z + 1);
+}
+
 void VoxelWorld::init() {
     siv::PerlinNoise noise(1);
 
@@ -62,6 +74,9 @@ void VoxelWorld::init() {
         for (int y = 0; y < WORLD_Y; y++) {
             for (int z = 0; z < WORLD_Z; z++) {
                 if (world[x][y][z] == 0) {
+                    continue;
+                }
+                if (!isVisible(world, x, y, z)) {
                     continue;
                 }
 
