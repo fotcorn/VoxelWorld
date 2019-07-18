@@ -28,6 +28,8 @@ const int WORLD_X = 500;
 const int WORLD_Y = 30;
 const int WORLD_Z = 500;
 
+const int NOISE_SCALE = 50;
+
 const int WATER_HEIGHT = 6;
 
 static bool needsRender(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z) {
@@ -52,12 +54,12 @@ void VoxelWorld::init() {
     // basic world generation
     for (int x = 0; x < WORLD_X; x++) {
         for (int z = 0; z < WORLD_Z; z++) {
-            const double value = noise.noise0_1(double(x) / double(WORLD_X), double(z) / double(WORLD_Y)) * 1.6 - 0.4;
+            const double value = noise.noise0_1(double(x) / double(NOISE_SCALE), double(z) / double(NOISE_SCALE));
             const int height = value * WORLD_Y;
             for (int y = 0; y < height; y++) {
-                if (y > WORLD_Y * 0.6) {
+                if (y > WORLD_Y * 0.7) {
                     world[x][y][z] = BLOCK_SNOW;
-                } else if (y > WORLD_Y * 0.3) {
+                } else if (y > WORLD_Y * 0.5) {
                     world[x][y][z] = BLOCK_ROCK;
                 } else {
                     world[x][y][z] = BLOCK_EARTH;
