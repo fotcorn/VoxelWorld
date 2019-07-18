@@ -7,6 +7,11 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/mat4x4.hpp>
 
+#include <imgui.h>
+
+#include "gui/imgui_impl_glfw.h"
+#include "gui/imgui_impl_opengl3.h"
+
 #include "shader_program.h"
 
 static void glfwErrorCallback(int /*unused*/, const char* message) {
@@ -32,7 +37,7 @@ void Program::init() {
     this->initGlfw();
     this->initGlew();
     this->initOpenGL();
-    // this->initGui();
+    this->initGui();
     this->initCube();
     this->initCamera();
 }
@@ -76,26 +81,23 @@ void Program::initOpenGL() {
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
-/*
-void Program::initGui()
-{
+void Program::initGui() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(this->window, false);
     glfwSetMouseButtonCallback(this->window, ImGui_ImplGlfw_MouseButtonCallback);
-    glfwSetCursorPosCallback(this->window, [](GLFWwindow *window, double xPosition, double yPosition) {
-        Program *program = (Program *)glfwGetWindowUserPointer(window);
+    glfwSetCursorPosCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
+        Program* program = (Program*)glfwGetWindowUserPointer(window);
         program->mouseCursorPositionCallback(xPosition, yPosition);
     });
-    glfwSetScrollCallback(this->window, [](GLFWwindow *window, double xPosition, double yPosition) {
-        Program *program = (Program *)glfwGetWindowUserPointer(window);
+    glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
+        Program* program = (Program*)glfwGetWindowUserPointer(window);
         program->mouseScrollCallback(xPosition, yPosition);
     });
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     ImGui_ImplOpenGL3_Init();
     ImGui::StyleColorsDark();
 }
-*/
 
 void Program::initCube() {
     this->cube = std::make_shared<Object>(Object(
@@ -188,7 +190,6 @@ void Program::mainLoop() {
 
         if (drawGui) {
             // draw gui
-            /*
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -199,7 +200,6 @@ void Program::mainLoop() {
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            */
         }
 
         glfwPollEvents();
@@ -283,7 +283,7 @@ void Program::mouseCursorPositionCallback(double xPosition, double yPosition) {
 
 void Program::mouseScrollCallback(double xOffset, double yOffset) {
     if (this->drawGui) {
-        // ImGui_ImplGlfw_ScrollCallback(this->window, xOffset, yOffset);
+        ImGui_ImplGlfw_ScrollCallback(this->window, xOffset, yOffset);
     } else {
         cameraDistance -= yOffset;
         if (cameraDistance < 2) {

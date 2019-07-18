@@ -13,8 +13,7 @@
 #include "object.h"
 #include "shader_program.h"
 
-class Program
-{
+class Program {
 public:
     void init();
     void mainLoop();
@@ -24,7 +23,7 @@ private:
     void initGlfw();
     void initGlew();
     void initOpenGL();
-    // void initGui();
+    void initGui();
     void initCube();
     void initCamera();
 
@@ -34,7 +33,7 @@ private:
     void mouseScrollCallback(double xOffset, double yOffset);
 
     // members
-    GLFWwindow *window = nullptr;
+    GLFWwindow* window = nullptr;
 
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
 

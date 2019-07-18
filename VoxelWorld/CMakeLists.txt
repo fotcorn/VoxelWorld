@@ -6,6 +6,7 @@ find_package(glfw REQUIRED)
 find_package(glew REQUIRED)
 find_package(stb REQUIRED)
 find_package(fmt REQUIRED)
+find_package(imgui REQUIRED)
 # TODO Remove
 find_package(OpenGL REQUIRED)
 
@@ -23,10 +24,13 @@ add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/render_loop.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/shader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/shader_program.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_glfw.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_opengl3.cpp
 )
 
 # TODO Remove OpenGL & GLEW
-target_link_libraries(VoxelWorld PRIVATE OpenGL::GL glew::glew glfw::glfw fmt::fmt stb::stb Voxel::Voxel Voxel::OpenGLRenderer)
+target_link_libraries(VoxelWorld PRIVATE OpenGL::GL glew::glew glfw::glfw fmt::fmt stb::stb imgui::imgui Voxel::Voxel Voxel::OpenGLRenderer)
 
 target_compile_definitions(VoxelWorld PRIVATE
 	# Path for OpenGL shaders
