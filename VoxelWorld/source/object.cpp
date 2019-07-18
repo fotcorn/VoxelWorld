@@ -36,5 +36,6 @@ Object::Object(std::vector<glm::vec3> vertices, std::vector<glm::uvec3> indices,
 
 void Object::draw(bool wireframe) {
     glBindVertexArray(this->vertexAttributeObject);
-    glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES, this->incidesCount, GL_UNSIGNED_INT, nullptr);
+    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+    glDrawElements(GL_TRIANGLES, this->incidesCount, GL_UNSIGNED_INT, nullptr);
 }
