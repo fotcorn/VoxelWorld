@@ -11,6 +11,7 @@
 #include <glm/mat4x4.hpp>
 
 #include "mesh.h"
+#include "perlin_noise.h"
 #include "shader.h"
 #include "shader_program.h"
 #include "texture.h"
@@ -21,33 +22,25 @@ const char S = 3; // snow
 const char R = 4; // rock
 const char W = 5; // water
 
-const int CHUNK_SIZE = 4;
-const char chunk[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE] = {{
-                                                            {M, M, M, M},
-                                                            {M, M, M, M},
-                                                            {M, M, M, M},
-                                                            {M, M, M, M},
-                                                        },
-                                                        {
-                                                            {M, M, M, M},
-                                                            {M, M, M, M},
-                                                            {M, M, W, M},
-                                                            {M, M, M, M},
-                                                        },
-                                                        {
-                                                            {M, M, M, M},
-                                                            {M, M, M, M},
-                                                            {M, M, 0, 0},
-                                                            {M, M, 0, 0},
-                                                        },
-                                                        {
-                                                            {E, E, E, E},
-                                                            {E, E, 0, E},
-                                                            {E, 0, 0, 0},
-                                                            {E, 0, 0, 0},
-                                                        }};
+const int WORLD_X = 100;
+const int WORLD_Y = 30;
+const int WORLD_Z = 100;
 
 void VoxelWorld::init() {
+    siv::PerlinNoise noise(1);
+
+    char world[WORLD_X][WORLD_Y][WORLD_Z] = {{{0}}};
+
+    for (int x = 0; x < WORLD_X; x++) {
+        for (int z = 0; z < WORLD_Z; z++) {
+            const double value = noise.noise0_1(double(x) / double(WORLD_X), double(z) / double(WORLD_Y));
+            const int height = value * WORLD_Y;
+            for (int y = 0; y < height; y++) {
+                world[x][y][z] = 1;
+            }
+        }
+    }
+
     block = std::make_shared<Mesh>(Mesh::loadFromFile("block.obj"));
 
     textureMap[M] = std::make_shared<Texture>(Texture::loadFromFile("groundMud_base_color.gif"));
@@ -65,17 +58,17 @@ void VoxelWorld::init() {
     this->shaderProgram->setAttribLocation("texture_coordinate", 1);
     this->shaderProgram->link();
 
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-        for (int y = 0; y < CHUNK_SIZE; y++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
-                if (chunk[x][y][z] == 0) {
+    for (int x = 0; x < WORLD_X; x++) {
+        for (int y = 0; y < WORLD_Y; y++) {
+            for (int z = 0; z < WORLD_Z; z++) {
+                if (world[x][y][z] == 0) {
                     continue;
                 }
 
                 glm::mat4 cubeModel = glm::mat4(1.0f);
-                glm::vec3 cubePosition = glm::vec3(y, x, z);
+                glm::vec3 cubePosition = glm::vec3(x, y, z);
                 cubeModel = glm::translate(cubeModel, cubePosition);
-                blocks.push_back({chunk[x][y][z], cubeModel});
+                blocks.push_back({world[x][y][z], cubeModel});
             }
         }
     }
