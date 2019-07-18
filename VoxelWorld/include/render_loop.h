@@ -49,15 +49,17 @@ private:
     float deltaTime = 0.0f;
 
     // camera
-    float cameraSpeed = 0.2f;
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
+    float cameraSpeed = 0.1f;
+
+    glm::vec3 cameraPos = glm::vec3(4.83289f, 4.07179f, 4.32109f);
+    glm::vec3 cameraFront = glm::vec3(-0.476543f, -0.543907f, -0.690704f);
+
     glm::vec3 cameraUp = glm::vec3(0.0, 1.0, 0.0);
     float cameraDistance = 5.0f;
     bool firstMouse = true;
-    float yaw = -90.0f; // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing
-                        // to the right so we initially rotate a bit to the left.
-    float pitch = 0.0f;
+    float yaw = 235.397f; // yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector
+                          // pointing to the right so we initially rotate a bit to the left.
+    float pitch = -32.95f;
     float lastX = 0.0f;
     float lastY = 0.0f;
 };

@@ -238,6 +238,9 @@ void Program::handleInput() {
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * this->cameraSpeed;
     }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        cameraPos += glm::vec3(0.0, 1.0f, 0.0) * this->cameraSpeed;
+    }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
         ctrlDown = true;
@@ -260,6 +263,7 @@ void Program::mouseCursorPositionCallback(double xPosition, double yPosition) {
     if (this->drawGui) {
         return;
     }
+
     if (firstMouse) {
         lastX = xPosition;
         lastY = yPosition;
