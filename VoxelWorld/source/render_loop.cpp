@@ -119,6 +119,7 @@ void Program::mainLoop() {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        std::cout << 1.0f / deltaTime << std::endl;
 
         this->handleInput();
 
