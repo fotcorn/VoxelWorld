@@ -30,3 +30,8 @@ conan install .. -s build_type=Debug -s compiler="Visual Studio" -s compiler.run
 cmake .. -G "Visual Studio 15 2017 Win64"
 cmake --build .
 ```
+
+## Sources
+
+- Block assets: https://opengameart.org/content/free-low-poly-game-asset-3d-blocks
+- LearnOpenGL.com
