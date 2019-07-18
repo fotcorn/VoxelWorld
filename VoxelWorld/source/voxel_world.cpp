@@ -31,7 +31,9 @@ const int WORLD_Z = 100;
 const int WATER_HEIGHT = 6;
 
 static bool needsRender(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z) {
-    if (x < 0 || y < 0 || z < 0 || x >= WORLD_X || y >= WORLD_Y || z >= WORLD_Z) {
+    if (x < 0 || y < 0 || z < 0) {
+        return false;
+    } else if (x >= WORLD_X || y >= WORLD_Y || z >= WORLD_Z) {
         return true;
     }
     return world[x][y][z] == 0;
