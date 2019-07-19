@@ -101,7 +101,7 @@ target_sources(VoxelWorld PRIVATE ${GLSLShaders})
 #target_sources(VoxelWorld PRIVATE ${SPIRVShaders})
 
 if(MSVC)
-  target_compile_options(VoxelWorld PRIVATE /W4 /WX)
+  target_compile_options(VoxelWorld PRIVATE /W4)
 endif()
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER MATCHES "clang")
   target_compile_options(VoxelWorld PRIVATE -Wall -Wextra -pedantic)
