@@ -14,7 +14,7 @@
 #include "Object.h"
 #include "ShaderProgram.h"
 
-class Program {
+class RenderLoop {
 public:
     void init();
     void mainLoop();

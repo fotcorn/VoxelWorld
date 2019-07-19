@@ -31,7 +31,7 @@ const float CAMERA_FOV = 45.0;
 const float NEAR_PLANE = 0.1;
 const float FAR_PLANE = 100.0;
 
-void Program::init() {
+void RenderLoop::init() {
     this->initGlfw();
     this->initGlew();
     this->initOpenGL();
@@ -39,7 +39,7 @@ void Program::init() {
     this->initCamera();
 }
 
-void Program::initGlfw() {
+void RenderLoop::initGlfw() {
     glfwSetErrorCallback(
         [](int /*unused*/, const char* message) { std::cerr << "GLFW error:" << message << std::endl; });
 
@@ -63,20 +63,20 @@ void Program::initGlfw() {
 
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
-        Program* program = (Program*)glfwGetWindowUserPointer(window);
-        program->projectionMatrix =
+        RenderLoop* loop = (RenderLoop*)glfwGetWindowUserPointer(window);
+        loop->projectionMatrix =
             glm::perspective(glm::radians(CAMERA_FOV), (float)width / (float)height, NEAR_PLANE, FAR_PLANE);
     });
 
     glfwSetWindowUserPointer(this->window, (void*)this);
 }
 
-void Program::initGlew() {
+void RenderLoop::initGlew() {
     glewExperimental = GL_TRUE;
     glewInit();
 }
 
-void Program::initOpenGL() {
+void RenderLoop::initOpenGL() {
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(openglErrorCallback, nullptr);
 
@@ -89,30 +89,30 @@ void Program::initOpenGL() {
     glViewport(0, 0, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
 }
 
-void Program::initGui() {
+void RenderLoop::initGui() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(this->window, false);
     glfwSetMouseButtonCallback(this->window, ImGui_ImplGlfw_MouseButtonCallback);
     glfwSetCursorPosCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        Program* program = (Program*)glfwGetWindowUserPointer(window);
-        program->mouseCursorPositionCallback(xPosition, yPosition);
+        RenderLoop* loop = (RenderLoop*)glfwGetWindowUserPointer(window);
+        loop->mouseCursorPositionCallback(xPosition, yPosition);
     });
     glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        Program* program = (Program*)glfwGetWindowUserPointer(window);
-        program->mouseScrollCallback(xPosition, yPosition);
+        RenderLoop* loop = (RenderLoop*)glfwGetWindowUserPointer(window);
+        loop->mouseScrollCallback(xPosition, yPosition);
     });
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     ImGui_ImplOpenGL3_Init();
     ImGui::StyleColorsDark();
 }
 
-void Program::initCamera() {
+void RenderLoop::initCamera() {
     this->projectionMatrix = glm::perspective(
         glm::radians(CAMERA_FOV), (float)INITIAL_WINDOW_WIDTH / (float)INITIAL_WINDOW_HEIGHT, NEAR_PLANE, FAR_PLANE);
 }
 
-void Program::mainLoop() {
+void RenderLoop::mainLoop() {
     bool wireframe = false;
 
     VoxelWorld world;
@@ -153,7 +153,7 @@ void Program::mainLoop() {
     glfwTerminate();
 }
 
-void Program::handleInput() {
+void RenderLoop::handleInput() {
     static bool ctrlDown = false;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -193,7 +193,7 @@ void Program::handleInput() {
     }
 }
 
-void Program::mouseCursorPositionCallback(double xPosition, double yPosition) {
+void RenderLoop::mouseCursorPositionCallback(double xPosition, double yPosition) {
     if (this->drawGui) {
         return;
     }
@@ -229,7 +229,7 @@ void Program::mouseCursorPositionCallback(double xPosition, double yPosition) {
     cameraFront = glm::normalize(front);
 }
 
-void Program::mouseScrollCallback(double xOffset, double yOffset) {
+void RenderLoop::mouseScrollCallback(double xOffset, double yOffset) {
     if (this->drawGui) {
         ImGui_ImplGlfw_ScrollCallback(this->window, xOffset, yOffset);
     } else {
