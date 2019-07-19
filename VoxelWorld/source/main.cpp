@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-#include "render_loop.h"
+#include "RenderLoop.h"
 
 int main() {
     Program program;

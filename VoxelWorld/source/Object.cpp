@@ -1,4 +1,4 @@
-#include "object.h"
+#include "Object.h"
 
 Object::Object(std::vector<glm::vec3> vertices, std::vector<glm::uvec3> indices) {
     glGenVertexArrays(1, &this->vertexAttributeObject); // one attribute

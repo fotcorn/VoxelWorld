@@ -1,4 +1,4 @@
-#include "render_loop.h"
+#include "RenderLoop.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -14,7 +14,7 @@
 #include "gui/imgui_impl_glfw.h"
 #include "gui/imgui_impl_opengl3.h"
 
-#include "voxel_world.h"
+#include "VoxelWorld.h"
 
 static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*/, GLenum severity, GLsizei /*unused*/,
                                 const GLchar* message, const void* /*unused*/) {

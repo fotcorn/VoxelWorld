@@ -1,4 +1,4 @@
-#include "shader_program.h"
+#include "ShaderProgram.h"
 
 #include <stdexcept>
 #include <string>

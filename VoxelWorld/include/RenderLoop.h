@@ -10,9 +10,9 @@
 
 #include <memory>
 
-#include "mesh.h"
-#include "object.h"
-#include "shader_program.h"
+#include "Mesh.h"
+#include "Object.h"
+#include "ShaderProgram.h"
 
 class Program {
 public:

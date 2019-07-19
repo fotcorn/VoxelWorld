@@ -22,13 +22,13 @@ set(TexturePath ${CMAKE_CURRENT_SOURCE_DIR}/resources/textures)
 
 add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/object.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/render_loop.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/shader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/shader_program.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/mesh.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/texture.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel_world.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/Object.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/RenderLoop.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/Shader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/ShaderProgram.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/Mesh.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/Texture.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/VoxelWorld.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_glfw.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_opengl3.cpp

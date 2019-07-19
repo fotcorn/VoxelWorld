@@ -1,4 +1,4 @@
-#include "voxel_world.h"
+#include "VoxelWorld.h"
 
 #include <iostream>
 #include <memory>
@@ -11,11 +11,11 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "Mesh.h"
 #include "PerlinNoise.h"
-#include "mesh.h"
-#include "shader.h"
-#include "shader_program.h"
-#include "texture.h"
+#include "Shader.h"
+#include "ShaderProgram.h"
+#include "Texture.h"
 
 const char BLOCK_AIR = 0;
 const char BLOCK_MUD = 1;

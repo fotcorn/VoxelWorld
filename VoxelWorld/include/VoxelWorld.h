@@ -6,9 +6,9 @@
 #include <memory>
 #include <unordered_map>
 
-#include "mesh.h"
-#include "shader_program.h"
-#include "texture.h"
+#include "Mesh.h"
+#include "ShaderProgram.h"
+#include "Texture.h"
 
 struct Block {
     glm::mat4 model;
