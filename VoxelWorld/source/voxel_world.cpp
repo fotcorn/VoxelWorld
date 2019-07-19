@@ -11,8 +11,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "PerlinNoise.h"
 #include "mesh.h"
-#include "perlin_noise.h"
 #include "shader.h"
 #include "shader_program.h"
 #include "texture.h"
