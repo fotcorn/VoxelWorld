@@ -48,7 +48,7 @@ target_compile_definitions(VoxelWorld PRIVATE
 	TEXTURE_PATH="${TexturePath}"
 )
 
-target_compile_features(VoxelWorld PRIVATE cxx_std_17)
+target_compile_features(VoxelWorld PRIVATE cxx_std_11)
 
 target_include_directories(VoxelWorld PRIVATE include)
 
