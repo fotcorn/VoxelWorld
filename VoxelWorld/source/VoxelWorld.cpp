@@ -15,6 +15,7 @@
 #include "PerlinNoise.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
+#include "Tensor3.h"
 #include "Texture.h"
 
 const char BLOCK_AIR = 0;
@@ -32,16 +33,18 @@ const int NOISE_SCALE = 50;
 
 const int WATER_HEIGHT = 6;
 
-static bool needsRender(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z) {
+typedef Tensor3<char, WORLD_X, WORLD_Y, WORLD_Z> WorldTensor;
+
+static bool needsRender(std::shared_ptr<WorldTensor> world, int x, int y, int z) {
     if (x < 0 || y < 0 || z < 0) {
         return false;
     } else if (x >= WORLD_X || y >= WORLD_Y || z >= WORLD_Z) {
         return true;
     }
-    return world[x][y][z] == 0;
+    return (*world)(x, y, z) == 0;
 }
 
-static bool isVisible(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z) {
+static bool isVisible(std::shared_ptr<WorldTensor> world, int x, int y, int z) {
     return needsRender(world, x - 1, y, z) || needsRender(world, x + 1, y, z) || needsRender(world, x, y - 1, z) ||
            needsRender(world, x, y + 1, z) || needsRender(world, x, y, z - 1) || needsRender(world, x, y, z + 1);
 }
@@ -49,7 +52,7 @@ static bool isVisible(char world[WORLD_X][WORLD_Y][WORLD_Z], int x, int y, int z
 void VoxelWorld::init() {
     siv::PerlinNoise noise(1);
 
-    char world[WORLD_X][WORLD_Y][WORLD_Z] = {{{BLOCK_AIR}}};
+    auto world = std::make_shared<WorldTensor>();
 
     // basic world generation
     for (int x = 0; x < WORLD_X; x++) {
@@ -58,11 +61,11 @@ void VoxelWorld::init() {
             const int height = value * WORLD_Y;
             for (int y = 0; y < height; y++) {
                 if (y > WORLD_Y * 0.7) {
-                    world[x][y][z] = BLOCK_SNOW;
+                    (*world)(x, y, z) = BLOCK_SNOW;
                 } else if (y > WORLD_Y * 0.5) {
-                    world[x][y][z] = BLOCK_ROCK;
+                    (*world)(x, y, z) = BLOCK_ROCK;
                 } else {
-                    world[x][y][z] = BLOCK_EARTH;
+                    (*world)(x, y, z) = BLOCK_EARTH;
                 }
             }
         }
@@ -72,12 +75,12 @@ void VoxelWorld::init() {
     for (int x = 0; x < WORLD_X; x++) {
         for (int z = 0; z < WORLD_Z; z++) {
             for (int y = 0; y <= WATER_HEIGHT; y++) {
-                if (world[x][y][z] == BLOCK_AIR) {
-                    world[x][y][z] = BLOCK_WATER;
+                if ((*world)(x, y, z) == BLOCK_AIR) {
+                    (*world)(x, y, z) = BLOCK_WATER;
                 }
             }
-            if (world[x][WATER_HEIGHT][z] == BLOCK_EARTH && world[x][WATER_HEIGHT + 1][z] == BLOCK_AIR) {
-                world[x][WATER_HEIGHT][z] = BLOCK_WATER;
+            if ((*world)(x, WATER_HEIGHT, z) == BLOCK_EARTH && (*world)(x, WATER_HEIGHT + 1, z) == BLOCK_AIR) {
+                (*world)(x, WATER_HEIGHT, z) = BLOCK_WATER;
             }
         }
     }
@@ -102,7 +105,7 @@ void VoxelWorld::init() {
     for (int x = 0; x < WORLD_X; x++) {
         for (int y = 0; y < WORLD_Y; y++) {
             for (int z = 0; z < WORLD_Z; z++) {
-                if (world[x][y][z] == 0) {
+                if ((*world)(x, y, z) == 0) {
                     continue;
                 }
                 if (!isVisible(world, x, y, z)) {
@@ -113,7 +116,7 @@ void VoxelWorld::init() {
                 glm::vec3 cubePosition = glm::vec3(x, y, z);
                 cubeModel = glm::translate(cubeModel, cubePosition);
 
-                blocks[world[x][y][z]].push_back({cubeModel, glm::ivec3(x, y, z)});
+                blocks[(*world)(x, y, z)].push_back({cubeModel, glm::ivec3(x, y, z)});
             }
         }
     }
