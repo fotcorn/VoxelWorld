@@ -115,8 +115,6 @@ void Program::initCamera() {
 void Program::mainLoop() {
     bool wireframe = false;
 
-    glm::vec3 cubePosition = glm::vec3(-15.0, 15.0, 5.0);
-
     VoxelWorld world;
     world.init();
 
