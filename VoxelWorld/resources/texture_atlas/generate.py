@@ -21,7 +21,7 @@ files = os.listdir(temp_dir)
 files = [os.path.join(temp_dir, f) for f in files]
 files = sorted(files, key=lambda f: f.lower())
 
-os.system('convert ' + ' '.join(files) + ' +append texture_atlas.gif')
+os.system('convert ' + ' '.join(files) + ' +append ../textures/texture_atlas.gif')
 
 shutil.rmtree(temp_dir)
 

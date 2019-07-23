@@ -9,16 +9,18 @@
 #include "Mesh.h"
 #include "ShaderProgram.h"
 #include "Texture.h"
+#include "TextureAtlas.h"
 
 struct Block {
     glm::mat4 model;
     glm::vec3 position;
+    TextureAtlas type;
 };
 
 class VoxelWorld {
-    std::unordered_map<char, std::shared_ptr<Texture>> textureMap;
-    std::unordered_map<char, std::vector<Block>> blocks;
+    std::vector<Block> blocks;
     std::shared_ptr<Mesh> block;
+    std::shared_ptr<Texture> texture;
     std::shared_ptr<ShaderProgram> shaderProgram;
 
 public:
