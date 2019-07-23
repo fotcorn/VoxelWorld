@@ -6,6 +6,7 @@ This script probably only workd on Linux/Unix.
 """
 import os
 import shutil
+import re
 
 # unpack zip from https://opengameart.org/content/free-low-poly-game-asset-3d-blocks to this directory:
 path = './unpacked/'
@@ -17,14 +18,31 @@ os.mkdir(temp_dir)
 os.system(f'cp unpacked/*/tex/*.gif {temp_dir}')
 
 files = os.listdir(temp_dir)
-for f in files:
-    new_name = f.split('_')[0].lower() + '.gif'
-    os.rename(os.path.join(temp_dir, f), os.path.join(temp_dir, new_name))
+#for f in files:
+#    new_name = f.split('_')[0].lower() + '.gif'
+#    os.rename(os.path.join(temp_dir, f), os.path.join(temp_dir, new_name))
 
-files = os.listdir(temp_dir)
+#files = os.listdir(temp_dir)
 files = [os.path.join(temp_dir, f) for f in files]
-files = sorted(files)
+files = sorted(files, key=lambda f: f.lower())
 
 os.system('convert ' + ' '.join(files) + ' +append texture_atlas.gif')
 
 shutil.rmtree(temp_dir)
+
+# https://stackoverflow.com/a/1176023
+def camel2snake(name):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).upper()
+
+with open('../../include/TextureAtlas.h', 'w') as f:
+    f.write('enum TextureAtlas {\n')
+    for i, t in enumerate(files):
+        name = os.path.basename(t)
+        name = name.split('_')[0]
+        name = camel2snake(name)
+        name = name.replace('0', '_0')
+        name = name.replace('ICE_01', 'ICE')  # there is only one ice type
+        name = name.replace('LAVA_01', 'LAVA')  # there is only one ice type
+        f.write(f'    {name} = {i},\n')
+    f.write('};\n')
