@@ -18,11 +18,6 @@ os.mkdir(temp_dir)
 os.system(f'cp unpacked/*/tex/*.gif {temp_dir}')
 
 files = os.listdir(temp_dir)
-#for f in files:
-#    new_name = f.split('_')[0].lower() + '.gif'
-#    os.rename(os.path.join(temp_dir, f), os.path.join(temp_dir, new_name))
-
-#files = os.listdir(temp_dir)
 files = [os.path.join(temp_dir, f) for f in files]
 files = sorted(files, key=lambda f: f.lower())
 
@@ -36,6 +31,9 @@ def camel2snake(name):
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).upper()
 
 with open('../../include/TextureAtlas.h', 'w') as f:
+    f.write('#ifndef TEXTURE_ATLAS_H\n')
+    f.write('#define TEXTURE_ATLAS_H\n')
+    f.write('\n')
     f.write('enum TextureAtlas {\n')
     for i, t in enumerate(files):
         name = os.path.basename(t)
@@ -43,6 +41,8 @@ with open('../../include/TextureAtlas.h', 'w') as f:
         name = camel2snake(name)
         name = name.replace('0', '_0')
         name = name.replace('ICE_01', 'ICE')  # there is only one ice type
-        name = name.replace('LAVA_01', 'LAVA')  # there is only one ice type
+        name = name.replace('LAVA_01', 'LAVA')  # there is only one lava type
         f.write(f'    {name} = {i},\n')
     f.write('};\n')
+    f.write('\n')
+    f.write('#endif // !TEXTURE_ATLAS_H\n')

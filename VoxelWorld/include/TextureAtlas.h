@@ -1,3 +1,6 @@
+#ifndef TEXTURE_ATLAS_H
+#define TEXTURE_ATLAS_H
+
 enum TextureAtlas {
     GROUND = 0,
     GROUND_CHECKERED = 1,
@@ -24,3 +27,5 @@ enum TextureAtlas {
     WALL_STONE = 22,
     WATER = 23,
 };
+
+#endif // !TEXTURE_ATLAS_H
