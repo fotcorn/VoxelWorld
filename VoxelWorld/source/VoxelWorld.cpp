@@ -59,7 +59,7 @@ void VoxelWorld::init() {
                 if (y > WORLD_Y * 0.7) {
                     (*world)(x, y, z) = TextureAtlas::SNOW;
                 } else if (y > WORLD_Y * 0.5) {
-                    (*world)(x, y, z) = TextureAtlas::STONE_03;
+                    (*world)(x, y, z) = TextureAtlas::STONE_04;
                 } else {
                     (*world)(x, y, z) = TextureAtlas::GROUND_EARTH;
                 }
