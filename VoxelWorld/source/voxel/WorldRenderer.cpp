@@ -20,7 +20,10 @@ void WorldRenderer::render(glm::mat4, glm::vec3, bool wireframe) {
     auto chunk = worldGenerator.getChunk(1, 1, 1);
     auto renderChunk = RenderChunk::fromChunk(worldGenerator, chunk);
 
-    // auto mvp = vp * block.model;
-    // this->shaderProgram->setUniform("mvp", mvp);
+    glm::mat4 modelMatrix = glm::mat4(1.0f);
+    glm::vec3 position = glm::vec3(1, 1, 1);
+    modelMatrix = glm::translate(modelMatrix, position);
+    auto mvp = vp * modelMatrix;
+    this->shaderProgram->setUniform("mvp", mvp);
     renderChunk.render(wireframe);
 }
