@@ -18,11 +18,11 @@
 #include "Tensor3.h"
 #include "Texture.h"
 
-const int BLOCK_AIR = -1;
+const int BLOCK_AIR = 0;
 
-const int WORLD_X = 500;
+const int WORLD_X = 100;
 const int WORLD_Y = 30;
-const int WORLD_Z = 500;
+const int WORLD_Z = 100;
 
 const int NOISE_SCALE = 50;
 
@@ -82,14 +82,8 @@ void VoxelWorld::init() {
         }
     }
 
-    std::cerr << "init1" << std::endl;
-
     block = std::make_shared<Mesh>(Mesh::loadFromFile("block.obj"));
-
-    std::cerr << "init25" << std::endl;
     texture = std::make_shared<Texture>(Texture::loadFromFile("texture_atlas.gif"));
-
-    std::cerr << "init2" << std::endl;
 
     Shader fragmentShader = Shader::loadFromFile("mesh.frag", Shader::Type::Fragment);
     Shader vertexShader = Shader::loadFromFile("mesh_atlas.vert", Shader::Type::Vertex);
@@ -100,12 +94,10 @@ void VoxelWorld::init() {
     this->shaderProgram->setAttribLocation("texture_coordinate", 1);
     this->shaderProgram->link();
 
-    std::cerr << "init3" << std::endl;
-
     for (int x = 0; x < WORLD_X; x++) {
         for (int y = 0; y < WORLD_Y; y++) {
             for (int z = 0; z < WORLD_Z; z++) {
-                if ((*world)(x, y, z) == 0) {
+                if ((*world)(x, y, z) == BLOCK_AIR) {
                     continue;
                 }
                 if (!isVisible(world, x, y, z)) {
@@ -131,9 +123,10 @@ void VoxelWorld::render(glm::mat4 vp, glm::vec3 cameraPos, bool wireframe) {
         if (glm::distance(block.position, cameraPos) > 50.0) {
             continue;
         }
+
         auto mvp = vp * block.model;
         this->shaderProgram->setUniform("mvp", mvp);
-        this->shaderProgram->setUniform("texture_offset", (int)block.type);
+        this->shaderProgram->setUniform("texture_offset", static_cast<int>(block.type) - 1);
         this->block->draw(wireframe);
     }
 }

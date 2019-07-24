@@ -42,7 +42,7 @@ with open('../../include/TextureAtlas.h', 'w') as f:
         name = name.replace('0', '_0')
         name = name.replace('ICE_01', 'ICE')  # there is only one ice type
         name = name.replace('LAVA_01', 'LAVA')  # there is only one lava type
-        f.write(f'    {name} = {i},\n')
+        f.write(f'    {name} = {i + 1},\n')
     f.write('};\n')
     f.write('\n')
     f.write('#endif // !TEXTURE_ATLAS_H\n')
