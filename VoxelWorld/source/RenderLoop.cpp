@@ -14,8 +14,6 @@
 #include "gui/imgui_impl_glfw.h"
 #include "gui/imgui_impl_opengl3.h"
 
-#include "VoxelWorld.h"
-
 static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*/, GLenum severity, GLsizei /*unused*/,
                                 const GLchar* message, const void* /*unused*/) {
     if (severity != GL_DEBUG_SEVERITY_NOTIFICATION) {
@@ -115,8 +113,8 @@ void RenderLoop::initCamera() {
 void RenderLoop::mainLoop() {
     bool wireframe = false;
 
-    VoxelWorld world;
-    world.init();
+    // VoxelWorld world;
+    // world.init();
 
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -132,7 +130,7 @@ void RenderLoop::mainLoop() {
 
         // draw cube
         glm::mat4 vp = this->projectionMatrix * view;
-        world.render(vp, this->cameraPos, wireframe);
+        // world.render(vp, this->cameraPos, wireframe);
 
         if (drawGui) {
             // draw gui

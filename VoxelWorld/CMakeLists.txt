@@ -28,7 +28,11 @@ add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ShaderProgram.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/Mesh.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/Texture.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/VoxelWorld.cpp
+
+	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/RenderChunk.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/RenderChunkGL.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/WorldGenerator.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/WorldRenderer.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_glfw.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_opengl3.cpp
