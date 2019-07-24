@@ -2,7 +2,6 @@
 #include "TextureAtlas.h"
 
 const int NOISE_SCALE = 10;
-const int BLOCK_AIR = 0;
 const int WATER_HEIGHT = 6;
 
 WorldGenerator::WorldGenerator() : noise(1) {

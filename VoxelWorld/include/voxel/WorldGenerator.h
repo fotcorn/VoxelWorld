@@ -11,6 +11,7 @@
 #include "Tensor3.h"
 
 const int CHUNK_SIZE = 16;
+const int BLOCK_AIR = 0;
 
 using Chunk = Tensor3<char, CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE>;
 

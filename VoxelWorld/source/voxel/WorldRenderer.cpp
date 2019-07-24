@@ -13,7 +13,7 @@ void WorldRenderer::init() {
     this->shaderProgram.link();
 }
 
-void WorldRenderer::render(glm::mat4, glm::vec3, bool wireframe) {
+void WorldRenderer::render(glm::mat4 vp, glm::vec3, bool wireframe) {
     this->shaderProgram.use();
     this->texture.bind();
 
@@ -24,6 +24,6 @@ void WorldRenderer::render(glm::mat4, glm::vec3, bool wireframe) {
     glm::vec3 position = glm::vec3(1, 1, 1);
     modelMatrix = glm::translate(modelMatrix, position);
     auto mvp = vp * modelMatrix;
-    this->shaderProgram->setUniform("mvp", mvp);
+    this->shaderProgram.setUniform("mvp", mvp);
     renderChunk.render(wireframe);
 }
