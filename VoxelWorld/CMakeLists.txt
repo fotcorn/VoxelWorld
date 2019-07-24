@@ -107,3 +107,5 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER MATCHES "clang")
   target_compile_options(VoxelWorld PRIVATE -Wall -Wextra -pedantic)
 endif()
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

@@ -35,3 +35,7 @@ cmake --build .
 
 - Block assets: https://opengameart.org/content/free-low-poly-game-asset-3d-blocks
 - LearnOpenGL.com
+
+## clang-tidy
+
+`run-clang-tidy-8 -p ./build/`
