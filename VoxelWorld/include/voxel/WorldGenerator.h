@@ -7,6 +7,7 @@
 #include <glm/gtx/hash.hpp>
 #include <glm/vec3.hpp>
 
+#include "PerlinNoise.h"
 #include "Tensor3.h"
 
 const int CHUNK_SIZE = 16;
@@ -15,8 +16,10 @@ using Chunk = Tensor3<char, CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE>;
 
 class WorldGenerator {
     std::unordered_map<glm::ivec3, Chunk> chunkCache;
+    siv::PerlinNoise noise;
 
 public:
+    WorldGenerator();
     Chunk getChunk(int x, int y, int z);
 };
 

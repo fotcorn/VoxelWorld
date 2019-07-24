@@ -1,49 +1,51 @@
 #include "voxel/WorldGenerator.h"
+#include "TextureAtlas.h"
+
+const int NOISE_SCALE = 10;
+const int BLOCK_AIR = 0;
+const int WATER_HEIGHT = 6;
+
+WorldGenerator::WorldGenerator() : noise(1) {
+}
 
 Chunk WorldGenerator::getChunk(int x, int y, int z) {
-    // TODO: check if in cache
+    auto cacheEntry = chunkCache.find(glm::ivec3(x, y, z));
+    if (cacheEntry != chunkCache.end()) {
+        return cacheEntry->second;
+    }
 
-    Chunk tensor;
-    // TODO
-
-    /*
-    siv::PerlinNoise noise(1);
-
-    auto world = std::make_shared<WorldTensor>();
+    Chunk chunk;
 
     // basic world generation
-    for (int x = 0; x < WORLD_X; x++) {
-        for (int z = 0; z < WORLD_Z; z++) {
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int z = 0; z < CHUNK_SIZE; z++) {
             const double value = noise.noise0_1(double(x) / double(NOISE_SCALE), double(z) / double(NOISE_SCALE));
-            const int height = value * WORLD_Y;
+            const int height = value * CHUNK_SIZE;
             for (int y = 0; y < height; y++) {
-                if (y > WORLD_Y * 0.7) {
-                    (*world)(x, y, z) = TextureAtlas::SNOW;
-                } else if (y > WORLD_Y * 0.5) {
-                    (*world)(x, y, z) = TextureAtlas::STONE_04;
+                if (y > CHUNK_SIZE * 0.7) {
+                    chunk(x, y, z) = TextureAtlas::SNOW;
+                } else if (y > CHUNK_SIZE * 0.5) {
+                    chunk(x, y, z) = TextureAtlas::STONE_04;
                 } else {
-                    (*world)(x, y, z) = TextureAtlas::GROUND_EARTH;
+                    chunk(x, y, z) = TextureAtlas::GROUND_EARTH;
                 }
             }
         }
     }
 
     // water
-    for (int x = 0; x < WORLD_X; x++) {
-        for (int z = 0; z < WORLD_Z; z++) {
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int z = 0; z < CHUNK_SIZE; z++) {
             for (int y = 0; y <= WATER_HEIGHT; y++) {
-                if ((*world)(x, y, z) == BLOCK_AIR) {
-                    (*world)(x, y, z) = TextureAtlas::WATER;
+                if (chunk(x, y, z) == BLOCK_AIR) {
+                    chunk(x, y, z) = TextureAtlas::WATER;
                 }
             }
-            if ((*world)(x, WATER_HEIGHT, z) == TextureAtlas::GROUND_EARTH &&
-                (*world)(x, WATER_HEIGHT + 1, z) == BLOCK_AIR) {
-                (*world)(x, WATER_HEIGHT, z) = TextureAtlas::WATER;
+            if (chunk(x, WATER_HEIGHT, z) == TextureAtlas::GROUND_EARTH && chunk(x, WATER_HEIGHT + 1, z) == BLOCK_AIR) {
+                chunk(x, WATER_HEIGHT, z) = TextureAtlas::WATER;
             }
         }
     }
 
-    */
-
-    return tensor;
+    return chunk;
 }
