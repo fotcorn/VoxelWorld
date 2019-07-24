@@ -63,7 +63,7 @@ void RenderLoop::initGlfw() {
 
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
-        RenderLoop* loop = (RenderLoop*)glfwGetWindowUserPointer(window);
+        auto loop = (RenderLoop*)glfwGetWindowUserPointer(window);
         loop->projectionMatrix =
             glm::perspective(glm::radians(CAMERA_FOV), (float)width / (float)height, NEAR_PLANE, FAR_PLANE);
     });
@@ -95,11 +95,11 @@ void RenderLoop::initGui() {
     ImGui_ImplGlfw_InitForOpenGL(this->window, false);
     glfwSetMouseButtonCallback(this->window, ImGui_ImplGlfw_MouseButtonCallback);
     glfwSetCursorPosCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        RenderLoop* loop = (RenderLoop*)glfwGetWindowUserPointer(window);
+        auto loop = (RenderLoop*)glfwGetWindowUserPointer(window);
         loop->mouseCursorPositionCallback(xPosition, yPosition);
     });
     glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        RenderLoop* loop = (RenderLoop*)glfwGetWindowUserPointer(window);
+        auto loop = (RenderLoop*)glfwGetWindowUserPointer(window);
         loop->mouseScrollCallback(xPosition, yPosition);
     });
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -217,10 +217,12 @@ void RenderLoop::mouseCursorPositionCallback(double xPosition, double yPosition)
     pitch += yoffset;
 
     // make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (pitch > 89.0f)
+    if (pitch > 89.0f) {
         pitch = 89.0f;
-    if (pitch < -89.0f)
+    }
+    if (pitch < -89.0f) {
         pitch = -89.0f;
+    }
 
     glm::vec3 front;
     front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));

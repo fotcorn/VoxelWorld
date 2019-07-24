@@ -33,18 +33,19 @@ const int NOISE_SCALE = 50;
 
 const int WATER_HEIGHT = 6;
 
-typedef Tensor3<char, WORLD_X, WORLD_Y, WORLD_Z> WorldTensor;
+using WorldTensor = Tensor3<char, WORLD_X, WORLD_Y, WORLD_Z>;
 
-static bool needsRender(std::shared_ptr<WorldTensor> world, int x, int y, int z) {
+static bool needsRender(const std::shared_ptr<WorldTensor>& world, const int x, const int y, const int z) {
     if (x < 0 || y < 0 || z < 0) {
         return false;
-    } else if (x >= WORLD_X || y >= WORLD_Y || z >= WORLD_Z) {
+    }
+    if (x >= WORLD_X || y >= WORLD_Y || z >= WORLD_Z) {
         return true;
     }
     return (*world)(x, y, z) == 0;
 }
 
-static bool isVisible(std::shared_ptr<WorldTensor> world, int x, int y, int z) {
+static bool isVisible(const std::shared_ptr<WorldTensor>& world, const int x, const int y, const int z) {
     return needsRender(world, x - 1, y, z) || needsRender(world, x + 1, y, z) || needsRender(world, x, y - 1, z) ||
            needsRender(world, x, y + 1, z) || needsRender(world, x, y, z - 1) || needsRender(world, x, y, z + 1);
 }
@@ -122,7 +123,7 @@ void VoxelWorld::init() {
     }
 
     int renderedBlocks = 0;
-    for (auto blockType : blocks) {
+    for (const auto& blockType : blocks) {
         renderedBlocks += blockType.second.size();
     }
     std::cout << "Rendered blocks:" << renderedBlocks << std::endl;
@@ -130,7 +131,7 @@ void VoxelWorld::init() {
 
 void VoxelWorld::render(glm::mat4 vp, glm::vec3 cameraPos, bool wireframe) {
     this->shaderProgram->use();
-    for (auto blockType : blocks) {
+    for (const auto& blockType : blocks) {
         textureMap[blockType.first]->bind();
         for (auto block : blockType.second) {
             if (glm::distance(block.position, cameraPos) > 50.0) {

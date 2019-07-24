@@ -9,8 +9,8 @@
 
 class Object {
 public:
-    Object(std::vector<glm::vec3> vertics, std::vector<glm::uvec3> indices);
-    Object(std::vector<glm::vec3> vertics, std::vector<glm::uvec3> indices, std::vector<glm::vec3> colors);
+    Object(std::vector<glm::vec3> vertices, std::vector<glm::uvec3> indices);
+    Object(std::vector<glm::vec3> vertices, std::vector<glm::uvec3> indices, std::vector<glm::vec3> colors);
     void draw(bool wireframe);
 
 private:
