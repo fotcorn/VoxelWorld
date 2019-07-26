@@ -76,3 +76,7 @@ void Mesh::draw(bool wireframe) {
 const std::vector<Vertex>& Mesh::getVertices() const {
     return vertices;
 }
+
+const std::vector<unsigned int>& Mesh::getIndices() const {
+    return indices;
+}

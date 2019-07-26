@@ -25,7 +25,9 @@ RenderChunk RenderChunkGenerator::fromChunk(const WorldGenerator& worldGenerator
                     continue;
                 }
 
-                for (auto vertex : cubeMesh->getVertices()) {
+                auto meshVertices = cubeMesh->getVertices();
+                for (auto index : cubeMesh->getIndices()) {
+                    auto vertex = meshVertices[index];
                     Vertex v;
                     v.position = vertex.position + glm::vec3(x, y, z);
                     v.texturePosition = vertex.texturePosition;
