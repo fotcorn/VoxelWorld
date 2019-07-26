@@ -30,7 +30,7 @@ add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/Texture.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/RenderChunk.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/RenderChunkGL.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/RenderChunkGenerator.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/WorldGenerator.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/WorldRenderer.cpp
 

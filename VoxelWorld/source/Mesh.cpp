@@ -31,10 +31,6 @@ Mesh Mesh::loadFromFile(const std::string& path) {
         vertex.texturePosition.x = mesh->mTextureCoords[0][i].x;
         vertex.texturePosition.y = mesh->mTextureCoords[0][i].y;
 
-        // vertex.normal.x = mesh->mNormals[i].x;
-        // vertex.normal.y = mesh->mNormals[i].y;
-        // vertex.normal.z = mesh->mNormals[i].z;
-
         model.vertices.push_back(vertex);
     }
 
@@ -75,4 +71,8 @@ Mesh Mesh::loadFromFile(const std::string& path) {
 void Mesh::draw(bool wireframe) {
     glBindVertexArray(this->vao);
     glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
+}
+
+const std::vector<Vertex>& Mesh::getVertices() const {
+    return vertices;
 }

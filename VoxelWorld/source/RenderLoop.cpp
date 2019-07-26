@@ -11,6 +11,8 @@
 
 #include <fmt/format.h>
 
+#include "voxel/WorldRenderer.h"
+
 #include "gui/imgui_impl_glfw.h"
 #include "gui/imgui_impl_opengl3.h"
 
@@ -113,14 +115,14 @@ void RenderLoop::initCamera() {
 void RenderLoop::mainLoop() {
     bool wireframe = false;
 
-    // VoxelWorld world;
-    // world.init();
+    WorldRenderer worldRenderer;
+    worldRenderer.init();
 
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        std::cout << 1.0f / deltaTime << std::endl;
+        // std::cout << 1.0f / deltaTime << std::endl;
 
         this->handleInput();
 
@@ -130,7 +132,7 @@ void RenderLoop::mainLoop() {
 
         // draw cube
         glm::mat4 vp = this->projectionMatrix * view;
-        // world.render(vp, this->cameraPos, wireframe);
+        worldRenderer.render(vp, this->cameraPos, wireframe);
 
         if (drawGui) {
             // draw gui

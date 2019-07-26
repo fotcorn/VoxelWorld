@@ -12,6 +12,7 @@ class Mesh {
 public:
     static Mesh loadFromFile(const std::string& path);
     void draw(bool wireframe);
+    const std::vector<Vertex>& getVertices() const;
 
 private:
     Mesh() = default;
