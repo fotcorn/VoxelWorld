@@ -45,4 +45,6 @@ with open('../../include/TextureAtlas.h', 'w') as f:
         f.write(f'    {name} = {i + 1},\n')
     f.write('};\n')
     f.write('\n')
+    f.write(f'const int TEXTURE_ATLAS_SIZE = {len(files)};\n')
+    f.write('\n')
     f.write('#endif // !TEXTURE_ATLAS_H\n')

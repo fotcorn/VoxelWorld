@@ -9,7 +9,7 @@ void WorldRenderer::init() {
     renderChunkGenerator = std::make_shared<RenderChunkGenerator>();
 
     Shader fragmentShader = Shader::loadFromFile("mesh.frag", Shader::Type::Fragment);
-    Shader vertexShader = Shader::loadFromFile("mesh_atlas.vert", Shader::Type::Vertex);
+    Shader vertexShader = Shader::loadFromFile("mesh.vert", Shader::Type::Vertex);
     this->shaderProgram.attachShader(vertexShader);
     this->shaderProgram.attachShader(fragmentShader);
     this->shaderProgram.setAttribLocation("vertex_position", 0);
@@ -29,6 +29,5 @@ void WorldRenderer::render(glm::mat4 vp, glm::vec3, bool wireframe) {
     modelMatrix = glm::translate(modelMatrix, position);
     auto mvp = vp * modelMatrix;
     this->shaderProgram.setUniform("mvp", mvp);
-    this->shaderProgram.setUniform("texture_offset", static_cast<int>(TextureAtlas::GROUND_EARTH) - 1);
     renderChunk.render(wireframe);
 }

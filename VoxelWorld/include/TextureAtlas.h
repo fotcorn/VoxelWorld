@@ -28,4 +28,6 @@ enum TextureAtlas {
     WATER = 24,
 };
 
+const int TEXTURE_ATLAS_SIZE = 24;
+
 #endif // !TEXTURE_ATLAS_H

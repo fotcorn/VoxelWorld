@@ -20,7 +20,7 @@ public:
     RenderChunk fromChunk(const WorldGenerator& worldGenerator, const Chunk& chunk);
 
 private:
-    std::shared_ptr<Mesh> cubeMesh;
+    std::vector<Vertex> cubeMesh;
 };
 
 #endif // !RENDER_CHUNK_GENERATOR_H
