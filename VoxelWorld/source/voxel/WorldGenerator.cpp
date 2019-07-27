@@ -29,6 +29,9 @@ Chunk WorldGenerator::getChunk(int x, int y, int z) {
                     chunk(x, y, z) = TextureAtlas::GROUND_EARTH;
                 }
             }
+            for (int y = height; y < CHUNK_SIZE; y++) {
+                chunk(x, y, z) = BLOCK_AIR;
+            }
         }
     }
 
