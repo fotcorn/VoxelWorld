@@ -7,7 +7,7 @@ RenderChunkGenerator::RenderChunkGenerator() {
 
 static bool needsRender(const Chunk& chunk, const int x, const int y, const int z) {
     if (x < 0 || y < 0 || z < 0) {
-        return false;
+        return true;
     }
     if (x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE) {
         return true;
