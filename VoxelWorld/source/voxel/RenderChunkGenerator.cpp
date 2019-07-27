@@ -16,7 +16,7 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
 }
 
 RenderChunk RenderChunkGenerator::fromChunk(const WorldGenerator& worldGenerator, const Chunk& chunk) {
-    std::vector<Vertex> vertices;
+    std::vector<Vertex> vs;
 
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -25,69 +25,73 @@ RenderChunk RenderChunkGenerator::fromChunk(const WorldGenerator& worldGenerator
                     continue;
                 }
 
-                auto meshVertices = cubeMesh->getVertices();
-                for (auto index : cubeMesh->getIndices()) {
-                    auto vertex = meshVertices[index];
-                    vertices.push_back(Vertex(vertex.position + glm::vec3(x, y, z), vertex.texturePosition));
-                }
+                const auto o = glm::vec3(x, y, z);
 
-                // front
-                if (needsRender(chunk, x, y, z + 1)) {
-                    // add 6 vertices
-                    // add 6 texture coordinates
-                    // renderChunk.vertices.push_back(v(0, x, y, z));
-                    // renderChunk.vertices.push_back(v(1, x, y, z));
-                    // renderChunk.vertices.push_back(v(2, x, y, z));
-
-                    // renderChunk.vertices.push_back(v(2, x, y, z));
-                    // renderChunk.vertices.push_back(v(3, x, y, z));
-                    // renderChunk.vertices.push_back(v(0, x, y, z));
-                }
-
-                // back
-                if (needsRender(chunk, x, y, z - 1)) {
-                    // vertices.append(v(7, 6, 5, x, y, z));
-                    // vertices.append(v(5, 4, 7, x, y, z));
-                }
-                // right
-                if (needsRender(chunk, x + 1, y, z)) {
-                    // vertices.append(v(1, 5, 6, x, y, z));
-                    // vertices.append(v(6, 2, 1, x, y, z));
-                }
-                // left
-                if (needsRender(chunk, x - 1, y, z)) {
-                    // vertices.append(v(4, 0, 3, x, y, z));
-                    // vertices.append(v(3, 7, 4, x, y, z));
-                }
                 // top
                 if (needsRender(chunk, x, y + 1, z)) {
-                    // vertices.append(v(3, 2, 6, x, y, z));
-                    // vertices.append(v(6, 7, 3, x, y, z));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, -1.0f) + o, glm::vec2(0.313589f, 0.600387f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, 0.0f) + o, glm::vec2(0.313589f, 0.312806f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, 0.0f) + o, glm::vec2(0.601170f, 0.312806f)));
+
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, -1.0f) + o, glm::vec2(0.313589f, 0.600387f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, 0.0f) + o, glm::vec2(0.601170f, 0.312806f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, -1.0f) + o, glm::vec2(0.601170f, 0.600387f)));
                 }
                 // bottom
                 if (needsRender(chunk, x, y - 1, z)) {
-                    // vertices.append(v(4, 5, 1, x, y, z));
-                    // vertices.append(v(1, 0, 4, x, y, z));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, -1.0f) + o, glm::vec2(0.927016f, 0.650563f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, 0.0f) + o, glm::vec2(0.927016f, 0.938145f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, 0.0f) + o, glm::vec2(0.639435f, 0.938145f)));
+
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, -1.0f) + o, glm::vec2(0.927016f, 0.650563f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, 0.0f) + o, glm::vec2(0.639435f, 0.938145f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, -1.0f) + o, glm::vec2(0.639435f, 0.650563f)));
                 }
+                // right
+                if (needsRender(chunk, x + 1, y, z)) {
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, -1.0f) + o, glm::vec2(0.602356f, 0.600009f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, 0.0f) + o, glm::vec2(0.602502f, 0.312428f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, 0.0f) + o, glm::vec2(0.890083f, 0.312574f)));
 
-                /*
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, -1.0f) + o, glm::vec2(0.602356f, 0.600009f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, 0.0f) + o, glm::vec2(0.890083f, 0.312574f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, -1.0f) + o, glm::vec2(0.889937f, 0.600155f)));
+                }
+                // left
+                if (needsRender(chunk, x - 1, y, z)) {
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, -1.0f) + o, glm::vec2(0.025300f, 0.601718f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, 0.0f) + o, glm::vec2(0.025154f, 0.314136f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, 0.0f) + o, glm::vec2(0.312735f, 0.313990f)));
 
-                std::vector<unsigned int> indices;
-                struct Vertex {
-                    glm::vec3 position = glm::vec3();
-                    glm::vec2 texturePosition = glm::vec3();
-                };
-                */
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, -1.0f) + o, glm::vec2(0.025300f, 0.601718f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, 0.0f) + o, glm::vec2(0.312735f, 0.313990f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, -1.0f) + o, glm::vec2(0.312881f, 0.601572f)));
+                }
+                // front
+                if (needsRender(chunk, x, y, z + 1)) {
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, 0.0f) + o, glm::vec2(0.313669f, 0.311237f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, 0.0f) + o, glm::vec2(0.314044f, 0.023656f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, 0.0f) + o, glm::vec2(0.601625f, 0.024030f)));
 
-                // glm::mat4 cubeModel = glm::mat4(1.0f);
-                // glm::vec3 cubePosition = glm::vec3(x, y, z);
-                // cubeModel = glm::translate(cubeModel, cubePosition);
-                // blocks.push_back({cubeModel, glm::ivec3(x, y, z), (TextureAtlas)(*world)(x, y, z)});
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, 0.0f) + o, glm::vec2(0.313669f, 0.311237f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, 0.0f) + o, glm::vec2(0.601625f, 0.024030f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, 0.0f) + o, glm::vec2(0.601250f, 0.311611f)));
+                }
+                // back
+                if (needsRender(chunk, x, y, z - 1)) {
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, -1.0f) + o, glm::vec2(0.313199f, 0.889921f)));
+                    vs.push_back(Vertex(glm::vec3(0.0f, 1.0f, -1.0f) + o, glm::vec2(0.313199f, 0.602340f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, -1.0f) + o, glm::vec2(0.600780f, 0.602340f)));
+
+                    vs.push_back(Vertex(glm::vec3(0.0f, 0.0f, -1.0f) + o, glm::vec2(0.313199f, 0.889921f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 1.0f, -1.0f) + o, glm::vec2(0.600780f, 0.602340f)));
+                    vs.push_back(Vertex(glm::vec3(1.0f, 0.0f, -1.0f) + o, glm::vec2(0.600780f, 0.889921f)));
+                }
             }
         }
     }
 
-    auto renderChunk = RenderChunk(vertices);
+    auto renderChunk = RenderChunk(vs);
     renderChunk.setupRenderData();
     return renderChunk;
 }
