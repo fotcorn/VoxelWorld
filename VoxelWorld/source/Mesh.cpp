@@ -23,15 +23,8 @@ Mesh Mesh::loadFromFile(const std::string& path) {
     // load vertex positions
     auto mesh = scene->mMeshes[0];
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-        Vertex vertex;
-        vertex.position.x = mesh->mVertices[i].x;
-        vertex.position.y = mesh->mVertices[i].y;
-        vertex.position.z = mesh->mVertices[i].z;
-
-        vertex.texturePosition.x = mesh->mTextureCoords[0][i].x;
-        vertex.texturePosition.y = mesh->mTextureCoords[0][i].y;
-
-        model.vertices.push_back(vertex);
+        model.vertices.push_back(Vertex(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z),
+                                        glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y)));
     }
 
     // load vertex incides

@@ -28,10 +28,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const WorldGenerator& worldGenerator
                 auto meshVertices = cubeMesh->getVertices();
                 for (auto index : cubeMesh->getIndices()) {
                     auto vertex = meshVertices[index];
-                    Vertex v;
-                    v.position = vertex.position + glm::vec3(x, y, z);
-                    v.texturePosition = vertex.texturePosition;
-                    vertices.push_back(v);
+                    vertices.push_back(Vertex(vertex.position + glm::vec3(x, y, z), vertex.texturePosition));
                 }
 
                 // front
