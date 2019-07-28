@@ -14,6 +14,8 @@
 
 class RenderChunk {
 public:
+    RenderChunk() {
+    }
     RenderChunk(std::vector<Vertex> vertices);
     void render(bool wireframe);
     void setupRenderData();

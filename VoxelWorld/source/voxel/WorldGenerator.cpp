@@ -49,5 +49,6 @@ Chunk WorldGenerator::getChunk(const glm::ivec3& position) {
         }
     }
 
+    chunkCache[position] = chunk;
     return chunk;
 }

@@ -164,5 +164,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
 
     auto renderChunk = RenderChunk(vs);
     renderChunk.setupRenderData();
+
+    chunkCache[position] = renderChunk;
     return renderChunk;
 }
