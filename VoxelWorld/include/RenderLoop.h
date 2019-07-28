@@ -44,7 +44,7 @@ private:
     float deltaTime = 0.0f;
 
     // camera
-    float cameraSpeed = 0.5f;
+    float cameraSpeed = 0.05f;
 
     glm::vec3 cameraPos = glm::vec3(1.0f, 2.5f, 1.0f);
     glm::vec3 cameraFront = glm::vec3(-0.792112f, -0.235989f, -0.56291f);
