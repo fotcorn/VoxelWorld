@@ -17,10 +17,11 @@
 class RenderChunkGenerator {
 public:
     RenderChunkGenerator();
-    RenderChunk fromChunk(const WorldGenerator& worldGenerator, const Chunk& chunk);
+    RenderChunk fromChunk(const glm::ivec3 position, const Chunk& chunk, const WorldGenerator& worldGenerator);
 
 private:
     std::vector<Vertex> cubeMesh;
+    std::unordered_map<glm::ivec3, RenderChunk> chunkCache;
 };
 
 #endif // !RENDER_CHUNK_GENERATOR_H

@@ -7,8 +7,8 @@ const int WATER_HEIGHT = 6;
 WorldGenerator::WorldGenerator() : noise(1) {
 }
 
-Chunk WorldGenerator::getChunk(int x, int y, int z) {
-    auto cacheEntry = chunkCache.find(glm::ivec3(x, y, z));
+Chunk WorldGenerator::getChunk(const glm::ivec3& position) {
+    auto cacheEntry = chunkCache.find(position);
     if (cacheEntry != chunkCache.end()) {
         return cacheEntry->second;
     }

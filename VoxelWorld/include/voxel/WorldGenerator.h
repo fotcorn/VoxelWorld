@@ -21,7 +21,7 @@ class WorldGenerator {
 
 public:
     WorldGenerator();
-    Chunk getChunk(int x, int y, int z);
+    Chunk getChunk(const glm::ivec3& position);
 };
 
 #endif // !WORLD_GENERATOR_H

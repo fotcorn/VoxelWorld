@@ -46,7 +46,7 @@ private:
     // camera
     float cameraSpeed = 0.5f;
 
-    glm::vec3 cameraPos = glm::vec3(65.2916f, 24.403f, 47.0715f);
+    glm::vec3 cameraPos = glm::vec3(1.0f, 2.5f, 1.0f);
     glm::vec3 cameraFront = glm::vec3(-0.792112f, -0.235989f, -0.56291f);
 
     glm::vec3 cameraUp = glm::vec3(0.0, 1.0, 0.0);
