@@ -34,6 +34,7 @@ cmake --build .
 ## Sources
 
 - Block assets: https://opengameart.org/content/free-low-poly-game-asset-3d-blocks
+- Perlin noise library: https://github.com/Reputeless/PerlinNoise
 - LearnOpenGL.com
 
 ## clang-tidy
