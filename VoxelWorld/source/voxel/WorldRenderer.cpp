@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-const int CAMERA_CHUNK_DISTANCE = 4;
+const int CAMERA_CHUNK_DISTANCE = 10;
 
 void WorldRenderer::init() {
     texture = std::make_shared<Texture>(Texture::loadFromFile("texture_atlas.gif"));
