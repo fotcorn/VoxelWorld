@@ -50,6 +50,8 @@ target_compile_definitions(VoxelWorld PRIVATE
 	MESH_PATH="${MeshPath}"
 	# Path for textures
 	TEXTURE_PATH="${TexturePath}"
+	# Enable GLM experimental features
+	GLM_ENABLE_EXPERIMENTAL=1
 )
 
 target_compile_features(VoxelWorld PRIVATE cxx_std_11)
