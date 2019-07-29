@@ -69,8 +69,7 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
     return chunk(x, y, z) == BLOCK_AIR;
 }
 
-RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chunk& chunk,
-                                            const WorldGenerator& worldGenerator) {
+RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chunk& chunk, const WorldGenerator&) {
     auto cacheEntry = chunkCache.find(position);
     if (cacheEntry != chunkCache.end()) {
         return cacheEntry->second;

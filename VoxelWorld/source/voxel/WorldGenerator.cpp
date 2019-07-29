@@ -1,7 +1,6 @@
 #include "voxel/WorldGenerator.h"
 #include "TextureAtlas.h"
 
-const int NOISE_SCALE = 10;
 const int WATER_HEIGHT = 6;
 
 WorldGenerator::WorldGenerator() : noise(1) {
