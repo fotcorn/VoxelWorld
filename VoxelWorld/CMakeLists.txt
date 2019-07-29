@@ -52,6 +52,9 @@ target_compile_definitions(VoxelWorld PRIVATE
 	TEXTURE_PATH="${TexturePath}"
 	# Enable GLM experimental features
 	GLM_ENABLE_EXPERIMENTAL=1
+	# Workaround for broken detection of clang c++11 stdlib
+	# https://github.com/g-truc/glm/issues/620
+	GLM_FORCE_CXX11=1
 )
 
 target_compile_features(VoxelWorld PRIVATE cxx_std_11)
