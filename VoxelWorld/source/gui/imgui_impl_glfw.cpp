@@ -244,7 +244,7 @@ void ImGui_ImplGlfw_NewFrame()
     glfwGetWindowSize(g_Window, &w, &h);
     glfwGetFramebufferSize(g_Window, &display_w, &display_h);
     io.DisplaySize = ImVec2((float)w, (float)h);
-    io.DisplayFramebufferScale = ImVec2(w > 0 ? ((float)display_w / w) : 0, h > 0 ? ((float)display_h / h) : 0);
+    io.DisplayFramebufferScale = ImVec2(w > 0 ? (static_cast<float>(display_w) / static_cast<float>(w)) : 0, h > 0 ? (static_cast<float>(display_h) / static_cast<float>(h)) : 0);
 
     // Setup time step
     double current_time = glfwGetTime();
