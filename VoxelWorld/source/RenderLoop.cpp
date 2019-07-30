@@ -63,12 +63,12 @@ void RenderLoop::initGlfw() {
 
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
-        auto loop = (RenderLoop*)glfwGetWindowUserPointer(window);
-        loop->projectionMatrix =
-            glm::perspective(glm::radians(CAMERA_FOV), (float)width / (float)height, NEAR_PLANE, FAR_PLANE);
+        auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
+        loop->projectionMatrix = glm::perspective(
+            glm::radians(CAMERA_FOV), static_cast<float>(width) / static_cast<float>(height), NEAR_PLANE, FAR_PLANE);
     });
 
-    glfwSetWindowUserPointer(this->window, (void*)this);
+    glfwSetWindowUserPointer(this->window, static_cast<void*>(this));
 }
 
 void RenderLoop::initGlew() {
@@ -95,11 +95,11 @@ void RenderLoop::initGui() {
     ImGui_ImplGlfw_InitForOpenGL(this->window, false);
     glfwSetMouseButtonCallback(this->window, ImGui_ImplGlfw_MouseButtonCallback);
     glfwSetCursorPosCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        auto loop = (RenderLoop*)glfwGetWindowUserPointer(window);
+        auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
         loop->mouseCursorPositionCallback(xPosition, yPosition);
     });
     glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        auto loop = (RenderLoop*)glfwGetWindowUserPointer(window);
+        auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
         loop->mouseScrollCallback(xPosition, yPosition);
     });
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -109,7 +109,8 @@ void RenderLoop::initGui() {
 
 void RenderLoop::initCamera() {
     this->projectionMatrix = glm::perspective(
-        glm::radians(CAMERA_FOV), (float)INITIAL_WINDOW_WIDTH / (float)INITIAL_WINDOW_HEIGHT, NEAR_PLANE, FAR_PLANE);
+        glm::radians(CAMERA_FOV), static_cast<float>(INITIAL_WINDOW_WIDTH) / static_cast<float>(INITIAL_WINDOW_HEIGHT),
+        NEAR_PLANE, FAR_PLANE);
 }
 
 void RenderLoop::mainLoop() {

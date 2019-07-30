@@ -3,7 +3,7 @@
 #include "voxel/WorldGenerator.h"
 
 RenderChunkGenerator::RenderChunkGenerator() {
-    const float tas = float(TEXTURE_ATLAS_SIZE);
+    const float tas = static_cast<float>(TEXTURE_ATLAS_SIZE);
     cubeMesh = {// top
                 Vertex(glm::vec3(0.0f, 1.0f, -1.0f), glm::vec2(0.313589f / tas, 0.600387f)),
                 Vertex(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.313589f / tas, 0.312806f)),
@@ -99,7 +99,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
 
     std::vector<Vertex> vs;
 
-    const float textureAtlasSize = float(TEXTURE_ATLAS_SIZE);
+    const float textureAtlasSize = static_cast<float>(TEXTURE_ATLAS_SIZE);
 
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -112,7 +112,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
                 const auto po = glm::vec3(x, y, z);
 
                 // texture coordinate offset
-                const auto tco = glm::vec2(float(chunk(x, y, z) - 1) / textureAtlasSize, 0.0f);
+                const auto tco = glm::vec2(static_cast<float>(chunk(x, y, z) - 1) / textureAtlasSize, 0.0f);
 
                 // top
                 if (needsRender(chunk, x, y + 1, z, position, worldGenerator)) {
