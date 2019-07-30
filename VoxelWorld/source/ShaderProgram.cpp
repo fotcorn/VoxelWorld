@@ -25,7 +25,7 @@ void ShaderProgram::link() {
     if (params != GL_TRUE) {
         GLint logLength;
         glGetProgramiv(this->handle, GL_INFO_LOG_LENGTH, &logLength);
-        std::vector<char> error(logLength);
+        std::vector<char> error(static_cast<size_t>(logLength));
         glGetProgramInfoLog(this->handle, logLength, nullptr, &error[0]);
         throw std::runtime_error(std::string(error.begin(), error.end()));
     }

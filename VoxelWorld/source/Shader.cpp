@@ -37,7 +37,7 @@ Shader Shader::loadFromFile(const std::string& path, Type shaderType) {
     if (params != GL_TRUE) {
         GLint logLength;
         glGetShaderiv(shader.handle, GL_INFO_LOG_LENGTH, &logLength);
-        std::vector<char> error(logLength);
+        std::vector<char> error(static_cast<size_t>(logLength));
         glGetShaderInfoLog(shader.handle, logLength, nullptr, &error[0]);
         throw std::runtime_error(std::string(error.begin(), error.end()));
     }
