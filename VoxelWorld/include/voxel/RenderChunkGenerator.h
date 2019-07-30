@@ -18,7 +18,7 @@
 class RenderChunkGenerator {
 public:
     RenderChunkGenerator();
-    RenderChunk fromChunk(const glm::ivec3 position, const Chunk& chunk, const WorldGenerator& worldGenerator);
+    RenderChunk fromChunk(const glm::ivec3 position, const Chunk& chunk, WorldGenerator& worldGenerator);
 
 private:
     std::vector<Vertex> cubeMesh;

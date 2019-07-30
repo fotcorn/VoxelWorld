@@ -59,17 +59,39 @@ RenderChunkGenerator::RenderChunkGenerator() {
                 Vertex(glm::vec3(1.0f, 0.0f, -1.0f), glm::vec2(0.600780f / tas, 0.889921f))};
 }
 
-static bool needsRender(const Chunk& chunk, const int x, const int y, const int z) {
-    if (x < 0 || y < 0 || z < 0) {
-        return true;
+static bool needsRender(const Chunk& chunk, const int x, const int y, const int z, const glm::ivec3& position,
+                        WorldGenerator& worldGenerator) {
+
+    if (x < 0) {
+        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(-1, 0, 0));
+        return adjacentChunk(CHUNK_SIZE - 1, y, z) == BLOCK_AIR;
     }
-    if (x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE) {
-        return true;
+    if (y < 0) {
+        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, -1, 0));
+        return adjacentChunk(x, CHUNK_SIZE - 1, z) == BLOCK_AIR;
+    }
+    if (z < 0) {
+        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 0, -1));
+        return adjacentChunk(x, y, CHUNK_SIZE - 1) == BLOCK_AIR;
+    }
+
+    if (x == CHUNK_SIZE) {
+        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(1, 0, 0));
+        return adjacentChunk(0, y, z) == BLOCK_AIR;
+    }
+    if (y == CHUNK_SIZE) {
+        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 1, 0));
+        return adjacentChunk(x, 0, z) == BLOCK_AIR;
+    }
+    if (z == CHUNK_SIZE) {
+        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 0, 1));
+        return adjacentChunk(x, y, 0) == BLOCK_AIR;
     }
     return chunk(x, y, z) == BLOCK_AIR;
 }
 
-RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chunk& chunk, const WorldGenerator&) {
+RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chunk& chunk,
+                                            WorldGenerator& worldGenerator) {
     auto cacheEntry = chunkCache.find(position);
     if (cacheEntry != chunkCache.end()) {
         return cacheEntry->second;
@@ -93,7 +115,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
                 const auto tco = glm::vec2(float(chunk(x, y, z) - 1) / textureAtlasSize, 0.0f);
 
                 // top
-                if (needsRender(chunk, x, y + 1, z)) {
+                if (needsRender(chunk, x, y + 1, z, position, worldGenerator)) {
                     vs.push_back(Vertex(cubeMesh[0].position + po, cubeMesh[0].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[1].position + po, cubeMesh[1].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[2].position + po, cubeMesh[2].texturePosition + tco));
@@ -104,7 +126,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
                 }
 
                 // bottom
-                if (needsRender(chunk, x, y - 1, z)) {
+                if (needsRender(chunk, x, y - 1, z, position, worldGenerator)) {
                     vs.push_back(Vertex(cubeMesh[6].position + po, cubeMesh[6].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[7].position + po, cubeMesh[7].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[8].position + po, cubeMesh[8].texturePosition + tco));
@@ -115,7 +137,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
                 }
 
                 // right
-                if (needsRender(chunk, x + 1, y, z)) {
+                if (needsRender(chunk, x + 1, y, z, position, worldGenerator)) {
                     vs.push_back(Vertex(cubeMesh[12].position + po, cubeMesh[12].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[13].position + po, cubeMesh[13].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[14].position + po, cubeMesh[14].texturePosition + tco));
@@ -126,7 +148,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
                 }
 
                 // left
-                if (needsRender(chunk, x - 1, y, z)) {
+                if (needsRender(chunk, x - 1, y, z, position, worldGenerator)) {
                     vs.push_back(Vertex(cubeMesh[18].position + po, cubeMesh[18].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[19].position + po, cubeMesh[19].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[20].position + po, cubeMesh[20].texturePosition + tco));
@@ -137,7 +159,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
                 }
 
                 // front
-                if (needsRender(chunk, x, y, z + 1)) {
+                if (needsRender(chunk, x, y, z + 1, position, worldGenerator)) {
                     vs.push_back(Vertex(cubeMesh[24].position + po, cubeMesh[24].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[25].position + po, cubeMesh[25].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[26].position + po, cubeMesh[26].texturePosition + tco));
@@ -148,7 +170,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
                 }
 
                 // back
-                if (needsRender(chunk, x, y, z - 1)) {
+                if (needsRender(chunk, x, y, z - 1, position, worldGenerator)) {
                     vs.push_back(Vertex(cubeMesh[30].position + po, cubeMesh[30].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[31].position + po, cubeMesh[31].texturePosition + tco));
                     vs.push_back(Vertex(cubeMesh[32].position + po, cubeMesh[32].texturePosition + tco));
