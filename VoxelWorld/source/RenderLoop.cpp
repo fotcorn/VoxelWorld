@@ -27,9 +27,9 @@ static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*
 const int INITIAL_WINDOW_WIDTH = 1280;
 const int INITIAL_WINDOW_HEIGHT = 800;
 
-const float CAMERA_FOV = 45.0;
-const float NEAR_PLANE = 0.1;
-const float FAR_PLANE = 100.0;
+const float CAMERA_FOV = 45.0f;
+const float NEAR_PLANE = 0.1f;
+const float FAR_PLANE = 100.0f;
 
 void RenderLoop::init() {
     this->initGlfw();
@@ -119,7 +119,7 @@ void RenderLoop::mainLoop() {
     worldRenderer.init();
 
     while (!glfwWindowShouldClose(window)) {
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         // std::cout << 1.0f / deltaTime << std::endl;
@@ -185,18 +185,22 @@ void RenderLoop::handleInput() {
             glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         } else {
             glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            double mouseX, mouseY;
+            double mouseX;
+            double mouseY;
             glfwGetCursorPos(this->window, &mouseX, &mouseY);
-            this->lastX = mouseX;
-            this->lastY = mouseY;
+            this->lastX = static_cast<float>(mouseX);
+            this->lastY = static_cast<float>(mouseY);
         }
     }
 }
 
-void RenderLoop::mouseCursorPositionCallback(double xPosition, double yPosition) {
+void RenderLoop::mouseCursorPositionCallback(double xPositionDouble, double yPositionDouble) {
     if (this->drawGui) {
         return;
     }
+
+    float xPosition = static_cast<float>(xPositionDouble);
+    float yPosition = static_cast<float>(yPositionDouble);
 
     if (firstMouse) {
         lastX = xPosition;
@@ -225,9 +229,9 @@ void RenderLoop::mouseCursorPositionCallback(double xPosition, double yPosition)
     }
 
     glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.x = static_cast<float>(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+    front.y = static_cast<float>(sin(glm::radians(pitch)));
+    front.z = static_cast<float>(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
     cameraFront = glm::normalize(front);
 }
 
@@ -235,7 +239,7 @@ void RenderLoop::mouseScrollCallback(double xOffset, double yOffset) {
     if (this->drawGui) {
         ImGui_ImplGlfw_ScrollCallback(this->window, xOffset, yOffset);
     } else {
-        cameraDistance -= yOffset;
+        cameraDistance -= static_cast<float>(yOffset);
         if (cameraDistance < 2) {
             cameraDistance = 1;
         }

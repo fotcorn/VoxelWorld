@@ -26,5 +26,5 @@ void RenderChunk::setupRenderData() {
 void RenderChunk::render(bool wireframe) {
     glBindVertexArray(this->vao);
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
 }

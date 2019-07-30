@@ -19,7 +19,7 @@ Chunk WorldGenerator::getChunk(const glm::ivec3& position) {
         for (int z = 0; z < CHUNK_SIZE; z++) {
             const double value = noise.noise0_1(double(x) / double(CHUNK_SIZE) + double(position.x),
                                                 double(z) / double(CHUNK_SIZE) + double(position.z));
-            const int height = value * CHUNK_SIZE;
+            const int height = static_cast<int>(value * CHUNK_SIZE);
             for (int y = 0; y < height; y++) {
                 if (y > CHUNK_SIZE * 0.7) {
                     chunk(x, y, z) = TextureAtlas::SNOW;

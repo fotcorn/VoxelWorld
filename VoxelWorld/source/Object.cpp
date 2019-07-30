@@ -19,7 +19,7 @@ Object::Object(std::vector<glm::vec3> vertices, std::vector<glm::uvec3> indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(glm::uvec3) * indices.size(), &indices[0], GL_STATIC_DRAW);
 
-    this->incidesCount = indices.size() * 3;
+    this->incidesCount = static_cast<int>(indices.size() * 3);
 }
 
 Object::Object(std::vector<glm::vec3> vertices, std::vector<glm::uvec3> indices, std::vector<glm::vec3> colors)

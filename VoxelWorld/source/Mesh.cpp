@@ -63,7 +63,8 @@ Mesh Mesh::loadFromFile(const std::string& path) {
 
 void Mesh::draw(bool wireframe) {
     glBindVertexArray(this->vao);
-    glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES, static_cast<GLsizei>(this->indices.size()), GL_UNSIGNED_INT,
+                   nullptr);
 }
 
 const std::vector<Vertex>& Mesh::getVertices() const {

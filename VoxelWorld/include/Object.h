@@ -15,7 +15,7 @@ public:
 
 private:
     GLuint vertexAttributeObject = 0;
-    unsigned int incidesCount = 0;
+    int incidesCount = 0;
 };
 
 #endif
