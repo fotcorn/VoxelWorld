@@ -10,7 +10,6 @@
 #include <memory>
 
 #include "Mesh.h"
-#include "Object.h"
 #include "ShaderProgram.h"
 
 class RenderLoop {

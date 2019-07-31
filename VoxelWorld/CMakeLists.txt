@@ -22,7 +22,6 @@ set(TexturePath ${CMAKE_CURRENT_SOURCE_DIR}/resources/textures)
 
 add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/Object.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/RenderLoop.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/Shader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ShaderProgram.cpp
