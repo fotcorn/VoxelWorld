@@ -158,19 +158,19 @@ void RenderLoop::handleInput() {
     static bool ctrlDown = false;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        cameraPos += this->cameraSpeed * cameraFront;
+        cameraPos += this->deltaTime * this->cameraSpeed * cameraFront;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        cameraPos -= this->cameraSpeed * cameraFront;
+        cameraPos -= this->deltaTime * this->cameraSpeed * cameraFront;
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * this->cameraSpeed;
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * (this->cameraSpeed * this->deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * this->cameraSpeed;
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * (this->cameraSpeed * this->deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        cameraPos += glm::vec3(0.0, 1.0f, 0.0) * this->cameraSpeed;
+        cameraPos += glm::vec3(0.0, 1.0f, 0.0) * (this->cameraSpeed * this->deltaTime);
         // fmt::print("{} {}\n", yaw, pitch);
         // fmt::print("{}f, {}f, {}f\n", cameraPos.x, cameraPos.y, cameraPos.z);
         // fmt::print("{}f, {}f, {}f\n", cameraFront.x, cameraFront.y, cameraFront.z);
