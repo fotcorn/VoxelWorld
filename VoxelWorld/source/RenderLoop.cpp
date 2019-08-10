@@ -171,10 +171,10 @@ void RenderLoop::handleInput() {
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         cameraPos += glm::vec3(0.0, 1.0f, 0.0) * (this->cameraSpeed * this->deltaTime);
-        // fmt::print("{} {}\n", yaw, pitch);
-        // fmt::print("{}f, {}f, {}f\n", cameraPos.x, cameraPos.y, cameraPos.z);
-        // fmt::print("{}f, {}f, {}f\n", cameraFront.x, cameraFront.y, cameraFront.z);
-        // fmt::print("-----\n");
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
+        glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
+        cameraPos -= glm::vec3(0.0, 1.0f, 0.0) * (this->cameraSpeed * this->deltaTime);
     }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
