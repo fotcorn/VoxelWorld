@@ -1,6 +1,8 @@
 #include "voxel/WorldGenerator.h"
 #include "TextureAtlas.h"
 
+const double NOISE_SCALE = 0.1;
+
 WorldGenerator::WorldGenerator() : noise(1) {
 }
 
@@ -15,8 +17,10 @@ Chunk WorldGenerator::getChunk(const glm::ivec3& position) {
     // basic world generation
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int z = 0; z < CHUNK_SIZE; z++) {
-            const double value = noise.noise0_1(double(x) / double(CHUNK_SIZE) + double(position.x),
-                                                double(z) / double(CHUNK_SIZE) + double(position.z));
+            const double scaledX = (double(x) / double(CHUNK_SIZE) + double(position.x)) * NOISE_SCALE;
+            const double scaledY = (double(z) / double(CHUNK_SIZE) + double(position.z)) * NOISE_SCALE;
+
+            const double value = noise.octaveNoise0_1(scaledX, scaledY, 8);
 
             const int height = static_cast<int>(value * CHUNK_HEIGHT);
             for (int y = 0; y < height; y++) {
