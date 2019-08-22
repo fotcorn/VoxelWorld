@@ -177,26 +177,35 @@ void RenderLoop::handleInput() {
         cameraPos -= glm::vec3(0.0, 1.0f, 0.0) * (this->cameraSpeed * this->deltaTime);
     }
 
+    // toggle gui with Ctrl key, you also have to press Alt to have a cursor to interact with the GUI
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
         ctrlDown = true;
     } else if (ctrlDown) {
         ctrlDown = false;
         this->drawGui = !drawGui;
-        if (this->drawGui) {
+    }
+
+    // holding down the left Alt key shows a cursor and allows interaction with the GUI
+    if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
+        // the Alt key has been pressed the first time in this frame (was not pressed before)
+        if (!this->showMouseCursor && this->drawGui) {
             glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        } else {
-            glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            double mouseX;
-            double mouseY;
-            glfwGetCursorPos(this->window, &mouseX, &mouseY);
-            this->lastX = static_cast<float>(mouseX);
-            this->lastY = static_cast<float>(mouseY);
+            this->showMouseCursor = true;
         }
+    // alt key was pressed before, but is no longer pressed
+    } else if (this->showMouseCursor) {
+        this->showMouseCursor = false;
+        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        double mouseX;
+        double mouseY;
+        glfwGetCursorPos(this->window, &mouseX, &mouseY);
+        this->lastX = static_cast<float>(mouseX);
+        this->lastY = static_cast<float>(mouseY);
     }
 }
 
 void RenderLoop::mouseCursorPositionCallback(double xPositionDouble, double yPositionDouble) {
-    if (this->drawGui) {
+    if (this->showMouseCursor) {
         return;
     }
 

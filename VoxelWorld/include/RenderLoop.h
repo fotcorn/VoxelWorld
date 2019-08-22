@@ -36,6 +36,7 @@ private:
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
 
     bool drawGui = false;
+    bool showMouseCursor = false;
 
     // timing
     float lastFrame = 0.0f;
