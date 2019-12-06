@@ -2,7 +2,7 @@
 #include "TextureAtlas.h"
 #include "voxel/WorldGenerator.h"
 
-RenderChunkGenerator::RenderChunkGenerator() {
+RenderChunkGenerator::RenderChunkGenerator(std::size_t cacheSize) : chunkCache(cacheSize) {
     const float tas = static_cast<float>(TEXTURE_ATLAS_SIZE);
     cubeMesh = {// top
                 Vertex(glm::vec3(0.0f, 1.0f, -1.0f), glm::vec2(0.313589f / tas, 0.600387f)),
@@ -90,11 +90,11 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
     return chunk(x, y, z) == BLOCK_AIR;
 }
 
-RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chunk& chunk,
-                                            WorldGenerator& worldGenerator) {
-    auto cacheEntry = chunkCache.find(position);
-    if (cacheEntry != chunkCache.end()) {
-        return cacheEntry->second;
+const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chunk& chunk,
+                                                                   WorldGenerator& worldGenerator) {
+    auto cacheEntry = chunkCache.get(position);
+    if (cacheEntry) {
+        return cacheEntry;
     }
 
     std::vector<Vertex> vs;
@@ -183,9 +183,9 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
         }
     }
 
-    auto renderChunk = RenderChunk(vs);
-    renderChunk.setupRenderData();
+    auto renderChunk = std::make_shared<RenderChunk>(vs);
+    renderChunk->setupRenderData();
+    chunkCache.set(position, renderChunk);
 
-    chunkCache[position] = renderChunk;
     return renderChunk;
 }

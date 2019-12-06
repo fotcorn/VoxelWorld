@@ -10,6 +10,7 @@
 #include <memory>
 #include <vector>
 
+#include "LimitedUnorderedMap.h"
 #include "Mesh.h"
 #include "Vertex.h"
 #include "voxel/RenderChunk.h"
@@ -17,12 +18,13 @@
 
 class RenderChunkGenerator {
 public:
-    RenderChunkGenerator();
-    RenderChunk fromChunk(const glm::ivec3 position, const Chunk& chunk, WorldGenerator& worldGenerator);
+    RenderChunkGenerator(std::size_t cacheSize);
+    const std::shared_ptr<RenderChunk> fromChunk(const glm::ivec3 position, const Chunk& chunk,
+                                                 WorldGenerator& worldGenerator);
 
 private:
     std::vector<Vertex> cubeMesh;
-    std::unordered_map<glm::ivec3, RenderChunk> chunkCache;
+    LimitedUnorderedMap<glm::ivec3, RenderChunk> chunkCache;
 };
 
 #endif // !RENDER_CHUNK_GENERATOR_H
