@@ -1,10 +1,6 @@
 #include "voxel/RenderChunk.h"
 
-RenderChunk::RenderChunk(std::vector<Vertex> vertices) {
-    this->vertices = vertices;
-}
-
-void RenderChunk::setupRenderData() {
+RenderChunk::RenderChunk(const std::vector<Vertex>& vertices) : verticesCount(vertices.size()) {
     glGenVertexArrays(1, &vao); // one attribute
     glBindVertexArray(vao);
 
@@ -26,5 +22,5 @@ void RenderChunk::setupRenderData() {
 void RenderChunk::render(bool wireframe) {
     glBindVertexArray(this->vao);
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(verticesCount));
 }

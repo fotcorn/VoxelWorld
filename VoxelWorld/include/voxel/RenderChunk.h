@@ -4,10 +4,6 @@
 
 #include <GL/glew.h>
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-
-#include <memory>
 #include <vector>
 
 #include "Vertex.h"
@@ -16,15 +12,13 @@ class RenderChunk {
 public:
     RenderChunk() {
     }
-    RenderChunk(std::vector<Vertex> vertices);
-    void render(bool wireframe);
-    void setupRenderData();
+    RenderChunk(const std::vector<Vertex>& vertices);
+    void render(const bool wireframe);
 
 private:
-    std::vector<Vertex> vertices;
-
     GLuint vao;
     GLuint vbo;
+    uint32_t verticesCount;
 };
 
 #endif // !RENDER_CHUNK_H

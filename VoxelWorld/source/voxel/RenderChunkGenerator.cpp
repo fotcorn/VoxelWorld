@@ -187,7 +187,6 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
     }
 
     auto renderChunk = std::make_shared<RenderChunk>(vs);
-    renderChunk->setupRenderData();
     chunkCache.set(position, renderChunk);
 
     return renderChunk;
