@@ -1,10 +1,14 @@
-cmake_minimum_required(VERSION 3.1.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
+
 project(VoxelRendering
 	LANGUAGES CXX
 	VERSION 0.1.0
 )
 
-set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
-set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+set(CONAN_SYSTEM_INCLUDES ON)
+
+# use headers and link libraries downloaded by conan
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
 
 add_subdirectory(VoxelWorld)
