@@ -64,7 +64,7 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
 
     if (x < 0) {
         const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(-1, 0, 0));
-        return adjacentChunk(CHUNK_SIZE - 1, y, z) == BLOCK_AIR;
+        return (*adjacentChunk)(CHUNK_SIZE - 1, y, z) == BLOCK_AIR;
     }
     if (y < 0) {
         // never render a block below lowest point
@@ -72,12 +72,12 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
     }
     if (z < 0) {
         const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 0, -1));
-        return adjacentChunk(x, y, CHUNK_SIZE - 1) == BLOCK_AIR;
+        return (*adjacentChunk)(x, y, CHUNK_SIZE - 1) == BLOCK_AIR;
     }
 
     if (x == CHUNK_SIZE) {
         const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(1, 0, 0));
-        return adjacentChunk(0, y, z) == BLOCK_AIR;
+        return (*adjacentChunk)(0, y, z) == BLOCK_AIR;
     }
     if (y == CHUNK_HEIGHT) {
         // there will never be a block heigher than this, always render
@@ -85,7 +85,7 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
     }
     if (z == CHUNK_SIZE) {
         const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 0, 1));
-        return adjacentChunk(x, y, 0) == BLOCK_AIR;
+        return (*adjacentChunk)(x, y, 0) == BLOCK_AIR;
     }
     return chunk(x, y, z) == BLOCK_AIR;
 }

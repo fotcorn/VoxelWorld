@@ -2,6 +2,7 @@
 #define WORLD_GENERATOR_H
 
 #include <unordered_map>
+#include <memory>
 
 #include <glm/gtx/hash.hpp>
 #include <glm/vec3.hpp>
@@ -19,12 +20,12 @@ const int BLOCK_AIR = 0;
 using Chunk = Tensor3<char, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>;
 
 class WorldGenerator {
-    std::unordered_map<glm::ivec3, Chunk> chunkCache;
+    std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> chunkCache;
     siv::PerlinNoise noise;
 
 public:
     WorldGenerator();
-    Chunk getChunk(const glm::ivec3& position);
+    std::shared_ptr<Chunk> getChunk(const glm::ivec3& position);
 };
 
 #endif // !WORLD_GENERATOR_H

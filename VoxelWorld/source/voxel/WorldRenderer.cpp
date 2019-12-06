@@ -43,7 +43,7 @@ void WorldRenderer::render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFr
             }
 
             const auto chunk = worldGenerator.getChunk(position);
-            const auto renderChunk = renderChunkGenerator->fromChunk(position, chunk, worldGenerator);
+            const auto renderChunk = renderChunkGenerator->fromChunk(position, (*chunk), worldGenerator);
 
             glm::mat4 modelMatrix = glm::mat4(1.0f);
             modelMatrix = glm::translate(modelMatrix, glm::vec3(floatPosition));
