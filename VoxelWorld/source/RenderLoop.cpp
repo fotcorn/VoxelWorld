@@ -143,6 +143,14 @@ void RenderLoop::mainLoop() {
             ImGui::Checkbox("Wireframe", &wireframe);
             ImGui::SliderFloat("Camera Speed", &this->cameraSpeed, 0.0f, 10.0f);
 
+            ImGui::Text("%s",
+                        fmt::format("Position: X: {:.2f}, Y: {:.2f}, Z: {:.2f}", cameraPos.x, cameraPos.y, cameraPos.z)
+                            .c_str());
+            ImGui::Text("%s", fmt::format("Front:    X: {:.2f}, Y: {:.2f}, Z: {:.2f}", cameraFront.x, cameraFront.y,
+                                          cameraFront.z)
+                                  .c_str());
+            ImGui::Text("%s", fmt::format("Pitch: {:.2f}, Yaw: {:.2f}", pitch, yaw).c_str());
+
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
@@ -192,7 +200,7 @@ void RenderLoop::handleInput() {
             glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             this->showMouseCursor = true;
         }
-    // alt key was pressed before, but is no longer pressed
+        // alt key was pressed before, but is no longer pressed
     } else if (this->showMouseCursor) {
         this->showMouseCursor = false;
         glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
