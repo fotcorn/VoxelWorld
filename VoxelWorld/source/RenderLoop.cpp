@@ -133,7 +133,7 @@ void RenderLoop::mainLoop() {
 
         // draw cube
         glm::mat4 vp = this->projectionMatrix * view;
-        worldRenderer.render(vp, this->cameraPos, wireframe);
+        worldRenderer.render(vp, this->cameraPos, this->cameraFront, wireframe);
 
         if (drawGui) {
             // draw gui
