@@ -114,70 +114,73 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
                 // texture coordinate offset
                 const auto tco = glm::vec2(static_cast<float>(chunk(x, y, z) - 1) / textureAtlasSize, 0.0f);
 
+                // chunk size
+                const float cs = static_cast<float>(CHUNK_SIZE);
+
                 // top
                 if (needsRender(chunk, x, y + 1, z, position, worldGenerator)) {
-                    vs.push_back(Vertex(cubeMesh[0].position + po, cubeMesh[0].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[1].position + po, cubeMesh[1].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[2].position + po, cubeMesh[2].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[0].position + po) / cs, cubeMesh[0].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[1].position + po) / cs, cubeMesh[1].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[2].position + po) / cs, cubeMesh[2].texturePosition + tco));
 
-                    vs.push_back(Vertex(cubeMesh[3].position + po, cubeMesh[3].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[4].position + po, cubeMesh[4].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[5].position + po, cubeMesh[5].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[3].position + po) / cs, cubeMesh[3].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[4].position + po) / cs, cubeMesh[4].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[5].position + po) / cs, cubeMesh[5].texturePosition + tco));
                 }
 
                 // bottom
                 if (needsRender(chunk, x, y - 1, z, position, worldGenerator)) {
-                    vs.push_back(Vertex(cubeMesh[6].position + po, cubeMesh[6].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[7].position + po, cubeMesh[7].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[8].position + po, cubeMesh[8].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[6].position + po) / cs, cubeMesh[6].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[7].position + po) / cs, cubeMesh[7].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[8].position + po) / cs, cubeMesh[8].texturePosition + tco));
 
-                    vs.push_back(Vertex(cubeMesh[9].position + po, cubeMesh[9].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[10].position + po, cubeMesh[10].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[11].position + po, cubeMesh[11].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[9].position + po) / cs, cubeMesh[9].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[10].position + po) / cs, cubeMesh[10].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[11].position + po) / cs, cubeMesh[11].texturePosition + tco));
                 }
 
                 // right
                 if (needsRender(chunk, x + 1, y, z, position, worldGenerator)) {
-                    vs.push_back(Vertex(cubeMesh[12].position + po, cubeMesh[12].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[13].position + po, cubeMesh[13].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[14].position + po, cubeMesh[14].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[12].position + po) / cs, cubeMesh[12].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[13].position + po) / cs, cubeMesh[13].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[14].position + po) / cs, cubeMesh[14].texturePosition + tco));
 
-                    vs.push_back(Vertex(cubeMesh[15].position + po, cubeMesh[15].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[16].position + po, cubeMesh[16].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[17].position + po, cubeMesh[17].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[15].position + po) / cs, cubeMesh[15].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[16].position + po) / cs, cubeMesh[16].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[17].position + po) / cs, cubeMesh[17].texturePosition + tco));
                 }
 
                 // left
                 if (needsRender(chunk, x - 1, y, z, position, worldGenerator)) {
-                    vs.push_back(Vertex(cubeMesh[18].position + po, cubeMesh[18].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[19].position + po, cubeMesh[19].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[20].position + po, cubeMesh[20].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[18].position + po) / cs, cubeMesh[18].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[19].position + po) / cs, cubeMesh[19].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[20].position + po) / cs, cubeMesh[20].texturePosition + tco));
 
-                    vs.push_back(Vertex(cubeMesh[21].position + po, cubeMesh[21].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[22].position + po, cubeMesh[22].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[23].position + po, cubeMesh[23].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[21].position + po) / cs, cubeMesh[21].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[22].position + po) / cs, cubeMesh[22].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[23].position + po) / cs, cubeMesh[23].texturePosition + tco));
                 }
 
                 // front
                 if (needsRender(chunk, x, y, z + 1, position, worldGenerator)) {
-                    vs.push_back(Vertex(cubeMesh[24].position + po, cubeMesh[24].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[25].position + po, cubeMesh[25].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[26].position + po, cubeMesh[26].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[24].position + po) / cs, cubeMesh[24].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[25].position + po) / cs, cubeMesh[25].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[26].position + po) / cs, cubeMesh[26].texturePosition + tco));
 
-                    vs.push_back(Vertex(cubeMesh[27].position + po, cubeMesh[27].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[28].position + po, cubeMesh[28].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[29].position + po, cubeMesh[29].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[27].position + po) / cs, cubeMesh[27].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[28].position + po) / cs, cubeMesh[28].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[29].position + po) / cs, cubeMesh[29].texturePosition + tco));
                 }
 
                 // back
                 if (needsRender(chunk, x, y, z - 1, position, worldGenerator)) {
-                    vs.push_back(Vertex(cubeMesh[30].position + po, cubeMesh[30].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[31].position + po, cubeMesh[31].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[32].position + po, cubeMesh[32].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[30].position + po) / cs, cubeMesh[30].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[31].position + po) / cs, cubeMesh[31].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[32].position + po) / cs, cubeMesh[32].texturePosition + tco));
 
-                    vs.push_back(Vertex(cubeMesh[33].position + po, cubeMesh[33].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[34].position + po, cubeMesh[34].texturePosition + tco));
-                    vs.push_back(Vertex(cubeMesh[35].position + po, cubeMesh[35].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[33].position + po) / cs, cubeMesh[33].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[34].position + po) / cs, cubeMesh[34].texturePosition + tco));
+                    vs.push_back(Vertex((cubeMesh[35].position + po) / cs, cubeMesh[35].texturePosition + tco));
                 }
             }
         }
