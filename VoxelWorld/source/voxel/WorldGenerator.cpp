@@ -1,8 +1,6 @@
 #include "voxel/WorldGenerator.h"
 #include "TextureAtlas.h"
 
-const int WATER_HEIGHT = 6;
-
 WorldGenerator::WorldGenerator() : noise(1) {
 }
 
@@ -19,17 +17,18 @@ Chunk WorldGenerator::getChunk(const glm::ivec3& position) {
         for (int z = 0; z < CHUNK_SIZE; z++) {
             const double value = noise.noise0_1(double(x) / double(CHUNK_SIZE) + double(position.x),
                                                 double(z) / double(CHUNK_SIZE) + double(position.z));
-            const int height = static_cast<int>(value * CHUNK_SIZE);
+
+            const int height = static_cast<int>(value * CHUNK_HEIGHT);
             for (int y = 0; y < height; y++) {
-                if (y > CHUNK_SIZE * 0.7) {
+                if (y > CHUNK_HEIGHT * 0.7) {
                     chunk(x, y, z) = TextureAtlas::SNOW;
-                } else if (y > CHUNK_SIZE * 0.5) {
+                } else if (y > CHUNK_HEIGHT * 0.5) {
                     chunk(x, y, z) = TextureAtlas::STONE_04;
                 } else {
                     chunk(x, y, z) = TextureAtlas::GROUND_EARTH;
                 }
             }
-            for (int y = height; y < CHUNK_SIZE; y++) {
+            for (int y = height; y < CHUNK_HEIGHT; y++) {
                 chunk(x, y, z) = BLOCK_AIR;
             }
         }

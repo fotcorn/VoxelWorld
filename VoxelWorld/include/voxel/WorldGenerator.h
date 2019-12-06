@@ -10,9 +10,13 @@
 #include "Tensor3.h"
 
 const int CHUNK_SIZE = 16;
+const int CHUNK_HEIGHT = 64;
+
+const int WATER_HEIGHT = CHUNK_HEIGHT / 5;
+
 const int BLOCK_AIR = 0;
 
-using Chunk = Tensor3<char, CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE>;
+using Chunk = Tensor3<char, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>;
 
 class WorldGenerator {
     std::unordered_map<glm::ivec3, Chunk> chunkCache;

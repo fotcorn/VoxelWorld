@@ -67,8 +67,8 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
         return adjacentChunk(CHUNK_SIZE - 1, y, z) == BLOCK_AIR;
     }
     if (y < 0) {
-        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, -1, 0));
-        return adjacentChunk(x, CHUNK_SIZE - 1, z) == BLOCK_AIR;
+        // never render a block below lowest point
+        return false;
     }
     if (z < 0) {
         const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 0, -1));
@@ -79,9 +79,9 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
         const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(1, 0, 0));
         return adjacentChunk(0, y, z) == BLOCK_AIR;
     }
-    if (y == CHUNK_SIZE) {
-        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 1, 0));
-        return adjacentChunk(x, 0, z) == BLOCK_AIR;
+    if (y == CHUNK_HEIGHT) {
+        // there will never be a block heigher than this, always render
+        return true;
     }
     if (z == CHUNK_SIZE) {
         const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 0, 1));
@@ -102,7 +102,7 @@ RenderChunk RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chu
     const float textureAtlasSize = static_cast<float>(TEXTURE_ATLAS_SIZE);
 
     for (int x = 0; x < CHUNK_SIZE; x++) {
-        for (int y = 0; y < CHUNK_SIZE; y++) {
+        for (int y = 0; y < CHUNK_HEIGHT; y++) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 if (chunk(x, y, z) == BLOCK_AIR) {
                     continue;
