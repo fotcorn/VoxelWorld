@@ -37,6 +37,6 @@ cmake --build .
 - Perlin noise library: https://github.com/Reputeless/PerlinNoise
 - LearnOpenGL.com
 
-## clang-tidy
+## Screenshot
 
-`run-clang-tidy-8 -p ./build/`
+![Screentshot](https://raw.githubusercontent.com/fotcorn/VoxelWorld/master/screenshot.png)
