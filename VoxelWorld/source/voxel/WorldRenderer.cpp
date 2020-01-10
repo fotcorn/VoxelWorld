@@ -23,15 +23,41 @@ void WorldRenderer::init() {
     this->shaderProgram.link();
 }
 
-std::shared_ptr<glm::ivec3> WorldRenderer::calculateSelectedChunk(glm::vec3 cameraPos, glm::vec3 cameraFront) {
+bool intersect(const Ray& ray, const glm::vec3 bounds[2]) {
+    float tmin = (bounds[ray.sign[0]].x - ray.origin.x) * ray.inverseDirection.x;
+    float tmax = (bounds[1 - ray.sign[0]].x - ray.origin.x) * ray.inverseDirection.x;
+    float tymin = (bounds[ray.sign[1]].y - ray.origin.y) * ray.inverseDirection.y;
+    float tymax = (bounds[1 - ray.sign[1]].y - ray.origin.y) * ray.inverseDirection.y;
+
+    if ((tmin > tymax) || (tymin > tmax)) {
+        return false;
+    }
+    if (tymin > tmin) {
+        tmin = tymin;
+    }
+    if (tymax < tmax) {
+        tmax = tymax;
+    }
+
+    float tzmin = (bounds[ray.sign[2]].z - ray.origin.z) * ray.inverseDirection.z;
+    float tzmax = (bounds[1 - ray.sign[2]].z - ray.origin.z) * ray.inverseDirection.z;
+
+    if ((tmin > tzmax) || (tzmin > tmax)) {
+        return false;
+    }
+    return true;
+}
+
+void WorldRenderer::calculateSelectedChunk(glm::vec3 cameraPos, glm::vec3 cameraFront) {
     const int currentX = int(cameraPos.x);
     const int currentZ = int(cameraPos.z);
     auto ray = Ray(cameraPos, cameraFront);
 
-    std::vector<glm::ivec3> intersectionChunks;
-
-    float tmin, tmax, tymin, tymax, tzmin, tzmax;
     glm::vec3 bounds[2];
+
+    selectedChunkPosition.reset();
+    selectedBlockPosition.reset();
+    float minimalDistance = std::numeric_limits<float>::max();
 
     for (int x = currentX - CAMERA_CHUNK_DISTANCE; x < currentX + CAMERA_CHUNK_DISTANCE; x++) {
         for (int z = currentZ - CAMERA_CHUNK_DISTANCE; z < currentZ + CAMERA_CHUNK_DISTANCE; z++) {
@@ -41,43 +67,34 @@ std::shared_ptr<glm::ivec3> WorldRenderer::calculateSelectedChunk(glm::vec3 came
             bounds[0] = floatPosition;
             bounds[1] = floatPosition + glm::vec3(1.0f, 1.0f, 1.0f);
 
-            tmin = (bounds[ray.sign[0]].x - ray.origin.x) * ray.inverseDirection.x;
-            tmax = (bounds[1 - ray.sign[0]].x - ray.origin.x) * ray.inverseDirection.x;
-            tymin = (bounds[ray.sign[1]].y - ray.origin.y) * ray.inverseDirection.y;
-            tymax = (bounds[1 - ray.sign[1]].y - ray.origin.y) * ray.inverseDirection.y;
+            if (intersect(ray, bounds)) {
+                auto chunk = worldGenerator.getChunk(position);
+                for (int x = 0; x < CHUNK_SIZE; x++) {
+                    for (int y = 0; y < CHUNK_HEIGHT; y++) {
+                        for (int z = 0; z < CHUNK_SIZE; z++) {
+                            if ((*chunk)(x, y, z) == BLOCK_AIR) {
+                                continue;
+                            }
 
-            if ((tmin > tymax) || (tymin > tmax)) {
-                continue;
-            }
-            if (tymin > tmin) {
-                tmin = tymin;
-            }
-            if (tymax < tmax) {
-                tmax = tymax;
-            }
-
-            tzmin = (bounds[ray.sign[2]].z - ray.origin.z) * ray.inverseDirection.z;
-            tzmax = (bounds[1 - ray.sign[2]].z - ray.origin.z) * ray.inverseDirection.z;
-
-            if ((tmin > tzmax) || (tzmin > tmax)) {
-                continue;
-            }
-            intersectionChunks.push_back(position);
-        }
-    }
-
-    std::shared_ptr<glm::ivec3> nearestChunk;
-    if (intersectionChunks.size() != 0) {
-        float minDistance = std::numeric_limits<float>::max();
-        for (auto& chunk : intersectionChunks) {
-            const float distance = glm::distance(glm::vec3(chunk), cameraPos);
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestChunk = std::make_shared<glm::ivec3>(chunk);
+                            bounds[0] = floatPosition + glm::vec3(float(x) / CHUNK_SIZE, float(y) / CHUNK_HEIGHT,
+                                                                  float(z) / CHUNK_SIZE);
+                            bounds[1] =
+                                floatPosition + glm::vec3(float(x + 1.0f) / CHUNK_SIZE, float(y + 1.0f) / CHUNK_HEIGHT,
+                                                          float(z + 1.0f) / CHUNK_SIZE);
+                            if (intersect(ray, bounds)) {
+                                const float distance = glm::distance(bounds[0], cameraPos);
+                                if (distance < minimalDistance) {
+                                    selectedChunkPosition = std::make_shared<glm::ivec3>(position);
+                                    selectedBlockPosition = std::make_shared<glm::ivec3>(x, y, z);
+                                    minimalDistance = distance;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
-    return nearestChunk;
 }
 
 void WorldRenderer::render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFront, bool wireframe) {
@@ -86,8 +103,6 @@ void WorldRenderer::render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFr
 
     this->shaderProgram.use();
     this->texture->bind();
-
-    const auto selectedChunk = calculateSelectedChunk(cameraPos, cameraFront);
 
     for (int x = currentX - CAMERA_CHUNK_DISTANCE; x < currentX + CAMERA_CHUNK_DISTANCE; x++) {
         for (int z = currentZ - CAMERA_CHUNK_DISTANCE; z < currentZ + CAMERA_CHUNK_DISTANCE; z++) {
@@ -103,12 +118,17 @@ void WorldRenderer::render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFr
                 continue;
             }
 
-            if (selectedChunk && *selectedChunk.get() == position) {
-                continue;
-            }
-
             const auto chunk = worldGenerator.getChunk(position);
-            const auto renderChunk = renderChunkGenerator->fromChunk(position, (*chunk), worldGenerator);
+
+            std::shared_ptr<RenderChunk> renderChunk;
+            if (selectedChunkPosition && *selectedChunkPosition.get() == position) {
+                Chunk modifiedChunk(*chunk);
+                modifiedChunk(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) =
+                    TextureAtlas::WALL_BRICK_05;
+                renderChunk = renderChunkGenerator->fromChunk(position, modifiedChunk, worldGenerator, false);
+            } else {
+                renderChunk = renderChunkGenerator->fromChunk(position, (*chunk), worldGenerator, true);
+            }
 
             glm::mat4 modelMatrix = glm::mat4(1.0f);
             modelMatrix = glm::translate(modelMatrix, glm::vec3(floatPosition));

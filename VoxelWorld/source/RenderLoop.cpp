@@ -134,6 +134,8 @@ void RenderLoop::mainLoop() {
 
         // draw cube
         glm::mat4 vp = this->projectionMatrix * view;
+
+        worldRenderer.calculateSelectedChunk(this->cameraPos, this->cameraFront);
         worldRenderer.render(vp, this->cameraPos, this->cameraFront, wireframe);
 
         if (drawGui) {
