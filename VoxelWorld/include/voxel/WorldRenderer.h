@@ -14,6 +14,8 @@ public:
     void render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFront, bool wireframe);
 
 private:
+    std::shared_ptr<glm::ivec3> calculateSelectedChunk(glm::vec3 cameraPos, glm::vec3 cameraFront);
+
     std::shared_ptr<Texture> texture;
     ShaderProgram shaderProgram;
     WorldGenerator worldGenerator;
