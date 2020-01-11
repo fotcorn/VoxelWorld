@@ -13,6 +13,7 @@ public:
     RenderChunk() {
     }
     RenderChunk(const std::vector<Vertex>& vertices);
+    virtual ~RenderChunk();
     void render(const bool wireframe);
 
 private:

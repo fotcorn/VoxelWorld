@@ -1,23 +1,18 @@
 #ifndef WORLD_GENERATOR_H
 #define WORLD_GENERATOR_H
 
-#include <unordered_map>
 #include <memory>
+#include <unordered_map>
 
 #include <glm/gtx/hash.hpp>
 #include <glm/vec3.hpp>
 
+#include "Chunk.h"
 #include "PerlinNoise.h"
-#include "Tensor3.h"
-
-const int CHUNK_SIZE = 16;
-const int CHUNK_HEIGHT = 64;
 
 const int WATER_HEIGHT = CHUNK_HEIGHT / 5;
 
 const int BLOCK_AIR = 0;
-
-using Chunk = Tensor3<char, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>;
 
 class WorldGenerator {
     std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> chunkCache;

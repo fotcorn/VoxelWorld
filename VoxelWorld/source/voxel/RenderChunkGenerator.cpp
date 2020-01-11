@@ -90,11 +90,13 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
     return chunk(x, y, z) == BLOCK_AIR;
 }
 
-const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3 position, const Chunk& chunk,
-                                                                   WorldGenerator& worldGenerator) {
-    auto cacheEntry = chunkCache.get(position);
-    if (cacheEntry) {
-        return cacheEntry;
+const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3 position, Chunk& chunk,
+                                                                   WorldGenerator& worldGenerator, bool useCache) {
+    if (!chunk.dirty && useCache) {
+        auto cacheEntry = chunkCache.get(position);
+        if (cacheEntry) {
+            return cacheEntry;
+        }
     }
 
     std::vector<Vertex> vs;
@@ -187,7 +189,9 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
     }
 
     auto renderChunk = std::make_shared<RenderChunk>(vs);
-    chunkCache.set(position, renderChunk);
-
+    if (useCache) {
+        chunkCache.set(position, renderChunk);
+    }
+    chunk.dirty = false;
     return renderChunk;
 }
