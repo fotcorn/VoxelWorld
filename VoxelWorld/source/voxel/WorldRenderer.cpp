@@ -118,16 +118,17 @@ void WorldRenderer::render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFr
                 continue;
             }
 
-            const auto chunk = worldGenerator.getChunk(position);
+            auto chunk = worldGenerator.getChunk(position);
 
             std::shared_ptr<RenderChunk> renderChunk;
             if (selectedChunkPosition && *selectedChunkPosition.get() == position) {
                 Chunk modifiedChunk(*chunk);
                 modifiedChunk(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) =
                     TextureAtlas::WALL_BRICK_05;
-                renderChunk = renderChunkGenerator->fromChunk(position, modifiedChunk, worldGenerator, false);
+                modifiedChunk.dirty = true;
+                renderChunk = renderChunkGenerator->fromChunk(position, modifiedChunk, worldGenerator);
             } else {
-                renderChunk = renderChunkGenerator->fromChunk(position, (*chunk), worldGenerator, true);
+                renderChunk = renderChunkGenerator->fromChunk(position, (*chunk), worldGenerator);
             }
 
             glm::mat4 modelMatrix = glm::mat4(1.0f);

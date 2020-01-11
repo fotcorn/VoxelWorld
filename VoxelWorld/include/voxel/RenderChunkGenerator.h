@@ -19,8 +19,8 @@
 class RenderChunkGenerator {
 public:
     RenderChunkGenerator(std::size_t cacheSize);
-    const std::shared_ptr<RenderChunk> fromChunk(const glm::ivec3 position, const Chunk& chunk,
-                                                 WorldGenerator& worldGenerator, bool useCache);
+    const std::shared_ptr<RenderChunk> fromChunk(const glm::ivec3 position, Chunk& chunk,
+                                                 WorldGenerator& worldGenerator);
 
 private:
     std::vector<Vertex> cubeMesh;
