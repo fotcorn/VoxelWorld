@@ -12,7 +12,10 @@ const int CAMERA_CHUNK_DISTANCE = 15;
 
 void WorldRenderer::init() {
     texture = std::make_shared<Texture>(Texture::loadFromFile("texture_atlas.gif"));
-    renderChunkGenerator = std::make_shared<RenderChunkGenerator>(1000);
+
+    // cache size is 10x the chunks that is visible at once
+    int cacheSize = (CAMERA_CHUNK_DISTANCE * 2) * (CAMERA_CHUNK_DISTANCE * 2) * 10;
+    renderChunkGenerator = std::make_shared<RenderChunkGenerator>(cacheSize);
 
     Shader fragmentShader = Shader::loadFromFile("mesh.frag", Shader::Type::Fragment);
     Shader vertexShader = Shader::loadFromFile("mesh.vert", Shader::Type::Vertex);
