@@ -65,7 +65,7 @@ void WorldRenderer::calculateSelectedChunk(glm::vec3 cameraPos, glm::vec3 camera
             const auto floatPosition = glm::vec3(position);
 
             bounds[0] = floatPosition;
-            bounds[1] = floatPosition + glm::vec3(1.0f, 1.0f, 1.0f);
+            bounds[1] = floatPosition + glm::vec3(1.0f, 4.0f, 1.0f);
 
             if (intersect(ray, bounds)) {
                 auto chunk = worldGenerator.getChunk(position);
@@ -76,10 +76,10 @@ void WorldRenderer::calculateSelectedChunk(glm::vec3 cameraPos, glm::vec3 camera
                                 continue;
                             }
 
-                            bounds[0] = floatPosition + glm::vec3(float(x) / CHUNK_SIZE, float(y) / CHUNK_HEIGHT,
-                                                                  float(z) / CHUNK_SIZE);
+                            bounds[0] = floatPosition +
+                                        glm::vec3(float(x) / CHUNK_SIZE, float(y) / CHUNK_SIZE, float(z) / CHUNK_SIZE);
                             bounds[1] =
-                                floatPosition + glm::vec3(float(x + 1.0f) / CHUNK_SIZE, float(y + 1.0f) / CHUNK_HEIGHT,
+                                floatPosition + glm::vec3(float(x + 1.0f) / CHUNK_SIZE, float(y + 1.0f) / CHUNK_SIZE,
                                                           float(z + 1.0f) / CHUNK_SIZE);
                             if (intersect(ray, bounds)) {
                                 const float distance = glm::distance(bounds[0], cameraPos);
