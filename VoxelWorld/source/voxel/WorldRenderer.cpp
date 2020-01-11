@@ -146,10 +146,9 @@ void WorldRenderer::render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFr
                 Chunk modifiedChunk(*chunk);
                 modifiedChunk(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) =
                     TextureAtlas::WALL_BRICK_05;
-                modifiedChunk.dirty = true;
-                renderChunk = renderChunkGenerator->fromChunk(position, modifiedChunk, worldGenerator);
+                renderChunk = renderChunkGenerator->fromChunk(position, modifiedChunk, worldGenerator, false);
             } else {
-                renderChunk = renderChunkGenerator->fromChunk(position, (*chunk), worldGenerator);
+                renderChunk = renderChunkGenerator->fromChunk(position, (*chunk), worldGenerator, true);
             }
 
             glm::mat4 modelMatrix = glm::mat4(1.0f);
