@@ -97,6 +97,24 @@ void WorldRenderer::calculateSelectedChunk(glm::vec3 cameraPos, glm::vec3 camera
     }
 }
 
+void WorldRenderer::addBlock() {
+    if (selectedChunkPosition) {
+        auto chunk = worldGenerator.getChunk(*selectedChunkPosition);
+        if ((*chunk)(selectedBlockPosition->x, selectedBlockPosition->y + 1, selectedBlockPosition->z) == BLOCK_AIR) {
+            (*chunk)(selectedBlockPosition->x, selectedBlockPosition->y + 1, selectedBlockPosition->z) =
+                TextureAtlas::GROUND_MUD;
+            chunk->dirty = true;
+        }
+    }
+}
+
+void WorldRenderer::removeBlock() {
+    if (selectedChunkPosition) {
+        auto chunk = worldGenerator.getChunk(*selectedChunkPosition);
+        (*chunk)(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) = BLOCK_AIR;
+    }
+}
+
 void WorldRenderer::render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFront, bool wireframe) {
     const int currentX = int(cameraPos.x);
     const int currentZ = int(cameraPos.z);

@@ -120,6 +120,9 @@ void RenderLoop::mainLoop() {
     WorldRenderer worldRenderer;
     worldRenderer.init();
 
+    bool leftMouseDown = false;
+    bool rightMouseDown = false;
+
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -136,6 +139,22 @@ void RenderLoop::mainLoop() {
         glm::mat4 vp = this->projectionMatrix * view;
 
         worldRenderer.calculateSelectedChunk(this->cameraPos, this->cameraFront);
+
+        int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+        if (state == GLFW_PRESS) {
+            leftMouseDown = true;
+        } else if (state == GLFW_RELEASE && leftMouseDown) {
+            worldRenderer.addBlock();
+            leftMouseDown = false;
+        }
+        state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+        if (state == GLFW_PRESS) {
+            rightMouseDown = true;
+        } else if (state == GLFW_RELEASE && rightMouseDown) {
+            worldRenderer.removeBlock();
+            rightMouseDown = false;
+        }
+
         worldRenderer.render(vp, this->cameraPos, this->cameraFront, wireframe);
 
         if (drawGui) {

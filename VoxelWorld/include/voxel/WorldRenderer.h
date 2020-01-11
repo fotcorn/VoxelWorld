@@ -13,6 +13,8 @@ public:
     void init();
     void render(glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFront, bool wireframe);
     void calculateSelectedChunk(glm::vec3 cameraPos, glm::vec3 cameraFront);
+    void addBlock();
+    void removeBlock();
 
 private:
     std::shared_ptr<Texture> texture;
