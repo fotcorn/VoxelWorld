@@ -10,7 +10,7 @@
 
 class WorldRenderer {
 public:
-    void init(int cameraChunkDistance);
+    WorldRenderer(int cameraChunkDistance);
     void render(World& world, glm::mat4 vp, glm::vec3 cameraPos, glm::vec3 cameraFront, bool wireframe);
 
 private:

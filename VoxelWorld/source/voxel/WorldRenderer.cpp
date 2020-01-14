@@ -8,7 +8,7 @@
 #include <iostream>
 #include <limits>
 
-void WorldRenderer::init(int cameraChunkDistance) {
+WorldRenderer::WorldRenderer(int cameraChunkDistance) {
     this->cameraChunkDistance = cameraChunkDistance;
     texture = std::make_shared<Texture>(Texture::loadFromFile("texture_atlas.gif"));
 

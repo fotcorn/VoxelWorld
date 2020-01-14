@@ -120,9 +120,7 @@ void RenderLoop::mainLoop() {
     bool wireframe = false;
 
     World world;
-
-    WorldRenderer worldRenderer;
-    worldRenderer.init(CAMERA_CHUNK_DISTANCE);
+    WorldRenderer worldRenderer(CAMERA_CHUNK_DISTANCE);
 
     bool leftMouseDown = false;
     bool rightMouseDown = false;
