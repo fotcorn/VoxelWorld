@@ -102,8 +102,7 @@ void RenderLoop::initGui() {
         loop->mouseCursorPositionCallback(xPosition, yPosition);
     });
     glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
-        loop->mouseScrollCallback(xPosition, yPosition);
+        ImGui_ImplGlfw_ScrollCallback(window, xPosition, yPosition);
     });
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     ImGui_ImplOpenGL3_Init();
@@ -275,15 +274,4 @@ void RenderLoop::mouseCursorPositionCallback(double xPositionDouble, double yPos
     front.y = static_cast<float>(sin(glm::radians(pitch)));
     front.z = static_cast<float>(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
     cameraFront = glm::normalize(front);
-}
-
-void RenderLoop::mouseScrollCallback(double xOffset, double yOffset) {
-    if (this->drawGui) {
-        ImGui_ImplGlfw_ScrollCallback(this->window, xOffset, yOffset);
-    } else {
-        cameraDistance -= static_cast<float>(yOffset);
-        if (cameraDistance < 2) {
-            cameraDistance = 1;
-        }
-    }
 }
