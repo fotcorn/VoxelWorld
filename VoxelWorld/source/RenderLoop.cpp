@@ -31,6 +31,8 @@ const float CAMERA_FOV = 45.0f;
 const float NEAR_PLANE = 0.1f;
 const float FAR_PLANE = 100.0f;
 
+const int CAMERA_CHUNK_DISTANCE = 15;
+
 void RenderLoop::init() {
     this->initGlfw();
     this->initGlew();
@@ -117,8 +119,10 @@ void RenderLoop::initCamera() {
 void RenderLoop::mainLoop() {
     bool wireframe = false;
 
+    World world;
+
     WorldRenderer worldRenderer;
-    worldRenderer.init();
+    worldRenderer.init(CAMERA_CHUNK_DISTANCE);
 
     bool leftMouseDown = false;
     bool rightMouseDown = false;
@@ -138,24 +142,24 @@ void RenderLoop::mainLoop() {
         // draw cube
         glm::mat4 vp = this->projectionMatrix * view;
 
-        worldRenderer.calculateSelectedChunk(this->cameraPos, this->cameraFront);
+        world.cameraChanged(this->cameraPos, this->cameraFront, CAMERA_CHUNK_DISTANCE);
 
         int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
         if (state == GLFW_PRESS) {
             leftMouseDown = true;
         } else if (state == GLFW_RELEASE && leftMouseDown) {
-            worldRenderer.addBlock();
+            world.addBlock();
             leftMouseDown = false;
         }
         state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
         if (state == GLFW_PRESS) {
             rightMouseDown = true;
         } else if (state == GLFW_RELEASE && rightMouseDown) {
-            worldRenderer.removeBlock();
+            world.removeBlock();
             rightMouseDown = false;
         }
 
-        worldRenderer.render(vp, this->cameraPos, this->cameraFront, wireframe);
+        worldRenderer.render(world, vp, this->cameraPos, this->cameraFront, wireframe);
 
         if (drawGui) {
             // draw gui

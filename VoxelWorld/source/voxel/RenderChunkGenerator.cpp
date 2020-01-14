@@ -1,6 +1,6 @@
 #include "voxel/RenderChunkGenerator.h"
 #include "TextureAtlas.h"
-#include "voxel/WorldGenerator.h"
+#include "voxel/World.h"
 
 RenderChunkGenerator::RenderChunkGenerator(std::size_t cacheSize) : chunkCache(cacheSize) {
     const float tas = static_cast<float>(TEXTURE_ATLAS_SIZE);
@@ -60,10 +60,10 @@ RenderChunkGenerator::RenderChunkGenerator(std::size_t cacheSize) : chunkCache(c
 }
 
 static bool needsRender(const Chunk& chunk, const int x, const int y, const int z, const glm::ivec3& position,
-                        WorldGenerator& worldGenerator) {
+                        World& world) {
 
     if (x < 0) {
-        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(-1, 0, 0));
+        const auto adjacentChunk = world.getChunk(position + glm::ivec3(-1, 0, 0));
         return (*adjacentChunk)(CHUNK_SIZE - 1, y, z) == BLOCK_AIR;
     }
     if (y < 0) {
@@ -71,12 +71,12 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
         return false;
     }
     if (z < 0) {
-        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 0, -1));
+        const auto adjacentChunk = world.getChunk(position + glm::ivec3(0, 0, -1));
         return (*adjacentChunk)(x, y, CHUNK_SIZE - 1) == BLOCK_AIR;
     }
 
     if (x == CHUNK_SIZE) {
-        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(1, 0, 0));
+        const auto adjacentChunk = world.getChunk(position + glm::ivec3(1, 0, 0));
         return (*adjacentChunk)(0, y, z) == BLOCK_AIR;
     }
     if (y == CHUNK_HEIGHT) {
@@ -84,15 +84,15 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
         return true;
     }
     if (z == CHUNK_SIZE) {
-        const auto adjacentChunk = worldGenerator.getChunk(position + glm::ivec3(0, 0, 1));
+        const auto adjacentChunk = world.getChunk(position + glm::ivec3(0, 0, 1));
         return (*adjacentChunk)(x, y, 0) == BLOCK_AIR;
     }
     return chunk(x, y, z) == BLOCK_AIR;
 }
 
 const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3 position, Chunk& chunk,
-                                                                   WorldGenerator& worldGenerator, bool useCache) {
-    if (!chunk.dirty && useCache) {
+                                                                   World& world) {
+    if (!chunk.changed && !chunk.tempChanged) {
         auto cacheEntry = chunkCache.get(position);
         if (cacheEntry) {
             return cacheEntry;
@@ -120,7 +120,7 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
                 const float cs = static_cast<float>(CHUNK_SIZE);
 
                 // top
-                if (needsRender(chunk, x, y + 1, z, position, worldGenerator)) {
+                if (needsRender(chunk, x, y + 1, z, position, world)) {
                     vs.push_back(Vertex((cubeMesh[0].position + po) / cs, cubeMesh[0].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[1].position + po) / cs, cubeMesh[1].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[2].position + po) / cs, cubeMesh[2].texturePosition + tco));
@@ -131,7 +131,7 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
                 }
 
                 // bottom
-                if (needsRender(chunk, x, y - 1, z, position, worldGenerator)) {
+                if (needsRender(chunk, x, y - 1, z, position, world)) {
                     vs.push_back(Vertex((cubeMesh[6].position + po) / cs, cubeMesh[6].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[7].position + po) / cs, cubeMesh[7].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[8].position + po) / cs, cubeMesh[8].texturePosition + tco));
@@ -142,7 +142,7 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
                 }
 
                 // right
-                if (needsRender(chunk, x + 1, y, z, position, worldGenerator)) {
+                if (needsRender(chunk, x + 1, y, z, position, world)) {
                     vs.push_back(Vertex((cubeMesh[12].position + po) / cs, cubeMesh[12].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[13].position + po) / cs, cubeMesh[13].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[14].position + po) / cs, cubeMesh[14].texturePosition + tco));
@@ -153,7 +153,7 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
                 }
 
                 // left
-                if (needsRender(chunk, x - 1, y, z, position, worldGenerator)) {
+                if (needsRender(chunk, x - 1, y, z, position, world)) {
                     vs.push_back(Vertex((cubeMesh[18].position + po) / cs, cubeMesh[18].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[19].position + po) / cs, cubeMesh[19].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[20].position + po) / cs, cubeMesh[20].texturePosition + tco));
@@ -164,7 +164,7 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
                 }
 
                 // front
-                if (needsRender(chunk, x, y, z + 1, position, worldGenerator)) {
+                if (needsRender(chunk, x, y, z + 1, position, world)) {
                     vs.push_back(Vertex((cubeMesh[24].position + po) / cs, cubeMesh[24].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[25].position + po) / cs, cubeMesh[25].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[26].position + po) / cs, cubeMesh[26].texturePosition + tco));
@@ -175,7 +175,7 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
                 }
 
                 // back
-                if (needsRender(chunk, x, y, z - 1, position, worldGenerator)) {
+                if (needsRender(chunk, x, y, z - 1, position, world)) {
                     vs.push_back(Vertex((cubeMesh[30].position + po) / cs, cubeMesh[30].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[31].position + po) / cs, cubeMesh[31].texturePosition + tco));
                     vs.push_back(Vertex((cubeMesh[32].position + po) / cs, cubeMesh[32].texturePosition + tco));
@@ -189,9 +189,10 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
     }
 
     auto renderChunk = std::make_shared<RenderChunk>(vs);
-    if (useCache) {
+    if (!chunk.tempChanged) {
         chunkCache.set(position, renderChunk);
     }
-    chunk.dirty = false;
+    chunk.changed = false;
+    chunk.tempChanged = false;
     return renderChunk;
 }

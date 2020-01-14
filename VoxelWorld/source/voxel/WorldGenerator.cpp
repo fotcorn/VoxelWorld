@@ -6,12 +6,7 @@ const double NOISE_SCALE = 0.1;
 WorldGenerator::WorldGenerator() : noise(1) {
 }
 
-std::shared_ptr<Chunk> WorldGenerator::getChunk(const glm::ivec3& position) {
-    auto cacheEntry = chunkCache.find(position);
-    if (cacheEntry != chunkCache.end()) {
-        return cacheEntry->second;
-    }
-
+std::shared_ptr<Chunk> WorldGenerator::generateChunk(const glm::ivec3& position) {
     auto chunk = std::make_shared<Chunk>();
 
     // basic world generation
@@ -46,12 +41,11 @@ std::shared_ptr<Chunk> WorldGenerator::getChunk(const glm::ivec3& position) {
                     (*chunk)(x, y, z) = TextureAtlas::WATER;
                 }
             }
-            if ((*chunk)(x, WATER_HEIGHT, z) == TextureAtlas::GROUND_EARTH && (*chunk)(x, WATER_HEIGHT + 1, z) == BLOCK_AIR) {
+            if ((*chunk)(x, WATER_HEIGHT, z) == TextureAtlas::GROUND_EARTH &&
+                (*chunk)(x, WATER_HEIGHT + 1, z) == BLOCK_AIR) {
                 (*chunk)(x, WATER_HEIGHT, z) = TextureAtlas::WATER;
             }
         }
     }
-
-    chunkCache[position] = chunk;
     return chunk;
 }
