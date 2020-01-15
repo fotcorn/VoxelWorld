@@ -57,13 +57,45 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
                                 if (distance < minimalDistance) {
                                     selectedChunkPosition = position;
                                     selectedBlockPosition = glm::ivec3(x, y, z);
-                                    selectedBlockSide = Side::TOP;
+                                    selectedBlockSide = std::nullopt;
                                     minimalDistance = distance.value();
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+
+    // check which side of the block is selected
+    if (selectedChunkPosition.has_value() && selectedBlockPosition.has_value()) {
+        auto chunkPosition = glm::vec3(selectedChunkPosition.value());
+        float offset = 1.0f / float(CHUNK_SIZE);
+
+        auto bottomLeftBack = chunkPosition + (glm::vec3(selectedBlockPosition.value()) / float(CHUNK_SIZE));
+        auto topRightFront = chunkPosition + (glm::vec3(selectedBlockPosition.value()) / float(CHUNK_SIZE)) +
+                             glm::vec3(offset, offset, offset);
+
+        using ListEntry = std::tuple<Side, std::optional<float>>;
+
+        auto list = std::vector<ListEntry>{
+            ListEntry(Side::LEFT, ray.AABBintersect(bottomLeftBack, bottomLeftBack + glm::vec3(0.0f, offset, offset))),
+            ListEntry(Side::BOTTOM,
+                      ray.AABBintersect(bottomLeftBack, bottomLeftBack + glm::vec3(offset, 0.0f, offset))),
+            ListEntry(Side::BACK, ray.AABBintersect(bottomLeftBack, bottomLeftBack + glm::vec3(offset, offset, 0.0f))),
+
+            ListEntry(Side::RIGHT, ray.AABBintersect(topRightFront, topRightFront + glm::vec3(0.0f, -offset, -offset))),
+            ListEntry(Side::TOP, ray.AABBintersect(topRightFront, topRightFront + glm::vec3(-offset, 0.0f, -offset))),
+            ListEntry(Side::FRONT,
+                      ray.AABBintersect(topRightFront, topRightFront + glm::vec3(-offset, -offset, 0.0f)))};
+
+        minimalDistance = std::numeric_limits<float>::max();
+        for (auto& item : list) {
+            auto distance = std::get<1>(item);
+            if (distance.has_value() && distance.value() < minimalDistance) {
+                minimalDistance = distance.value();
+                selectedBlockSide = std::get<0>(item);
             }
         }
     }
