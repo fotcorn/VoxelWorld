@@ -41,6 +41,7 @@ private:
     // timing
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;
+    float lastSimulation = 0.0f;
 
     // camera
     float cameraSpeed = 2.0f;

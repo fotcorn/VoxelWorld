@@ -2,6 +2,8 @@
 #include "TextureAtlas.h"
 #include "voxel/Ray.h"
 
+#include <iostream>
+
 std::shared_ptr<Chunk> World::getChunk(const glm::ivec3& position) {
     std::shared_ptr<Chunk> chunk;
 
@@ -88,4 +90,8 @@ void World::removeBlock() {
         (*chunk)(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) = BLOCK_AIR;
         chunk->changed = true;
     }
+}
+
+void World::simulationTick() {
+    std::cout << "simulation tick" << std::endl;
 }

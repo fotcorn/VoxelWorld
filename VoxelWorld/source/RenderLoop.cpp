@@ -130,6 +130,11 @@ void RenderLoop::mainLoop() {
         lastFrame = currentFrame;
         // std::cout << 1.0f / deltaTime << std::endl;
 
+        if (currentFrame - lastSimulation >= 1.0f) {
+            world.simulationTick();
+            lastSimulation = currentFrame;
+        }
+
         this->handleInput();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
