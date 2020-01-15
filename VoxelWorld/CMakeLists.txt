@@ -38,7 +38,7 @@ target_compile_definitions(VoxelWorld PRIVATE
 	GLM_FORCE_CXX11=1
 )
 
-target_compile_features(VoxelWorld PRIVATE cxx_std_11)
+target_compile_features(VoxelWorld PRIVATE cxx_std_17)
 
 target_include_directories(VoxelWorld PRIVATE include)
 target_include_directories(VoxelWorld PRIVATE external)
