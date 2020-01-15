@@ -1,8 +1,7 @@
-// source:
-// https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
-
 #ifndef RAY_H
 #define RAY_H
+
+#include <optional>
 
 #include <glm/vec3.hpp>
 
@@ -10,40 +9,42 @@ class Ray {
 public:
     Ray(const glm::vec3& origin, const glm::vec3& direction) : origin(origin), direction(direction) {
         inverseDirection = glm::vec3(1.0f) / direction;
-        sign[0] = (inverseDirection.x < 0.0f);
-        sign[1] = (inverseDirection.y < 0.0f);
-        sign[2] = (inverseDirection.z < 0.0f);
     }
 
-    bool AABBintersect(const glm::vec3 bounds[2]) {
-        float tmin = (bounds[sign[0]].x - origin.x) * inverseDirection.x;
-        float tmax = (bounds[1 - sign[0]].x - origin.x) * inverseDirection.x;
-        float tymin = (bounds[sign[1]].y - origin.y) * inverseDirection.y;
-        float tymax = (bounds[1 - sign[1]].y - origin.y) * inverseDirection.y;
+    // source: https://gamedev.stackexchange.com/a/18459
+    std::optional<float> AABBintersect(const glm::vec3& lb, const glm::vec3& rt) {
+        // lb is the corner of AABB with minimal coordinates - left bottom, rt is maximal corner
+        float t1 = (lb.x - origin.x) * inverseDirection.x;
+        float t2 = (rt.x - origin.x) * inverseDirection.x;
+        float t3 = (lb.y - origin.y) * inverseDirection.y;
+        float t4 = (rt.y - origin.y) * inverseDirection.y;
+        float t5 = (lb.z - origin.z) * inverseDirection.z;
+        float t6 = (rt.z - origin.z) * inverseDirection.z;
 
-        if ((tmin > tymax) || (tymin > tmax)) {
-            return false;
-        }
-        if (tymin > tmin) {
-            tmin = tymin;
-        }
-        if (tymax < tmax) {
-            tmax = tymax;
+        float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+        float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+
+        float t = 0.0f;
+
+        // if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us
+        if (tmax < 0) {
+            t = tmax;
+            return std::nullopt;
         }
 
-        float tzmin = (bounds[sign[2]].z - origin.z) * inverseDirection.z;
-        float tzmax = (bounds[1 - sign[2]].z - origin.z) * inverseDirection.z;
-
-        if ((tmin > tzmax) || (tzmin > tmax)) {
-            return false;
+        // if tmin > tmax, ray doesn't intersect AABB
+        if (tmin > tmax) {
+            t = tmax;
+            return std::nullopt;
         }
-        return true;
+
+        t = tmin;
+        return std::optional(t);
     }
 
 private:
     glm::vec3 origin, direction;
     glm::vec3 inverseDirection;
-    int sign[3];
 };
 
 #endif

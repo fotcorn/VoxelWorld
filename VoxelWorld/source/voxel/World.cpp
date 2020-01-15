@@ -26,8 +26,6 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
     const int currentZ = int(cameraPosition.z);
     auto ray = Ray(cameraPosition, cameraDirection);
 
-    glm::vec3 bounds[2];
-
     selectedChunkPosition.reset();
     selectedBlockPosition.reset();
     float minimalDistance = std::numeric_limits<float>::max();
@@ -37,10 +35,9 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
             const auto position = glm::ivec3(x, 1, z);
             const auto floatPosition = glm::vec3(position);
 
-            bounds[0] = floatPosition;
-            bounds[1] = floatPosition + glm::vec3(1.0f, 4.0f, 1.0f);
+            auto topRight = floatPosition + glm::vec3(1.0f, 4.0f, 1.0f);
 
-            if (ray.AABBintersect(bounds)) {
+            if (ray.AABBintersect(floatPosition, topRight).has_value()) {
                 auto chunk = this->getChunk(position);
                 for (int x = 0; x < CHUNK_SIZE; x++) {
                     for (int y = 0; y < CHUNK_HEIGHT; y++) {
@@ -49,18 +46,19 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
                                 continue;
                             }
 
-                            bounds[0] = floatPosition +
-                                        glm::vec3(float(x) / CHUNK_SIZE, float(y) / CHUNK_SIZE, float(z) / CHUNK_SIZE);
-                            bounds[1] =
+                            auto bottomLeft = floatPosition + glm::vec3(float(x) / CHUNK_SIZE, float(y) / CHUNK_SIZE,
+                                                                        float(z) / CHUNK_SIZE);
+                            topRight =
                                 floatPosition + glm::vec3(float(x + 1.0f) / CHUNK_SIZE, float(y + 1.0f) / CHUNK_SIZE,
                                                           float(z + 1.0f) / CHUNK_SIZE);
-                            if (ray.AABBintersect(bounds)) {
-                                const float distance = glm::distance(bounds[0], cameraPosition);
+
+                            auto distance = ray.AABBintersect(bottomLeft, topRight);
+                            if (distance.has_value()) {
                                 if (distance < minimalDistance) {
                                     selectedChunkPosition = position;
                                     selectedBlockPosition = glm::ivec3(x, y, z);
                                     selectedBlockSide = Side::TOP;
-                                    minimalDistance = distance;
+                                    minimalDistance = distance.value();
                                 }
                             }
                         }
