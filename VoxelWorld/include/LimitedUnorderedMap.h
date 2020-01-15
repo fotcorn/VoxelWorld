@@ -4,7 +4,6 @@
 #include <memory>
 #include <unordered_map>
 
-
 /*
  * An unordered_map like datastructure with a limited capacity.
  * If capacity is reached, the first inserted item is removed from the map.
@@ -16,7 +15,8 @@ private:
     std::size_t limit;
 
 public:
-    LimitedUnorderedMap(const std::size_t limit) : limit(limit) {}
+    LimitedUnorderedMap(const std::size_t limit) : limit(limit) {
+    }
 
     std::shared_ptr<Value> get(const Key& key) const {
         auto entry = map.find(key);
@@ -34,5 +34,10 @@ public:
             map.erase(keyToRemove);
             list.pop_back();
         }
+    }
+
+    void remove(const Key& key) {
+        map.erase(key);
+        list.remove(key);
     }
 };

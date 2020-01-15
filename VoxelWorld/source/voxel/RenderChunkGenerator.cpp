@@ -234,6 +234,13 @@ const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::iv
     if (!chunk.tempChanged) {
         chunkCache.set(position, renderChunk);
     }
+    if (chunk.tempChanged && chunk.changed) {
+        // remove old cached RenderChunks when a block was changed and a block was selected at the same time.
+        // if we do not do this, old RenderChunks can show up when no block is selected in the same chunk any more:
+        // => chunk.tempChanged and chunk.changed are both false, which means this function will use old RenderChunks
+        // from the cache which might not have all changed blocks in it.
+        chunkCache.remove(position);
+    }
     chunk.changed = false;
     chunk.tempChanged = false;
     return renderChunk;
