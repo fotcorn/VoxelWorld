@@ -2,10 +2,20 @@
 #define WORLD_H
 
 #include <memory>
+#include <optional>
 
 #include <glm/vec3.hpp>
 
 #include "WorldGenerator.h"
+
+enum class Side {
+    TOP,
+    BOTTOM,
+    FRONT,
+    BACK,
+    LEFT,
+    RIGHT,
+};
 
 class World {
 public:
@@ -17,11 +27,13 @@ public:
 
     std::shared_ptr<Chunk> getChunk(const glm::ivec3& position);
 
+    std::optional<glm::ivec3> selectedChunkPosition;
+    std::optional<glm::ivec3> selectedBlockPosition;
+    std::optional<Side> selectedBlockSide;
+
 private:
     WorldGenerator worldGenerator;
     std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> world;
-    std::shared_ptr<glm::ivec3> selectedChunkPosition;
-    std::shared_ptr<glm::ivec3> selectedBlockPosition;
 };
 
 #endif /* WORLD_H */

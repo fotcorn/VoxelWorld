@@ -15,10 +15,7 @@ std::shared_ptr<Chunk> World::getChunk(const glm::ivec3& position) {
     }
     world[position] = chunk;
 
-    if (selectedChunkPosition && *selectedChunkPosition.get() == position) {
-        chunk = std::make_shared<Chunk>(*chunk);
-        (*chunk)(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) =
-            TextureAtlas::WALL_BRICK_05;
+    if (selectedChunkPosition && selectedChunkPosition.value() == position) {
         chunk->tempChanged = true;
     }
     return chunk;
@@ -60,8 +57,9 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
                             if (ray.AABBintersect(bounds)) {
                                 const float distance = glm::distance(bounds[0], cameraPosition);
                                 if (distance < minimalDistance) {
-                                    selectedChunkPosition = std::make_shared<glm::ivec3>(position);
-                                    selectedBlockPosition = std::make_shared<glm::ivec3>(x, y, z);
+                                    selectedChunkPosition = position;
+                                    selectedBlockPosition = glm::ivec3(x, y, z);
+                                    selectedBlockSide = Side::TOP;
                                     minimalDistance = distance;
                                 }
                             }

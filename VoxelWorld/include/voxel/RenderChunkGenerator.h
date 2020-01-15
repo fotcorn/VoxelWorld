@@ -24,6 +24,8 @@ public:
 private:
     std::vector<Vertex> cubeMesh;
     LimitedUnorderedMap<glm::ivec3, RenderChunk> chunkCache;
+    float textureAtlasSize;
+    glm::vec2 selectedBlockTextureOffset;
 };
 
 #endif // !RENDER_CHUNK_GENERATOR_H
