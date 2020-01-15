@@ -104,9 +104,31 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
 void World::addBlock() {
     if (selectedChunkPosition) {
         auto chunk = world[*selectedChunkPosition];
-        if ((*chunk)(selectedBlockPosition->x, selectedBlockPosition->y + 1, selectedBlockPosition->z) == BLOCK_AIR) {
-            (*chunk)(selectedBlockPosition->x, selectedBlockPosition->y + 1, selectedBlockPosition->z) =
-                TextureAtlas::GROUND_MUD;
+
+        glm::ivec3 position = selectedBlockPosition.value();
+        switch (selectedBlockSide.value()) {
+        case Side::RIGHT:
+            position += glm::ivec3(1, 0, 0);
+            break;
+        case Side::LEFT:
+            position += glm::ivec3(-1, 0, 0);
+            break;
+        case Side::TOP:
+            position += glm::ivec3(0, 1, 0);
+            break;
+        case Side::BOTTOM:
+            position += glm::ivec3(0, -1, 0);
+            break;
+        case Side::FRONT:
+            position += glm::ivec3(0, 0, 1);
+            break;
+        case Side::BACK:
+            position += glm::ivec3(0, 0, -1);
+            break;
+        }
+
+        if ((*chunk)(position.x, position.y, position.z) == BLOCK_AIR) {
+            (*chunk)(position.x, position.y, position.z) = TextureAtlas::GROUND_MUD;
             chunk->changed = true;
         }
     }
