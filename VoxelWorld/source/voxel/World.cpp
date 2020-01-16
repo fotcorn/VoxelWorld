@@ -128,9 +128,10 @@ void World::addBlock() {
         }
 
         if ((*chunk)(position.x, position.y, position.z) == BLOCK_AIR) {
-            (*chunk)(position.x, position.y, position.z) = TextureAtlas::GROUND_MUD;
+            (*chunk)(position.x, position.y, position.z) = TextureAtlas::LAVA;
             chunk->changed = true;
         }
+        simulationChunks.insert(selectedChunkPosition.value());
     }
 }
 
@@ -143,5 +144,37 @@ void World::removeBlock() {
 }
 
 void World::simulationTick() {
-    std::cout << "simulation tick" << std::endl;
+    for (auto& chunkPosition : simulationChunks) {
+        auto chunk = world[chunkPosition];
+        std::vector<glm::ivec3> newBlocks;
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int y = 0; y < CHUNK_HEIGHT; y++) {
+                for (int z = 0; z < CHUNK_SIZE; z++) {
+                    if ((*chunk)(x, y, z) == TextureAtlas::LAVA) {
+                        if ((*chunk)(x + 1, y, z) == BLOCK_AIR) {
+                            newBlocks.push_back(glm::ivec3(x + 1, y, z));
+                        }
+                        if ((*chunk)(x - 1, y, z) == BLOCK_AIR) {
+                            newBlocks.push_back(glm::ivec3(x - 1, y, z));
+                        }
+                        if ((*chunk)(x, y - 1, z) == BLOCK_AIR) {
+                            newBlocks.push_back(glm::ivec3(x, y + 1, z));
+                        }
+                        if ((*chunk)(x, y, z + 1) == BLOCK_AIR) {
+                            newBlocks.push_back(glm::ivec3(x, y - 1, z));
+                        }
+                        if ((*chunk)(x, y, z - 1) == BLOCK_AIR) {
+                            newBlocks.push_back(glm::ivec3(x, y, z - 1));
+                        }
+                    }
+                }
+            }
+        }
+
+        for (auto& block : newBlocks) {
+            (*chunk)(block.x, block.y, block.z) = TextureAtlas::LAVA;
+        }
+
+        chunk->changed = true;
+    }
 }

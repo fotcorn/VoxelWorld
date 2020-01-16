@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <optional>
+#include <unordered_set>
 
 #include <glm/vec3.hpp>
 
@@ -34,6 +35,8 @@ public:
 private:
     WorldGenerator worldGenerator;
     std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> world;
+
+    std::unordered_set<glm::ivec3> simulationChunks;
 };
 
 #endif /* WORLD_H */
