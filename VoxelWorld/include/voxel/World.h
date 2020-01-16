@@ -35,8 +35,14 @@ public:
 private:
     WorldGenerator worldGenerator;
     std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> world;
-
     std::unordered_set<glm::ivec3> simulationChunks;
+
+    std::vector<glm::ivec3> waterBlockUpdates = {
+        glm::ivec3(1, 0, 0), glm::ivec3(-1, 0, 0), glm::ivec3(0, -1, 0), glm::ivec3(0, 0, 1), glm::ivec3(0, 0, -1),
+    };
+
+    std::optional<std::tuple<glm::ivec3, glm::ivec3>> isAir(const Chunk& chunk, glm::ivec3 chunkPosition, const int x,
+                                                            const int y, const int z);
 };
 
 #endif /* WORLD_H */

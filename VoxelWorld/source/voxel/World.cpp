@@ -143,38 +143,101 @@ void World::removeBlock() {
     }
 }
 
+std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::isAir(const Chunk& chunk, glm::ivec3 chunkPosition,
+                                                               const int x, const int y, const int z) {
+
+    if (x < 0) {
+        const auto adjacentChunkPosition = chunkPosition + glm::ivec3(-1, 0, 0);
+        const auto adjacentBlockPosition = glm::ivec3(CHUNK_SIZE - 1, y, z);
+        const auto adjacentChunk = this->getChunk(adjacentChunkPosition);
+        if ((*adjacentChunk)(adjacentBlockPosition.x, adjacentBlockPosition.y, adjacentBlockPosition.z) == BLOCK_AIR) {
+            return std::make_tuple(adjacentChunkPosition, adjacentBlockPosition);
+        } else {
+            return std::nullopt;
+        }
+    }
+    if (y < 0) {
+        // no blocks lower than 0
+        return std::nullopt;
+    }
+    if (z < 0) {
+        const auto adjacentChunkPosition = chunkPosition + glm::ivec3(0, 0, -1);
+        const auto adjacentBlockPosition = glm::ivec3(x, y, CHUNK_SIZE - 1);
+        const auto adjacentChunk = this->getChunk(adjacentChunkPosition);
+        if ((*adjacentChunk)(adjacentBlockPosition.x, adjacentBlockPosition.y, adjacentBlockPosition.z) == BLOCK_AIR) {
+            return std::make_tuple(adjacentChunkPosition, adjacentBlockPosition);
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    if (x == CHUNK_SIZE) {
+        const auto adjacentChunkPosition = chunkPosition + glm::ivec3(1, 0, 0);
+        const auto adjacentBlockPosition = glm::ivec3(0, y, z);
+        const auto adjacentChunk = this->getChunk(adjacentChunkPosition);
+        if ((*adjacentChunk)(adjacentBlockPosition.x, adjacentBlockPosition.y, adjacentBlockPosition.z) == BLOCK_AIR) {
+            return std::make_tuple(adjacentChunkPosition, adjacentBlockPosition);
+        } else {
+            return std::nullopt;
+        }
+    }
+    if (y == CHUNK_HEIGHT) {
+        // there will never be a block heigher than this
+        return std::nullopt;
+    }
+    if (z == CHUNK_SIZE) {
+        const auto adjacentChunkPosition = chunkPosition + glm::ivec3(0, 0, 1);
+        const auto adjacentBlockPosition = glm::ivec3(x, y, 0);
+        const auto adjacentChunk = this->getChunk(adjacentChunkPosition);
+        if ((*adjacentChunk)(adjacentBlockPosition.x, adjacentBlockPosition.y, adjacentBlockPosition.z) == BLOCK_AIR) {
+            return std::make_tuple(adjacentChunkPosition, adjacentBlockPosition);
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    if (chunk(x, y, z) == BLOCK_AIR) {
+        return std::make_tuple(chunkPosition, glm::ivec3(x, y, z));
+    } else {
+        return std::nullopt;
+    }
+}
+
 void World::simulationTick() {
+    std::unordered_map<glm::ivec3, std::vector<glm::ivec3>> newBlocks;
+
     for (auto& chunkPosition : simulationChunks) {
         auto chunk = world[chunkPosition];
-        std::vector<glm::ivec3> newBlocks;
         for (int x = 0; x < CHUNK_SIZE; x++) {
             for (int y = 0; y < CHUNK_HEIGHT; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
                     if ((*chunk)(x, y, z) == TextureAtlas::LAVA) {
-                        if ((*chunk)(x + 1, y, z) == BLOCK_AIR) {
-                            newBlocks.push_back(glm::ivec3(x + 1, y, z));
-                        }
-                        if ((*chunk)(x - 1, y, z) == BLOCK_AIR) {
-                            newBlocks.push_back(glm::ivec3(x - 1, y, z));
-                        }
-                        if ((*chunk)(x, y - 1, z) == BLOCK_AIR) {
-                            newBlocks.push_back(glm::ivec3(x, y + 1, z));
-                        }
-                        if ((*chunk)(x, y, z + 1) == BLOCK_AIR) {
-                            newBlocks.push_back(glm::ivec3(x, y - 1, z));
-                        }
-                        if ((*chunk)(x, y, z - 1) == BLOCK_AIR) {
-                            newBlocks.push_back(glm::ivec3(x, y, z - 1));
+                        for (auto& blockUpdate : waterBlockUpdates) {
+                            const auto ret = this->isAir(*chunk, chunkPosition, x + blockUpdate.x, y + blockUpdate.y,
+                                                         z + blockUpdate.z);
+                            if (ret.has_value()) {
+                                auto [chunkPos, blockPos] = ret.value();
+                                if (newBlocks.find(chunkPos) == newBlocks.end()) {
+                                    newBlocks[chunkPos] = std::vector<glm::ivec3>{blockPos};
+                                } else {
+                                    newBlocks[chunkPos].push_back(blockPos);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
 
-        for (auto& block : newBlocks) {
+    simulationChunks.clear();
+
+    for (const auto& [chunkPosition, blocks] : newBlocks) {
+        const auto chunk = world[chunkPosition];
+        for (const auto& block : blocks) {
             (*chunk)(block.x, block.y, block.z) = TextureAtlas::LAVA;
         }
-
         chunk->changed = true;
+        simulationChunks.insert(chunkPosition);
     }
 }
