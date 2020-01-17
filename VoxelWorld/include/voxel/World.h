@@ -38,11 +38,15 @@ private:
     std::unordered_set<glm::ivec3> simulationChunks;
 
     std::vector<glm::ivec3> waterBlockUpdates = {
-        glm::ivec3(1, 0, 0), glm::ivec3(-1, 0, 0), glm::ivec3(0, -1, 0), glm::ivec3(0, 0, 1), glm::ivec3(0, 0, -1),
+        glm::ivec3(1, 0, 0),
+        glm::ivec3(-1, 0, 0),
+        glm::ivec3(0, 0, 1),
+        glm::ivec3(0, 0, -1),
     };
 
-    std::optional<std::tuple<glm::ivec3, glm::ivec3>> isAir(const Chunk& chunk, glm::ivec3 chunkPosition, const int x,
-                                                            const int y, const int z);
+    std::optional<std::tuple<glm::ivec3, glm::ivec3>> canCreateBlock(std::shared_ptr<Chunk> chunk,
+                                                                     glm::ivec3 chunkPosition, glm::ivec3 originBlock,
+                                                                     glm::ivec3 blockOffset);
 };
 
 #endif /* WORLD_H */

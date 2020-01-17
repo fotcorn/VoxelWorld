@@ -143,64 +143,63 @@ void World::removeBlock() {
     }
 }
 
-std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::isAir(const Chunk& chunk, glm::ivec3 chunkPosition,
-                                                               const int x, const int y, const int z) {
+std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::canCreateBlock(std::shared_ptr<Chunk> chunk,
+                                                                        glm::ivec3 chunkPosition,
+                                                                        glm::ivec3 originBlock,
+                                                                        glm::ivec3 blockOffset) {
+    glm::ivec3 newChunkPosition = chunkPosition;
+    std::shared_ptr<Chunk> newChunk = chunk;
+    glm::ivec3 newBlockPosition = originBlock + blockOffset;
 
-    if (x < 0) {
-        const auto adjacentChunkPosition = chunkPosition + glm::ivec3(-1, 0, 0);
-        const auto adjacentBlockPosition = glm::ivec3(CHUNK_SIZE - 1, y, z);
-        const auto adjacentChunk = this->getChunk(adjacentChunkPosition);
-        if ((*adjacentChunk)(adjacentBlockPosition.x, adjacentBlockPosition.y, adjacentBlockPosition.z) == BLOCK_AIR) {
-            return std::make_tuple(adjacentChunkPosition, adjacentBlockPosition);
-        } else {
-            return std::nullopt;
-        }
-    }
-    if (y < 0) {
-        // no blocks lower than 0
-        return std::nullopt;
-    }
-    if (z < 0) {
-        const auto adjacentChunkPosition = chunkPosition + glm::ivec3(0, 0, -1);
-        const auto adjacentBlockPosition = glm::ivec3(x, y, CHUNK_SIZE - 1);
-        const auto adjacentChunk = this->getChunk(adjacentChunkPosition);
-        if ((*adjacentChunk)(adjacentBlockPosition.x, adjacentBlockPosition.y, adjacentBlockPosition.z) == BLOCK_AIR) {
-            return std::make_tuple(adjacentChunkPosition, adjacentBlockPosition);
-        } else {
-            return std::nullopt;
-        }
+    // handle possibilty that new block is outside of current chunk
+    if (newBlockPosition.x < 0) {
+        newChunkPosition = chunkPosition + glm::ivec3(-1, 0, 0);
+        newChunk = this->getChunk(newChunkPosition);
+        newBlockPosition = glm::ivec3(CHUNK_SIZE - 1, newBlockPosition.y, newBlockPosition.z);
     }
 
-    if (x == CHUNK_SIZE) {
-        const auto adjacentChunkPosition = chunkPosition + glm::ivec3(1, 0, 0);
-        const auto adjacentBlockPosition = glm::ivec3(0, y, z);
-        const auto adjacentChunk = this->getChunk(adjacentChunkPosition);
-        if ((*adjacentChunk)(adjacentBlockPosition.x, adjacentBlockPosition.y, adjacentBlockPosition.z) == BLOCK_AIR) {
-            return std::make_tuple(adjacentChunkPosition, adjacentBlockPosition);
-        } else {
-            return std::nullopt;
-        }
-    }
-    if (y == CHUNK_HEIGHT) {
-        // there will never be a block heigher than this
-        return std::nullopt;
-    }
-    if (z == CHUNK_SIZE) {
-        const auto adjacentChunkPosition = chunkPosition + glm::ivec3(0, 0, 1);
-        const auto adjacentBlockPosition = glm::ivec3(x, y, 0);
-        const auto adjacentChunk = this->getChunk(adjacentChunkPosition);
-        if ((*adjacentChunk)(adjacentBlockPosition.x, adjacentBlockPosition.y, adjacentBlockPosition.z) == BLOCK_AIR) {
-            return std::make_tuple(adjacentChunkPosition, adjacentBlockPosition);
-        } else {
-            return std::nullopt;
-        }
+    if (newBlockPosition.x == CHUNK_SIZE) {
+        newChunkPosition = chunkPosition + glm::ivec3(1, 0, 0);
+        newChunk = this->getChunk(newChunkPosition);
+        newBlockPosition = glm::ivec3(0, newBlockPosition.y, newBlockPosition.z);
     }
 
-    if (chunk(x, y, z) == BLOCK_AIR) {
-        return std::make_tuple(chunkPosition, glm::ivec3(x, y, z));
-    } else {
+    if (newBlockPosition.z < 0) {
+        newChunkPosition = chunkPosition + glm::ivec3(0, 0, -1);
+        newChunk = this->getChunk(newChunkPosition);
+        newBlockPosition = glm::ivec3(newBlockPosition.x, newBlockPosition.y, CHUNK_SIZE - 1);
+    }
+
+    if (newBlockPosition.z == CHUNK_SIZE) {
+        newChunkPosition = chunkPosition + glm::ivec3(0, 0, 1);
+        newChunk = this->getChunk(newChunkPosition);
+        newBlockPosition = glm::ivec3(newBlockPosition.x, newBlockPosition.y, 0);
+    }
+
+    // if new block is already occupied, do not overwrite block
+    if ((*newChunk)(newBlockPosition) != BLOCK_AIR) {
         return std::nullopt;
     }
+
+    // if we are at the lowest possible position, uncondinationally add the new block
+    if (newBlockPosition.y == 0) {
+        return std::make_tuple(newChunkPosition, newBlockPosition);
+    }
+
+    // if the block below the new block is not air and not lava, add the block
+    const auto blockBelowType = (*newChunk)(newBlockPosition + glm::ivec3(0, -1, 0));
+    if (blockBelowType != BLOCK_AIR && blockBelowType != TextureAtlas::LAVA) {
+        return std::make_tuple(newChunkPosition, newBlockPosition);
+    }
+
+    // if the block below the new block is air, but the block below the origin block is not air/water, add block anyway
+    // (think waterfall)
+    const auto originBlockType = (*chunk)(originBlock + glm::ivec3(0, -1, 0));
+    if (originBlockType != TextureAtlas::LAVA && originBlockType != BLOCK_AIR) {
+        return std::make_tuple(newChunkPosition, newBlockPosition);
+    }
+
+    return std::nullopt;
 }
 
 void World::simulationTick() {
@@ -212,9 +211,20 @@ void World::simulationTick() {
             for (int y = 0; y < CHUNK_HEIGHT; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
                     if ((*chunk)(x, y, z) == TextureAtlas::LAVA) {
+                        // block below current block
+                        glm::ivec3 blockPositionBelow = glm::ivec3(x, y - 1, z);
+                        if (y != 0 && (*chunk)(blockPositionBelow) == BLOCK_AIR) {
+                            if (newBlocks.find(chunkPosition) == newBlocks.end()) {
+                                newBlocks[chunkPosition] = std::vector<glm::ivec3>{blockPositionBelow};
+                            } else {
+                                newBlocks[chunkPosition].push_back(blockPositionBelow);
+                            }
+                        }
+
+                        // blocks around current block
                         for (auto& blockUpdate : waterBlockUpdates) {
-                            const auto ret = this->isAir(*chunk, chunkPosition, x + blockUpdate.x, y + blockUpdate.y,
-                                                         z + blockUpdate.z);
+                            const auto ret =
+                                this->canCreateBlock(chunk, chunkPosition, glm::ivec3(x, y, z), blockUpdate);
                             if (ret.has_value()) {
                                 auto [chunkPos, blockPos] = ret.value();
                                 if (newBlocks.find(chunkPos) == newBlocks.end()) {
