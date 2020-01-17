@@ -10,4 +10,12 @@ public:
     T& operator()(const int x, const int y, const int z) {
         return this->data[x][y][z];
     }
+
+    const T& operator()(const glm::ivec3& pos) const {
+        return this->data[pos.x][pos.y][pos.z];
+    }
+
+    T& operator()(const glm::ivec3& pos) {
+        return this->data[pos.x][pos.y][pos.z];
+    }
 };
