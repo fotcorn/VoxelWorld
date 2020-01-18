@@ -23,7 +23,7 @@ private:
     void initGlew();
     void initOpenGL();
     void initGui();
-    void initCamera();
+    void updateCamera(int viewportWidth, int viewportHeight);
 
     void handleInput();
 
@@ -34,6 +34,7 @@ private:
     GLFWwindow* window = nullptr;
 
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
+    glm::mat4 projectionMatrix2D = glm::mat4(1.0f);
 
     bool drawGui = false;
     bool showMouseCursor = false;
