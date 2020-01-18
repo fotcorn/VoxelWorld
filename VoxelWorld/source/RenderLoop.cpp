@@ -13,8 +13,8 @@
 
 #include "voxel/WorldRenderer.h"
 
-#include "gui/imgui_impl_glfw.h"
-#include "gui/imgui_impl_opengl3.h"
+#include "debug_ui/imgui_impl_glfw.h"
+#include "debug_ui/imgui_impl_opengl3.h"
 
 #include "2d/Rect.h"
 

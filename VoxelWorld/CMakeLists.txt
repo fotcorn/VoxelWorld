@@ -20,8 +20,8 @@ add_executable(VoxelWorld
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/2d/Rect.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_glfw.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/gui/imgui_impl_opengl3.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_glfw.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_opengl3.cpp
 )
 
 target_link_libraries(VoxelWorld ${CONAN_LIBS})
