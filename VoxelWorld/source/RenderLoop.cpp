@@ -124,7 +124,8 @@ void RenderLoop::mainLoop() {
     World world;
     WorldRenderer worldRenderer(CAMERA_CHUNK_DISTANCE);
 
-    Rect rect(50, 250, 200, 200);
+    Rect rect1(50, 250, 200, 200);
+    Rect rect2(300, 250, 200, 200);
 
     bool leftMouseDown = false;
     bool rightMouseDown = false;
@@ -168,7 +169,8 @@ void RenderLoop::mainLoop() {
         worldRenderer.render(world, vp, this->cameraPos, this->cameraFront, wireframe);
 
         // draw rect
-        rect.render(projectionMatrix2D, wireframe);
+        rect1.render(projectionMatrix2D, wireframe);
+        rect2.render(projectionMatrix2D, wireframe);
 
         // draw ImGui debug GUI
         if (drawGui) {

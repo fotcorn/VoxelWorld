@@ -9,17 +9,29 @@
 
 #include "Shader.h"
 
+GLuint Rect::vao = 0;
+GLuint Rect::vbo = 0;
+std::shared_ptr<ShaderProgram> Rect::shaderProgram = std::shared_ptr<ShaderProgram>();
+
 Rect::Rect(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {
+    if (!Rect::shaderProgram) {
+        Rect::init();
+    }
+}
+
+void Rect::init() {
     // shader
     Shader fragmentShader = Shader::loadFromFile("rect.frag", Shader::Type::Fragment);
     Shader vertexShader = Shader::loadFromFile("rect.vert", Shader::Type::Vertex);
-    this->shaderProgram.attachShader(vertexShader);
-    this->shaderProgram.attachShader(fragmentShader);
 
-    this->shaderProgram.setAttribLocation("vertex_position", 0);
-    this->shaderProgram.setAttribLocation("color", 1);
+    Rect::shaderProgram = std::make_shared<ShaderProgram>();
+    Rect::shaderProgram->attachShader(vertexShader);
+    Rect::shaderProgram->attachShader(fragmentShader);
 
-    this->shaderProgram.link();
+    Rect::shaderProgram->setAttribLocation("vertex_position", 0);
+    Rect::shaderProgram->setAttribLocation("color", 1);
+
+    Rect::shaderProgram->link();
 
     std::vector<glm::vec3> vertices = {
         glm::vec3(1.0f, -1.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f),  glm::vec3(0.0f, 0.0f, 1.0f),
@@ -27,12 +39,12 @@ Rect::Rect(int x, int y, int width, int height) : x(x), y(y), width(width), heig
     };
 
     // vao/vbo
-    glGenVertexArrays(1, &vao); // one attribute
-    glBindVertexArray(vao);
+    glGenVertexArrays(1, &Rect::vao); // one attribute
+    glBindVertexArray(Rect::vao);
 
     // load vertex positions
-    glGenBuffers(1, &vbo); // one buffer in this vertex buffer object
-    glBindBuffer(GL_ARRAY_BUFFER, vbo); // set current buffer
+    glGenBuffers(1, &Rect::vbo); // one buffer in this vertex buffer object
+    glBindBuffer(GL_ARRAY_BUFFER, Rect::vbo); // set current buffer
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), &vertices[0],
                  GL_STATIC_DRAW); // copy data to GPU memory
 
@@ -41,13 +53,8 @@ Rect::Rect(int x, int y, int width, int height) : x(x), y(y), width(width), heig
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
 }
 
-Rect::~Rect() {
-    glDeleteBuffers(1, &vbo);
-    glDeleteVertexArrays(1, &vao);
-}
-
 void Rect::render(glm::mat4 projectionMatrix, bool wireframe) {
-    this->shaderProgram.use();
+    Rect::shaderProgram->use();
 
     glm::mat4 modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, glm::vec3(static_cast<float>(x), static_cast<float>(y), 0.0f));
@@ -55,10 +62,10 @@ void Rect::render(glm::mat4 projectionMatrix, bool wireframe) {
 
     auto mvp = projectionMatrix * modelMatrix;
 
-    this->shaderProgram.setUniform("mvp", mvp);
-    this->shaderProgram.setUniform("color", glm::ivec3(1.0f, 0.0f, 1.0f));
+    Rect::shaderProgram->setUniform("mvp", mvp);
+    Rect::shaderProgram->setUniform("color", glm::ivec3(1.0f, 0.0f, 1.0f));
 
-    glBindVertexArray(this->vao);
+    glBindVertexArray(Rect::vao);
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(6));
 }
