@@ -11,4 +11,6 @@ set(CONAN_SYSTEM_INCLUDES ON)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
+add_subdirectory(external/yoga)
+add_subdirectory(external/gumbo)
 add_subdirectory(VoxelWorld)

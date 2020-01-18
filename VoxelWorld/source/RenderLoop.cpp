@@ -16,8 +16,6 @@
 #include "debug_ui/imgui_impl_glfw.h"
 #include "debug_ui/imgui_impl_opengl3.h"
 
-#include "2d/Rect.h"
-
 static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*/, GLenum severity, GLsizei /*unused*/,
                                 const GLchar* message, const void* /*unused*/) {
     if (severity != GL_DEBUG_SEVERITY_NOTIFICATION) {
@@ -108,6 +106,8 @@ void RenderLoop::initGui() {
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     ImGui_ImplOpenGL3_Init();
     ImGui::StyleColorsDark();
+
+    ui = std::make_shared<UI>(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
 }
 
 void RenderLoop::updateCamera(int viewportWidth, int viewportHeight) {
@@ -116,6 +116,7 @@ void RenderLoop::updateCamera(int viewportWidth, int viewportHeight) {
                          static_cast<float>(viewportWidth) / static_cast<float>(viewportHeight), NEAR_PLANE, FAR_PLANE);
     this->projectionMatrix2D =
         glm::ortho(0.0f, static_cast<float>(viewportWidth), 0.0f, static_cast<float>(viewportHeight), -1.0f, 1.0f);
+    this->ui->windowChanged(viewportWidth, viewportHeight);
 }
 
 void RenderLoop::mainLoop() {
@@ -123,9 +124,6 @@ void RenderLoop::mainLoop() {
 
     World world;
     WorldRenderer worldRenderer(CAMERA_CHUNK_DISTANCE);
-
-    Rect rect1(50, 250, 200, 200);
-    Rect rect2(300, 250, 200, 200);
 
     bool leftMouseDown = false;
     bool rightMouseDown = false;
@@ -169,8 +167,7 @@ void RenderLoop::mainLoop() {
         worldRenderer.render(world, vp, this->cameraPos, this->cameraFront, wireframe);
 
         // draw rect
-        rect1.render(projectionMatrix2D, wireframe);
-        rect2.render(projectionMatrix2D, wireframe);
+        ui->render();
 
         // draw ImGui debug GUI
         if (drawGui) {

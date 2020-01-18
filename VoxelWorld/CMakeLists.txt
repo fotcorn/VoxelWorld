@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 set(GLSLShaderPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/glsl)
 set(MeshPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/meshes)
 set(TexturePath ${CMAKE_CURRENT_SOURCE_DIR}/resources/textures)
+set(UIPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/ui)
 
 add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
@@ -20,11 +21,14 @@ add_executable(VoxelWorld
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/2d/Rect.cpp
 
+	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/DOM.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/UI.cpp
+
 	${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_glfw.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_opengl3.cpp
 )
 
-target_link_libraries(VoxelWorld ${CONAN_LIBS})
+target_link_libraries(VoxelWorld ${CONAN_LIBS} gumbo yogacore)
 
 target_compile_definitions(VoxelWorld PRIVATE
 	# Path for OpenGL shaders
@@ -33,6 +37,8 @@ target_compile_definitions(VoxelWorld PRIVATE
 	MESH_PATH="${MeshPath}"
 	# Path for textures
 	TEXTURE_PATH="${TexturePath}"
+  	# Path for textures
+	UI_PATH="${UIPath}"
 	# Enable GLM experimental features
 	GLM_ENABLE_EXPERIMENTAL=1
 	# Workaround for broken detection of clang c++11 stdlib

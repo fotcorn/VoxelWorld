@@ -11,6 +11,7 @@
 
 #include "Mesh.h"
 #include "ShaderProgram.h"
+#include "ui/UI.h"
 
 class RenderLoop {
 public:
@@ -58,6 +59,8 @@ private:
     float pitch = -90.0f;
     float lastX = 0.0f;
     float lastY = 0.0f;
+
+    std::shared_ptr<UI> ui;
 };
 
 #endif // !RENDER_LOOP_H
