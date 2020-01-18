@@ -17,15 +17,21 @@ static std::optional<DOMNode> buildDOM(std::shared_ptr<GumboNode> node) {
     }
     DOMNode domNode(gumbo_normalized_tagname(node->v.element.tag));
 
-    GumboVector* children = &node->v.element.children;
-    for (unsigned int i = 0; i < children->length; ++i) {
-        auto childNode = buildDOM(std::shared_ptr<GumboNode>(static_cast<GumboNode*>(children->data[i])));
+    GumboVector children = node->v.element.children;
+    for (unsigned int i = 0; i < children.length; i++) {
+        auto childNode = buildDOM(std::shared_ptr<GumboNode>(static_cast<GumboNode*>(children.data[i])));
         if (childNode.has_value()) {
             domNode.children.push_back(childNode.value());
         }
     }
 
-    // TODO: parse attributes
+    GumboVector attributes = node->v.element.attributes;
+    for (unsigned int i = 0; i < attributes.length; i++) {
+        auto attribute = static_cast<GumboAttribute*>(attributes.data[i]);
+        domNode.attributes[attribute->name] = attribute->value;
+        std::cout << attribute->name << ":" << attribute->value << std::endl;
+    }
+
     // TODO: parse style attribute
 
     return std::make_optional(domNode);
