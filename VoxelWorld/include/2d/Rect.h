@@ -8,11 +8,11 @@
 class Rect {
 
 public:
-    Rect(int x, int y, int width, int height);
+    Rect(float x, float y, float width, float height);
     void render(glm::mat4 projectionMatrix2D, bool wireframe);
 
 private:
-    int x, y, width, height;
+    float x, y, width, height;
 
     static void init();
     static std::shared_ptr<ShaderProgram> shaderProgram;
