@@ -9,7 +9,8 @@
 #include <gumbo.h>
 
 #include <fmt/format.h>
-using namespace fmt;
+
+#include <boost/algorithm/string.hpp>
 
 static std::optional<DOMNode> buildDOM(std::shared_ptr<GumboNode> node) {
     if (node->type != GUMBO_NODE_ELEMENT) {
@@ -28,17 +29,32 @@ static std::optional<DOMNode> buildDOM(std::shared_ptr<GumboNode> node) {
     GumboVector attributes = node->v.element.attributes;
     for (unsigned int i = 0; i < attributes.length; i++) {
         auto attribute = static_cast<GumboAttribute*>(attributes.data[i]);
-        domNode.attributes[attribute->name] = attribute->value;
-        std::cout << attribute->name << ":" << attribute->value << std::endl;
+        auto name = std::string(attribute->name);
+        auto value = std::string(attribute->value);
+        domNode.attributes[name] = value;
+
+        if (name == "style") {
+            std::vector<std::string> properties;
+            boost::split(properties, value, boost::is_any_of(";"));
+
+            for (const std::string& property : properties) {
+                if (property == "") {
+                    continue;
+                }
+                std::vector<std::string> nameValue;
+                boost::split(nameValue, property, boost::is_any_of(":"));
+                if (nameValue.size() != 2) {
+                    throw std::runtime_error(fmt::format("invalid css property: {}", property));
+                    domNode.styles[nameValue[0]] = nameValue[1];
+                }
+            }
+        }
     }
-
-    // TODO: parse style attribute
-
     return std::make_optional(domNode);
 }
 
 DOMNode loadDOM(const std::string& filename) {
-    std::ifstream in(format("{}/{}", UI_PATH, filename), std::ios::in | std::ios::binary);
+    std::ifstream in(fmt::format("{}/{}", UI_PATH, filename), std::ios::in | std::ios::binary);
     if (!in) {
         throw std::runtime_error("Unable to open UI html file");
     }
