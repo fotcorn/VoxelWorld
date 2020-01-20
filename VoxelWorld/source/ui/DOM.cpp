@@ -45,8 +45,11 @@ static std::optional<DOMNode> buildDOM(std::shared_ptr<GumboNode> node) {
                 boost::split(nameValue, property, boost::is_any_of(":"));
                 if (nameValue.size() != 2) {
                     throw std::runtime_error(fmt::format("invalid css property: {}", property));
-                    domNode.styles[nameValue[0]] = nameValue[1];
                 }
+
+                auto propertyName = boost::trim_copy(nameValue[0]);
+                auto propertyValue = boost::trim_copy(nameValue[1]);
+                domNode.styles[propertyName] = propertyValue;
             }
         }
     }
