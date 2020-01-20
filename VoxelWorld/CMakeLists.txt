@@ -23,6 +23,7 @@ add_executable(VoxelWorld
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/DOM.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/UI.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/Layout.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_glfw.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_opengl3.cpp

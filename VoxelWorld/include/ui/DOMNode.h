@@ -2,8 +2,11 @@
 #define DOMNODE_H
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
+
+#include <yoga/Yoga.h>
 
 class DOMNode {
 public:
@@ -19,6 +22,8 @@ public:
     std::map<std::string, std::string> attributes;
     std::map<std::string, std::string> styles;
     std::vector<DOMNode> children;
+
+    YGNodeRef layoutNode = nullptr;
 
 private:
     std::string _name;

@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "2d/Rect.h"
 #include "ui/DOMNode.h"
 
 class UI {
@@ -13,6 +14,8 @@ public:
 
 private:
     DOMNode root;
+    std::vector<Rect> rects;
+    glm::mat4 projectionMatrix = glm::mat4(1.0f);
 };
 
 #endif /* UI_H */
