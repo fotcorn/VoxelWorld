@@ -13,7 +13,8 @@ GLuint Rect::vao = 0;
 GLuint Rect::vbo = 0;
 std::shared_ptr<ShaderProgram> Rect::shaderProgram = std::shared_ptr<ShaderProgram>();
 
-Rect::Rect(float x, float y, float width, float height) : x(x), y(y), width(width), height(height) {
+Rect::Rect(float x, float y, float width, float height, glm::vec3 color)
+    : x(x), y(y), width(width), height(height), color(color) {
     if (!Rect::shaderProgram) {
         Rect::init();
     }
@@ -63,7 +64,7 @@ void Rect::render(glm::mat4 projectionMatrix, bool wireframe) {
     auto mvp = projectionMatrix * modelMatrix;
 
     Rect::shaderProgram->setUniform("mvp", mvp);
-    Rect::shaderProgram->setUniform("color", glm::ivec3(1.0f, 0.0f, 1.0f));
+    Rect::shaderProgram->setUniform("color", color);
 
     glBindVertexArray(Rect::vao);
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);

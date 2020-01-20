@@ -42,7 +42,21 @@ static void buildRects(const DOMNode& node, std::vector<Rect>& rects) {
     float width = YGNodeLayoutGetWidth(node.layoutNode);
     float height = YGNodeLayoutGetHeight(node.layoutNode);
 
-    rects.push_back(Rect(x, y, width, height));
+    glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+    auto colorProperty = node.styles.find("background-color");
+    if (colorProperty != node.styles.end()) {
+        auto hexColor = colorProperty->second;
+        if (hexColor.length() != 7 || hexColor[0] != '#') {
+            throw std::runtime_error(fmt::format("Invalid background color: {}", hexColor));
+        }
+        int r = std::stoi(hexColor.substr(1, 2), nullptr, 16);
+        int g = std::stoi(hexColor.substr(3, 2), nullptr, 16);
+        int b = std::stoi(hexColor.substr(5, 2), nullptr, 16);
+        color =
+            glm::vec3(static_cast<float>(r) / 255.0f, static_cast<float>(g) / 255.0f, static_cast<float>(b) / 255.0f);
+    }
+
+    rects.push_back(Rect(x, y, width, height, color));
 
     for (auto& child : node.children) {
         buildRects(child, rects);
