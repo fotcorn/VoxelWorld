@@ -13,8 +13,8 @@ GLuint Rect::vao = 0;
 GLuint Rect::vbo = 0;
 std::shared_ptr<ShaderProgram> Rect::shaderProgram = std::shared_ptr<ShaderProgram>();
 
-Rect::Rect(float x, float y, float width, float height, glm::vec3 color)
-    : x(x), y(y), width(width), height(height), color(color) {
+Rect::Rect(float x, float y, float z, float width, float height, glm::vec3 color)
+    : x(x), y(y), z(z), width(width), height(height), color(color) {
     if (!Rect::shaderProgram) {
         Rect::init();
     }
@@ -58,7 +58,7 @@ void Rect::render(glm::mat4 projectionMatrix, bool wireframe) {
     Rect::shaderProgram->use();
 
     glm::mat4 modelMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(x, y, 0.0f));
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(x, y, z));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(width, height, 1.0f));
 
     auto mvp = projectionMatrix * modelMatrix;
