@@ -56,7 +56,10 @@ static void buildRects(const DOMNode& node, std::vector<Rect>& rects, int depth)
             glm::vec3(static_cast<float>(r) / 255.0f, static_cast<float>(g) / 255.0f, static_cast<float>(b) / 255.0f);
     }
 
-    rects.push_back(Rect(x, y, static_cast<float>(depth), width, height, color));
+    const auto renderProperty = node.styles.find("visibility");
+    if (renderProperty == node.styles.end() || renderProperty->second != "hidden") {
+        rects.push_back(Rect(x, y, static_cast<float>(depth), width, height, color));
+    }
 
     for (auto& child : node.children) {
         buildRects(child, rects, depth + 1);
