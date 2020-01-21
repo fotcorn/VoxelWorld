@@ -30,14 +30,15 @@ static std::optional<DOMNode> buildDOM(std::shared_ptr<GumboNode> node) {
     for (unsigned int i = 0; i < attributes.length; i++) {
         auto attribute = static_cast<GumboAttribute*>(attributes.data[i]);
         auto name = std::string(attribute->name);
-        auto value = boost::to_lower_copy(std::string(attribute->value));
+        auto value = std::string(attribute->value);
         domNode.attributes[name] = value;
 
         if (name == "style") {
             std::vector<std::string> properties;
             boost::split(properties, value, boost::is_any_of(";"));
 
-            for (const std::string& property : properties) {
+            for (const std::string& prop : properties) {
+                const auto property = boost::trim_copy(boost::to_lower_copy(prop));
                 if (property == "") {
                     continue;
                 }
