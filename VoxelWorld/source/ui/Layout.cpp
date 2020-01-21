@@ -3,6 +3,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <fmt/format.h>
+#include <regex>
 #include <yoga/Yoga.h>
 
 static int convertPixel(const std::string& pixel) {
@@ -14,16 +15,65 @@ static int convertPixel(const std::string& pixel) {
     }
 }
 
+static const std::regex numberRegex("^(0|[1-9]\\d*)$");
+static const std::regex numberPXRegex("^(0|[1-9]\\d*)px$");
+static const std::regex numberPercentRegex("^(0|[1-9]\\d*)%$");
+
+static std::optional<float> parsePixel(const std::string& value) {
+    std::smatch match;
+    std::regex_match(value, match, numberPXRegex);
+    if (match.size() != 2) {
+        std::regex_match(value, match, numberRegex);
+    }
+    if (match.size() == 2) {
+        return std::make_optional(std::stof(match[1].str()));
+    } else {
+        return std::nullopt;
+    }
+}
+
+static std::optional<float> parsePercent(const std::string& value) {
+    std::smatch match;
+    std::regex_match(value, match, numberPercentRegex);
+    if (match.size() == 2) {
+        return std::make_optional(std::stof(match[1].str()));
+    } else {
+        return std::nullopt;
+    }
+}
+
 static void buildYogaTree(DOMNode& node, const YGConfigRef config) {
     const YGNodeRef yogaNode = YGNodeNewWithConfig(config);
 
     for (const auto& [style, value] : node.styles) {
         if (style == "height") {
-            int pixel = convertPixel(value);
-            YGNodeStyleSetHeight(yogaNode, static_cast<float>(pixel));
+            auto pixel = parsePixel(value);
+            if (pixel.has_value()) {
+                YGNodeStyleSetHeight(yogaNode, pixel.value());
+                continue;
+            }
+
+            auto percent = parsePercent(value);
+            if (percent.has_value()) {
+                YGNodeStyleSetHeightPercent(yogaNode, percent.value());
+                continue;
+            }
+
+            throw std::runtime_error(fmt::format("Invalid height css value: {}", value));
         } else if (style == "width") {
-            int pixel = convertPixel(value);
-            YGNodeStyleSetWidth(yogaNode, static_cast<float>(pixel));
+            auto pixel = parsePixel(value);
+            if (pixel.has_value()) {
+                YGNodeStyleSetWidth(yogaNode, pixel.value());
+                continue;
+            }
+
+            auto percent = parsePercent(value);
+            if (percent.has_value()) {
+                YGNodeStyleSetWidthPercent(yogaNode, percent.value());
+                continue;
+            }
+
+            throw std::runtime_error(fmt::format("Invalid width css value: {}", value));
         } else if (style == "justify-content") {
             if (value == "flex-start") {
                 YGNodeStyleSetJustifyContent(yogaNode, YGJustifyFlexStart);
