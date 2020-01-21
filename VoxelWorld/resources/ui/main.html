@@ -1,13 +1,38 @@
-<style>
-  div {
-    visibility: visible;
-  }
-</style>
-
-<div
-  style="height: 100px; width: 100px;background-color: #FF0000;visibility: hidden;"
->
-  <div style="height: 10px; width: 20px;background-color: #FFFF00;"></div>
-  <div style="height: 10px; width: 20px;background-color: #008000;"></div>
-  <div style="height: 10px; width: 20px;background-color: #0000FF"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      div {
+        display: flex;
+        flex-direction: column;
+        visibility: visible;
+      }
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 100%; height: 100%; justify-content: flex-end; visibility: hidden;"
+    >
+      <div
+        style="width: 100%; background-color: #008000; visibility: hidden; flex-direction: row; justify-content: center;"
+      >
+        <div
+          style="width: 150px; height: 150px; background-color: #0000ff;"
+        ></div>
+        <div
+          style="width: 150px; height: 150px; background-color: #FF0000; margin-left: 10px"
+        ></div>
+      </div>
+    </div>
+  </body>
+</html>
