@@ -48,6 +48,21 @@ static void buildYogaTree(DOMNode& node, const YGConfigRef config) {
             } else if (value == "row-reverse") {
                 YGNodeStyleSetFlexDirection(yogaNode, YGFlexDirectionRowReverse);
             }
+        } else if (boost::starts_with(style, "margin-")) {
+            YGEdge edge;
+            if (style == "margin-top") {
+                edge = YGEdgeTop;
+            } else if (style == "margin-bottom") {
+                edge = YGEdgeBottom;
+            } else if (style == "margin-left") {
+                edge = YGEdgeLeft;
+            } else if (style == "margin-right") {
+                edge = YGEdgeRight;
+            } else {
+                throw std::runtime_error(fmt::format("invalud margin css property: {}", style));
+            }
+            int pixel = convertPixel(value);
+            YGNodeStyleSetMargin(yogaNode, edge, static_cast<float>(pixel));
         }
     }
     node.layoutNode = yogaNode;
