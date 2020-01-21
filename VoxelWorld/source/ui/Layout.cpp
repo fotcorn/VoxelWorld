@@ -38,6 +38,16 @@ static void buildYogaTree(DOMNode& node, const YGConfigRef config) {
             } else if (value == "space-evenly") {
                 YGNodeStyleSetJustifyContent(yogaNode, YGJustifySpaceEvenly);
             }
+        } else if (style == "flex-direction") {
+            if (value == "column") {
+                YGNodeStyleSetFlexDirection(yogaNode, YGFlexDirectionColumn);
+            } else if (value == "column-reverse") {
+                YGNodeStyleSetFlexDirection(yogaNode, YGFlexDirectionColumnReverse);
+            } else if (value == "row") {
+                YGNodeStyleSetFlexDirection(yogaNode, YGFlexDirectionRow);
+            } else if (value == "row-reverse") {
+                YGNodeStyleSetFlexDirection(yogaNode, YGFlexDirectionRowReverse);
+            }
         }
     }
     node.layoutNode = yogaNode;
