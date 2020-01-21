@@ -24,6 +24,20 @@ static void buildYogaTree(DOMNode& node, const YGConfigRef config) {
         } else if (style == "width") {
             int pixel = convertPixel(value);
             YGNodeStyleSetWidth(yogaNode, static_cast<float>(pixel));
+        } else if (style == "justify-content") {
+            if (value == "flex-start") {
+                YGNodeStyleSetJustifyContent(yogaNode, YGJustifyFlexStart);
+            } else if (value == "center") {
+                YGNodeStyleSetJustifyContent(yogaNode, YGJustifyCenter);
+            } else if (value == "flex-end") {
+                YGNodeStyleSetJustifyContent(yogaNode, YGJustifyFlexEnd);
+            } else if (value == "space-between") {
+                YGNodeStyleSetJustifyContent(yogaNode, YGJustifySpaceBetween);
+            } else if (value == "space-around") {
+                YGNodeStyleSetJustifyContent(yogaNode, YGJustifySpaceAround);
+            } else if (value == "space-evenly") {
+                YGNodeStyleSetJustifyContent(yogaNode, YGJustifySpaceEvenly);
+            }
         }
     }
     node.layoutNode = yogaNode;
