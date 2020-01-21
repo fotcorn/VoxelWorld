@@ -30,7 +30,7 @@ static std::optional<DOMNode> buildDOM(std::shared_ptr<GumboNode> node) {
     for (unsigned int i = 0; i < attributes.length; i++) {
         auto attribute = static_cast<GumboAttribute*>(attributes.data[i]);
         auto name = std::string(attribute->name);
-        auto value = std::string(attribute->value);
+        auto value = boost::to_lower_copy(std::string(attribute->value));
         domNode.attributes[name] = value;
 
         if (name == "style") {
