@@ -12,8 +12,7 @@ UI::UI(const int width, const int height) : root(loadDOM("main.html")) {
 
 void UI::windowChanged(const int width, const int height) {
     this->rects = calculateLayout(root, width, height);
-    this->projectionMatrix =
-        glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -100.0f, 100.0f);
+    this->projectionMatrix = glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f, -1.0f, 1.0f);
 }
 
 void UI::render() {
