@@ -125,7 +125,7 @@ static void buildYogaTree(DOMNode& node, const YGConfigRef config) {
     }
 }
 
-static void buildRects(const DOMNode& node, std::vector<Rect>& rects, int depth) {
+static void buildRects(const DOMNode& node, std::vector<Rect>& rects) {
     float x = YGNodeLayoutGetLeft(node.layoutNode);
     float y = YGNodeLayoutGetTop(node.layoutNode);
     float width = YGNodeLayoutGetWidth(node.layoutNode);
@@ -147,11 +147,11 @@ static void buildRects(const DOMNode& node, std::vector<Rect>& rects, int depth)
 
     const auto renderProperty = node.styles.find("visibility");
     if (renderProperty == node.styles.end() || renderProperty->second != "hidden") {
-        rects.push_back(Rect(x, y, static_cast<float>(depth), width, height, color));
+        rects.push_back(Rect(x, y, 0.0f, width, height, color));
     }
 
     for (auto& child : node.children) {
-        buildRects(child, rects, depth + 1);
+        buildRects(child, rects);
     }
 }
 
@@ -163,7 +163,7 @@ std::vector<Rect> calculateLayout(DOMNode& root, const int width, const int heig
     YGNodeCalculateLayout(root.layoutNode, static_cast<float>(width), static_cast<float>(height), YGDirectionLTR);
 
     std::vector<Rect> rects;
-    buildRects(root, rects, 0);
+    buildRects(root, rects);
 
     YGNodeFreeRecursive(root.layoutNode);
     YGConfigFree(config);

@@ -16,7 +16,7 @@ void UI::windowChanged(const int width, const int height) {
 }
 
 void UI::render() {
-    for (auto& rect : rects) {
-        rect.render(projectionMatrix, false);
+    for (auto it = rects.rbegin(); it != rects.rend(); it++) {
+        it->render(projectionMatrix, false);
     }
 }
