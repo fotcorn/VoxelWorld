@@ -1,0 +1,6 @@
+[submodule "external/gumbo"]
+	path = external/gumbo
+	url = https://github.com/o0white0o/gumbo-parser.git
+[submodule "external/yoga/src"]
+	path = external/yoga/src
+	url = https://github.com/facebook/yoga.git

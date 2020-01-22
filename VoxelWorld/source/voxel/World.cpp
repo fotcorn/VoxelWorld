@@ -101,7 +101,7 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
     }
 }
 
-void World::addBlock() {
+void World::addBlock(TextureAtlas blockType) {
     if (selectedChunkPosition) {
         auto chunk = world[*selectedChunkPosition];
 
@@ -128,7 +128,7 @@ void World::addBlock() {
         }
 
         if ((*chunk)(position.x, position.y, position.z) == BLOCK_AIR) {
-            (*chunk)(position.x, position.y, position.z) = TextureAtlas::LAVA;
+            (*chunk)(position.x, position.y, position.z) = blockType;
             chunk->changed = true;
         }
         simulationChunks.insert(selectedChunkPosition.value());

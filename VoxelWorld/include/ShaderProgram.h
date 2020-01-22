@@ -16,6 +16,7 @@ public:
     void setAttribLocation(const std::string& attribute, unsigned int location);
     void setUniform(const std::string& uniform, glm::mat4 data);
     void setUniform(const std::string& uniform, int data);
+    void setUniform(const std::string& uniform, glm::vec3 data);
     void link();
     void use();
 

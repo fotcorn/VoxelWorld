@@ -7,6 +7,7 @@
 
 #include <glm/vec3.hpp>
 
+#include "TextureAtlas.h"
 #include "WorldGenerator.h"
 
 enum class Side {
@@ -20,7 +21,7 @@ enum class Side {
 
 class World {
 public:
-    void addBlock();
+    void addBlock(TextureAtlas blockType);
     void removeBlock();
 
     void cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, int cameraChunkDistance);

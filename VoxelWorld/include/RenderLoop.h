@@ -11,10 +11,12 @@
 
 #include "Mesh.h"
 #include "ShaderProgram.h"
+#include "ui/UI.h"
+#include "voxel/World.h"
 
 class RenderLoop {
 public:
-    void init();
+    RenderLoop();
     void mainLoop();
 
 private:
@@ -23,17 +25,20 @@ private:
     void initGlew();
     void initOpenGL();
     void initGui();
-    void initCamera();
+    void updateCamera(int viewportWidth, int viewportHeight);
 
     void handleInput();
 
     void mouseCursorPositionCallback(double xPosition, double yPosition);
     void mouseScrollCallback(double xOffset, double yOffset);
 
+    World world;
+
     // members
     GLFWwindow* window = nullptr;
 
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
+    glm::mat4 projectionMatrix2D = glm::mat4(1.0f);
 
     bool drawGui = false;
     bool showMouseCursor = false;
@@ -57,6 +62,8 @@ private:
     float pitch = -90.0f;
     float lastX = 0.0f;
     float lastY = 0.0f;
+
+    std::shared_ptr<UI> ui;
 };
 
 #endif // !RENDER_LOOP_H

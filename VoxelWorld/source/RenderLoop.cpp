@@ -11,10 +11,11 @@
 
 #include <fmt/format.h>
 
+#include "TextureAtlas.h"
 #include "voxel/WorldRenderer.h"
 
-#include "gui/imgui_impl_glfw.h"
-#include "gui/imgui_impl_opengl3.h"
+#include "debug_ui/imgui_impl_glfw.h"
+#include "debug_ui/imgui_impl_opengl3.h"
 
 static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*/, GLenum severity, GLsizei /*unused*/,
                                 const GLchar* message, const void* /*unused*/) {
@@ -33,12 +34,14 @@ const float FAR_PLANE = 100.0f;
 
 const int CAMERA_CHUNK_DISTANCE = 15;
 
-void RenderLoop::init() {
+RenderLoop::RenderLoop() {
     this->initGlfw();
     this->initGlew();
     this->initOpenGL();
     this->initGui();
-    this->initCamera();
+    ui = std::make_shared<UI>(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
+    this->updateCamera(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
+    ui->handleKeyUp(Key::ONE);
 }
 
 void RenderLoop::initGlfw() {
@@ -67,8 +70,7 @@ void RenderLoop::initGlfw() {
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
         auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
-        loop->projectionMatrix = glm::perspective(
-            glm::radians(CAMERA_FOV), static_cast<float>(width) / static_cast<float>(height), NEAR_PLANE, FAR_PLANE);
+        loop->updateCamera(width, height);
     });
 
     glfwSetWindowUserPointer(this->window, static_cast<void*>(this));
@@ -109,20 +111,19 @@ void RenderLoop::initGui() {
     ImGui::StyleColorsDark();
 }
 
-void RenderLoop::initCamera() {
-    this->projectionMatrix = glm::perspective(
-        glm::radians(CAMERA_FOV), static_cast<float>(INITIAL_WINDOW_WIDTH) / static_cast<float>(INITIAL_WINDOW_HEIGHT),
-        NEAR_PLANE, FAR_PLANE);
+void RenderLoop::updateCamera(int viewportWidth, int viewportHeight) {
+    this->projectionMatrix =
+        glm::perspective(glm::radians(CAMERA_FOV),
+                         static_cast<float>(viewportWidth) / static_cast<float>(viewportHeight), NEAR_PLANE, FAR_PLANE);
+    this->projectionMatrix2D =
+        glm::ortho(0.0f, static_cast<float>(viewportWidth), 0.0f, static_cast<float>(viewportHeight), -1.0f, 1.0f);
+    this->ui->windowChanged(viewportWidth, viewportHeight);
 }
 
 void RenderLoop::mainLoop() {
     bool wireframe = false;
 
-    World world;
     WorldRenderer worldRenderer(CAMERA_CHUNK_DISTANCE);
-
-    bool leftMouseDown = false;
-    bool rightMouseDown = false;
 
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -135,36 +136,24 @@ void RenderLoop::mainLoop() {
             lastSimulation = currentFrame;
         }
 
+        // input
         this->handleInput();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 view = glm::lookAt(this->cameraPos, this->cameraPos + this->cameraFront, this->cameraUp);
 
-        // draw cube
+        // render world
         glm::mat4 vp = this->projectionMatrix * view;
-
         world.cameraChanged(this->cameraPos, this->cameraFront, CAMERA_CHUNK_DISTANCE);
-
-        int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-        if (state == GLFW_PRESS) {
-            leftMouseDown = true;
-        } else if (state == GLFW_RELEASE && leftMouseDown) {
-            world.addBlock();
-            leftMouseDown = false;
-        }
-        state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
-        if (state == GLFW_PRESS) {
-            rightMouseDown = true;
-        } else if (state == GLFW_RELEASE && rightMouseDown) {
-            world.removeBlock();
-            rightMouseDown = false;
-        }
-
         worldRenderer.render(world, vp, this->cameraPos, this->cameraFront, wireframe);
 
+        // draw rect
+        ui->render();
+
+        // draw ImGui debug GUI
         if (drawGui) {
-            // draw gui
+
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
@@ -192,6 +181,8 @@ void RenderLoop::mainLoop() {
 
 void RenderLoop::handleInput() {
     static bool ctrlDown = false;
+    static bool leftMouseDown = false;
+    static bool rightMouseDown = false;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         cameraPos += this->deltaTime * this->cameraSpeed * cameraFront;
@@ -211,6 +202,46 @@ void RenderLoop::handleInput() {
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
         glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
         cameraPos -= glm::vec3(0.0, 1.0f, 0.0) * (this->cameraSpeed * this->deltaTime);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+        ui->handleKeyUp(Key::ONE);
+    }
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+        ui->handleKeyUp(Key::TWO);
+    }
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+        ui->handleKeyUp(Key::THREE);
+    }
+
+    // handle mouse buttons
+    int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+    if (state == GLFW_PRESS) {
+        leftMouseDown = true;
+    } else if (state == GLFW_RELEASE && leftMouseDown) {
+        BlockType blockType = ui->selectedBlockType();
+        switch (blockType) {
+        case BlockType::GRASS:
+            world.addBlock(TextureAtlas::GROUND_EARTH);
+            break;
+        case BlockType::LAVA:
+            world.addBlock(TextureAtlas::LAVA);
+            break;
+        case BlockType::STONE:
+            world.addBlock(TextureAtlas::STONE_04);
+            break;
+        default:
+            break;
+        }
+
+        leftMouseDown = false;
+    }
+    state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+    if (state == GLFW_PRESS) {
+        rightMouseDown = true;
+    } else if (state == GLFW_RELEASE && rightMouseDown) {
+        world.removeBlock();
+        rightMouseDown = false;
     }
 
     // toggle gui with Ctrl key, you also have to press Alt to have a cursor to interact with the GUI
