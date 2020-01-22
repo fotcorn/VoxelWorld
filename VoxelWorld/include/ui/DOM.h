@@ -3,6 +3,8 @@
 
 #include "ui/DOMNode.h"
 
-DOMNode loadDOM(const std::string& filename);
+#include <memory>
+
+std::shared_ptr<DOMNode> loadDOM(const std::string& filename);
 
 #endif /* DOM_H */

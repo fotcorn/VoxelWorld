@@ -6,7 +6,8 @@
 #include <regex>
 #include <yoga/Yoga.h>
 
-static int convertPixel(const std::string& pixel) {
+namespace {
+int convertPixel(const std::string& pixel) {
     auto value = boost::replace_all_copy(pixel, "px", "");
     try {
         return std::stoi(value);
@@ -15,11 +16,11 @@ static int convertPixel(const std::string& pixel) {
     }
 }
 
-static const std::regex numberRegex("^(0|[1-9]\\d*)$");
-static const std::regex numberPXRegex("^(0|[1-9]\\d*)px$");
-static const std::regex numberPercentRegex("^(0|[1-9]\\d*)%$");
+const std::regex numberRegex("^(0|[1-9]\\d*)$");
+const std::regex numberPXRegex("^(0|[1-9]\\d*)px$");
+const std::regex numberPercentRegex("^(0|[1-9]\\d*)%$");
 
-static std::optional<float> parsePixel(const std::string& value) {
+std::optional<float> parsePixel(const std::string& value) {
     std::smatch match;
     std::regex_match(value, match, numberPXRegex);
     if (match.size() != 2) {
@@ -32,7 +33,7 @@ static std::optional<float> parsePixel(const std::string& value) {
     }
 }
 
-static std::optional<float> parsePercent(const std::string& value) {
+std::optional<float> parsePercent(const std::string& value) {
     std::smatch match;
     std::regex_match(value, match, numberPercentRegex);
     if (match.size() == 2) {
@@ -42,10 +43,10 @@ static std::optional<float> parsePercent(const std::string& value) {
     }
 }
 
-static void buildYogaTree(DOMNode& node, const YGConfigRef config) {
+void buildYogaTree(std::shared_ptr<DOMNode> node, const YGConfigRef config) {
     const YGNodeRef yogaNode = YGNodeNewWithConfig(config);
 
-    for (const auto& [style, value] : node.styles) {
+    for (const auto& [style, value] : node->styles) {
         if (style == "height") {
             auto pixel = parsePixel(value);
             if (pixel.has_value()) {
@@ -115,26 +116,27 @@ static void buildYogaTree(DOMNode& node, const YGConfigRef config) {
             YGNodeStyleSetMargin(yogaNode, edge, static_cast<float>(pixel));
         }
     }
-    node.layoutNode = yogaNode;
+    node->layoutNode = yogaNode;
 
     int i = 0;
-    for (auto& child : node.children) {
+    for (auto& child : node->children) {
         buildYogaTree(child, config);
-        YGNodeInsertChild(yogaNode, child.layoutNode, i);
+        YGNodeInsertChild(yogaNode, child->layoutNode, i);
         i++;
     }
 }
+} // namespace
 
-static void buildRects(const DOMNode& node, std::vector<Rect>& rects,
-                       std::optional<std::tuple<float, float>> parentPosition) {
-    float x = YGNodeLayoutGetLeft(node.layoutNode);
-    float y = YGNodeLayoutGetTop(node.layoutNode);
-    float width = YGNodeLayoutGetWidth(node.layoutNode);
-    float height = YGNodeLayoutGetHeight(node.layoutNode);
+void buildRects(std::shared_ptr<DOMNode> node, std::vector<Rect>& rects,
+                std::optional<std::tuple<float, float>> parentPosition) {
+    float x = YGNodeLayoutGetLeft(node->layoutNode);
+    float y = YGNodeLayoutGetTop(node->layoutNode);
+    float width = YGNodeLayoutGetWidth(node->layoutNode);
+    float height = YGNodeLayoutGetHeight(node->layoutNode);
 
     glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
-    auto colorProperty = node.styles.find("background-color");
-    if (colorProperty != node.styles.end()) {
+    auto colorProperty = node->styles.find("background-color");
+    if (colorProperty != node->styles.end()) {
         auto hexColor = colorProperty->second;
         if (hexColor.length() != 7 || hexColor[0] != '#') {
             throw std::runtime_error(fmt::format("Invalid background color: {}", hexColor));
@@ -151,28 +153,28 @@ static void buildRects(const DOMNode& node, std::vector<Rect>& rects,
         y = y + std::get<1>(parentPosition.value());
     }
 
-    const auto renderProperty = node.styles.find("visibility");
-    if (renderProperty == node.styles.end() || renderProperty->second != "hidden") {
+    const auto renderProperty = node->styles.find("visibility");
+    if (renderProperty == node->styles.end() || renderProperty->second != "hidden") {
         rects.push_back(Rect(x, y, 0.0f, width, height, color));
     }
 
     const auto position = std::make_optional(std::make_tuple(x, y));
-    for (auto& child : node.children) {
+    for (auto& child : node->children) {
         buildRects(child, rects, position);
     }
 }
 
-std::vector<Rect> calculateLayout(DOMNode& root, const int width, const int height) {
+std::vector<Rect> calculateLayout(std::shared_ptr<DOMNode> root, const int width, const int height) {
     const YGConfigRef config = YGConfigNew();
 
     buildYogaTree(root, config);
 
-    YGNodeCalculateLayout(root.layoutNode, static_cast<float>(width), static_cast<float>(height), YGDirectionLTR);
+    YGNodeCalculateLayout(root->layoutNode, static_cast<float>(width), static_cast<float>(height), YGDirectionLTR);
 
     std::vector<Rect> rects;
     buildRects(root, rects, std::nullopt);
 
-    YGNodeFreeRecursive(root.layoutNode);
+    YGNodeFreeRecursive(root->layoutNode);
     YGConfigFree(config);
 
     return rects;

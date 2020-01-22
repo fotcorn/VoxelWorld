@@ -13,7 +13,7 @@ public:
     void render();
 
 private:
-    DOMNode root;
+    std::shared_ptr<DOMNode> root;
     std::vector<Rect> rects;
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
 };

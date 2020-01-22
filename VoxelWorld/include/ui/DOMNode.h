@@ -21,7 +21,7 @@ public:
 
     std::map<std::string, std::string> attributes;
     std::map<std::string, std::string> styles;
-    std::vector<DOMNode> children;
+    std::vector<std::shared_ptr<DOMNode>> children;
 
     YGNodeRef layoutNode = nullptr;
 
