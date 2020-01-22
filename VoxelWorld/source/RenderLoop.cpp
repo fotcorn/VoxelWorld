@@ -122,11 +122,7 @@ void RenderLoop::updateCamera(int viewportWidth, int viewportHeight) {
 void RenderLoop::mainLoop() {
     bool wireframe = false;
 
-    World world;
     WorldRenderer worldRenderer(CAMERA_CHUNK_DISTANCE);
-
-    bool leftMouseDown = false;
-    bool rightMouseDown = false;
 
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -141,21 +137,6 @@ void RenderLoop::mainLoop() {
 
         // input
         this->handleInput();
-
-        int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-        if (state == GLFW_PRESS) {
-            leftMouseDown = true;
-        } else if (state == GLFW_RELEASE && leftMouseDown) {
-            world.addBlock();
-            leftMouseDown = false;
-        }
-        state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
-        if (state == GLFW_PRESS) {
-            rightMouseDown = true;
-        } else if (state == GLFW_RELEASE && rightMouseDown) {
-            world.removeBlock();
-            rightMouseDown = false;
-        }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -199,6 +180,8 @@ void RenderLoop::mainLoop() {
 
 void RenderLoop::handleInput() {
     static bool ctrlDown = false;
+    static bool leftMouseDown = false;
+    static bool rightMouseDown = false;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         cameraPos += this->deltaTime * this->cameraSpeed * cameraFront;
@@ -218,6 +201,22 @@ void RenderLoop::handleInput() {
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
         glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
         cameraPos -= glm::vec3(0.0, 1.0f, 0.0) * (this->cameraSpeed * this->deltaTime);
+    }
+
+    // handle mouse buttons
+    int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+    if (state == GLFW_PRESS) {
+        leftMouseDown = true;
+    } else if (state == GLFW_RELEASE && leftMouseDown) {
+        world.addBlock();
+        leftMouseDown = false;
+    }
+    state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+    if (state == GLFW_PRESS) {
+        rightMouseDown = true;
+    } else if (state == GLFW_RELEASE && rightMouseDown) {
+        world.removeBlock();
+        rightMouseDown = false;
     }
 
     // toggle gui with Ctrl key, you also have to press Alt to have a cursor to interact with the GUI

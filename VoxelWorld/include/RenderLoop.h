@@ -12,6 +12,7 @@
 #include "Mesh.h"
 #include "ShaderProgram.h"
 #include "ui/UI.h"
+#include "voxel/World.h"
 
 class RenderLoop {
 public:
@@ -30,6 +31,8 @@ private:
 
     void mouseCursorPositionCallback(double xPosition, double yPosition);
     void mouseScrollCallback(double xOffset, double yOffset);
+
+    World world;
 
     // members
     GLFWwindow* window = nullptr;
