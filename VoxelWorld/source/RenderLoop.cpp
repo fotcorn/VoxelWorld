@@ -11,6 +11,7 @@
 
 #include <fmt/format.h>
 
+#include "TextureAtlas.h"
 #include "voxel/WorldRenderer.h"
 
 #include "debug_ui/imgui_impl_glfw.h"
@@ -33,12 +34,14 @@ const float FAR_PLANE = 100.0f;
 
 const int CAMERA_CHUNK_DISTANCE = 15;
 
-void RenderLoop::init() {
+RenderLoop::RenderLoop() {
     this->initGlfw();
     this->initGlew();
     this->initOpenGL();
     this->initGui();
+    ui = std::make_shared<UI>(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
     this->updateCamera(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
+    ui->handleKeyUp(Key::ONE);
 }
 
 void RenderLoop::initGlfw() {
@@ -106,8 +109,6 @@ void RenderLoop::initGui() {
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     ImGui_ImplOpenGL3_Init();
     ImGui::StyleColorsDark();
-
-    ui = std::make_shared<UI>(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
 }
 
 void RenderLoop::updateCamera(int viewportWidth, int viewportHeight) {
@@ -203,12 +204,36 @@ void RenderLoop::handleInput() {
         cameraPos -= glm::vec3(0.0, 1.0f, 0.0) * (this->cameraSpeed * this->deltaTime);
     }
 
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+        ui->handleKeyUp(Key::ONE);
+    }
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+        ui->handleKeyUp(Key::TWO);
+    }
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+        ui->handleKeyUp(Key::THREE);
+    }
+
     // handle mouse buttons
     int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
     if (state == GLFW_PRESS) {
         leftMouseDown = true;
     } else if (state == GLFW_RELEASE && leftMouseDown) {
-        world.addBlock();
+        BlockType blockType = ui->selectedBlockType();
+        switch (blockType) {
+        case BlockType::GRASS:
+            world.addBlock(TextureAtlas::GROUND_EARTH);
+            break;
+        case BlockType::LAVA:
+            world.addBlock(TextureAtlas::LAVA);
+            break;
+        case BlockType::STONE:
+            world.addBlock(TextureAtlas::STONE_04);
+            break;
+        default:
+            break;
+        }
+
         leftMouseDown = false;
     }
     state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);

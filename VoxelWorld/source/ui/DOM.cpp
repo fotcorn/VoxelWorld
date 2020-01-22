@@ -75,3 +75,17 @@ std::shared_ptr<DOMNode> loadDOM(const std::string& filename) {
     auto html = buildDOM(root);
     return html->children[1]->children[0]; // html => body => div
 }
+
+std::shared_ptr<DOMNode> getElementById(const std::shared_ptr<DOMNode> root, const std::string& id) {
+    for (const auto child : root->children) {
+        const auto attribute = child->attributes.find("id");
+        if (attribute != child->attributes.end()) {
+            return child;
+        }
+        const auto node = getElementById(child, id);
+        if (node) {
+            return node;
+        }
+    }
+    return std::shared_ptr<DOMNode>();
+}

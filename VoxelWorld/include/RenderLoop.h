@@ -16,7 +16,7 @@
 
 class RenderLoop {
 public:
-    void init();
+    RenderLoop();
     void mainLoop();
 
 private:
