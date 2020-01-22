@@ -63,8 +63,8 @@ RenderChunkGenerator::RenderChunkGenerator(std::size_t cacheSize) : chunkCache(c
                 Vertex(glm::vec3(1.0f, 0.0f, -1.0f), glm::vec2(0.600780f / tas, 0.889921f))};
 }
 
-static bool needsRender(const Chunk& chunk, const int x, const int y, const int z, const glm::ivec3& position,
-                        World& world) {
+namespace {
+bool needsRender(const Chunk& chunk, const int x, const int y, const int z, const glm::ivec3& position, World& world) {
 
     if (x < 0) {
         const auto adjacentChunk = world.getChunk(position + glm::ivec3(-1, 0, 0));
@@ -93,6 +93,7 @@ static bool needsRender(const Chunk& chunk, const int x, const int y, const int 
     }
     return chunk(x, y, z) == BLOCK_AIR;
 }
+} // namespace
 
 const std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3 position, Chunk& chunk,
                                                                    World& world) {
