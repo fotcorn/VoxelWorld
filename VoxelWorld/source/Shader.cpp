@@ -3,7 +3,6 @@
 #include <GL/glew.h>
 
 #include <fmt/format.h>
-using namespace fmt;
 
 #include <fstream>
 #include <sstream>
@@ -22,9 +21,9 @@ Shader Shader::loadFromFile(const std::string& path, Type shaderType) {
     }
 
     // search paths
-    std::ifstream in(format("{}/{}", GLSL_SHADER_PATH, path), std::ios::in);
+    std::ifstream in(fmt::format("{}/{}", GLSL_SHADER_PATH, path), std::ios::in);
     if (!in) {
-        throw std::runtime_error(format("Failed to read shader file {}", path));
+        throw std::runtime_error(fmt::format("Failed to read shader file {}", path));
     }
 
     std::string source((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());

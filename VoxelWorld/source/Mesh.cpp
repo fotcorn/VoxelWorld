@@ -7,17 +7,16 @@
 #include <stdexcept>
 
 #include <fmt/format.h>
-using namespace fmt;
 
 Mesh Mesh::loadFromFile(const std::string& path) {
     Mesh model;
     Assimp::Importer importer;
 
-    std::string absPath = format("{}/{}", MESH_PATH, path);
+    std::string absPath = fmt::format("{}/{}", MESH_PATH, path);
 
     const aiScene* scene = importer.ReadFile(absPath.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        throw std::runtime_error(format("Failed to load model from {}: {}", absPath, importer.GetErrorString()));
+        throw std::runtime_error(fmt::format("Failed to load model from {}: {}", absPath, importer.GetErrorString()));
     }
 
     // load vertex positions
