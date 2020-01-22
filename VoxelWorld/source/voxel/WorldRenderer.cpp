@@ -5,7 +5,6 @@
 
 #include <glm/gtx/rotate_vector.hpp>
 
-#include <iostream>
 #include <limits>
 
 WorldRenderer::WorldRenderer(int cameraChunkDistance) {

@@ -1,7 +1,6 @@
 #include "ui/DOM.h"
 
 #include <fstream>
-#include <iostream>
 #include <memory>
 #include <optional>
 #include <sstream>

@@ -129,7 +129,6 @@ void RenderLoop::mainLoop() {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        // std::cout << 1.0f / deltaTime << std::endl;
 
         if (currentFrame - lastSimulation >= 1.0f) {
             world.simulationTick();

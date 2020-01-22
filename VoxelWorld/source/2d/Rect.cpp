@@ -4,7 +4,6 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/vec3.hpp>
 
-#include <iostream>
 #include <vector>
 
 #include "Shader.h"
