@@ -146,15 +146,14 @@ static void buildRects(const DOMNode& node, std::vector<Rect>& rects,
             glm::vec3(static_cast<float>(r) / 255.0f, static_cast<float>(g) / 255.0f, static_cast<float>(b) / 255.0f);
     }
 
+    if (parentPosition.has_value()) {
+        x = x + std::get<0>(parentPosition.value());
+        y = y + std::get<1>(parentPosition.value());
+    }
+
     const auto renderProperty = node.styles.find("visibility");
     if (renderProperty == node.styles.end() || renderProperty->second != "hidden") {
-        if (parentPosition.has_value()) {
-            float parentX = std::get<0>(parentPosition.value());
-            float parentY = std::get<1>(parentPosition.value());
-            rects.push_back(Rect(x + parentX, y + parentY, 0.0f, width, height, color));
-        } else {
-            rects.push_back(Rect(x, y, 0.0f, width, height, color));
-        }
+        rects.push_back(Rect(x, y, 0.0f, width, height, color));
     }
 
     const auto position = std::make_optional(std::make_tuple(x, y));
