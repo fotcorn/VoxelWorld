@@ -7,15 +7,15 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/mat4x4.hpp>
 
-#include <imgui.h>
+// #include <imgui.h>
 
 #include <fmt/format.h>
 
 #include "TextureAtlas.h"
 #include "voxel/WorldRenderer.h"
 
-#include "debug_ui/imgui_impl_glfw.h"
-#include "debug_ui/imgui_impl_opengl3.h"
+// #include "debug_ui/imgui_impl_glfw.h"
+// #include "debug_ui/imgui_impl_opengl3.h"
 
 static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*/, GLenum severity, GLsizei /*unused*/,
                                 const GLchar* message, const void* /*unused*/) {
@@ -97,20 +97,22 @@ void RenderLoop::initOpenGL() {
 }
 
 void RenderLoop::initGui() {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(this->window, false);
-    glfwSetMouseButtonCallback(this->window, ImGui_ImplGlfw_MouseButtonCallback);
-    glfwSetCursorPosCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
-        loop->mouseCursorPositionCallback(xPosition, yPosition);
-    });
-    glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-        ImGui_ImplGlfw_ScrollCallback(window, xPosition, yPosition);
-    });
-    glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    ImGui_ImplOpenGL3_Init();
-    ImGui::StyleColorsDark();
+    /*
+     IMGUI_CHECKVERSION();
+     ImGui::CreateContext();
+     ImGui_ImplGlfw_InitForOpenGL(this->window, false);
+     glfwSetMouseButtonCallback(this->window, ImGui_ImplGlfw_MouseButtonCallback);
+     glfwSetCursorPosCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
+         auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
+         loop->mouseCursorPositionCallback(xPosition, yPosition);
+     });
+     glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
+         ImGui_ImplGlfw_ScrollCallback(window, xPosition, yPosition);
+     });
+     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+     ImGui_ImplOpenGL3_Init();
+     ImGui::StyleColorsDark();
+     */
 }
 
 void RenderLoop::updateCamera(int viewportWidth, int viewportHeight) {
@@ -153,6 +155,7 @@ void RenderLoop::mainLoop() {
         ui->render();
 
         // draw ImGui debug GUI
+        /*
         if (drawGui) {
 
             ImGui_ImplOpenGL3_NewFrame();
@@ -171,7 +174,7 @@ void RenderLoop::mainLoop() {
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        }
+        }*/
 
         glfwPollEvents();
         glfwSwapBuffers(window);

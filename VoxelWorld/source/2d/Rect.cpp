@@ -67,6 +67,8 @@ void Rect::render(glm::mat4 projectionMatrix, bool wireframe) {
     Rect::shaderProgram->setUniform("color", color);
 
     glBindVertexArray(Rect::vao);
+#ifndef EMSCRIPTEN
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+#endif
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(6));
 }

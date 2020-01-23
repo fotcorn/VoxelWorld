@@ -1,6 +1,7 @@
 #include "ui/DOM.h"
 
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <optional>
 #include <sstream>
@@ -60,6 +61,9 @@ std::shared_ptr<DOMNode> buildDOM(GumboNode* node) {
 
 std::shared_ptr<DOMNode> loadDOM(const std::string& filename) {
     std::ifstream in(fmt::format("{}/{}", UI_PATH, filename), std::ios::in | std::ios::binary);
+
+    std::cout << fmt::format("{}/{}", UI_PATH, filename) << std::endl;
+
     if (!in) {
         throw std::runtime_error("Unable to open UI html file");
     }

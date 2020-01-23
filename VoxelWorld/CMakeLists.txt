@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 
-set(GLSLShaderPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/glsl)
-set(MeshPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/meshes)
-set(TexturePath ${CMAKE_CURRENT_SOURCE_DIR}/resources/textures)
-set(UIPath ${CMAKE_CURRENT_SOURCE_DIR}/resources/ui)
+set(GLSLShaderPath VoxelWorld/resources/shaders/glsl)
+set(MeshPath VoxelWorld/resources/meshes)
+set(TexturePath VoxelWorld/resources/textures)
+set(UIPath VoxelWorld/resources/ui)
 
 add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
@@ -26,8 +26,8 @@ add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/UI.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/Layout.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_glfw.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_opengl3.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_glfw.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/source/debug_ui/imgui_impl_opengl3.cpp
 )
 
 target_link_libraries(VoxelWorld ${CONAN_LIBS} gumbo yogacore)

@@ -21,7 +21,9 @@ RenderChunk::RenderChunk(const std::vector<Vertex>& vertices) : verticesCount(ve
 
 void RenderChunk::render(bool wireframe) {
     glBindVertexArray(this->vao);
+#ifndef EMSCRIPTEN
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+#endif
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(verticesCount));
 }
 
