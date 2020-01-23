@@ -13,6 +13,10 @@ class VoxelWorld(ConanFile):
   ]
   generators = 'cmake',
 
+  default_options = {
+    'boost:header_only': True,
+  }
+
   def build(self):
     cmake = CMake(self)
     cmake.configure()
