@@ -9,7 +9,6 @@ class VoxelWorld(ConanFile):
     'stb/20180214@conan/stable',
     'imgui/1.62@bincrafters/stable',
     'fmt/5.2.1@bincrafters/stable',
-    'Assimp/4.1.0@jacmoe/stable',
     'boost/1.70.0@conan/stable',
   ]
   generators = 'cmake',

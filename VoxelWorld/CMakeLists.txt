@@ -10,7 +10,7 @@ add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/RenderLoop.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/Shader.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ShaderProgram.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/Mesh.cpp
+	# ${CMAKE_CURRENT_SOURCE_DIR}/source/Mesh.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/Texture.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/RenderChunk.cpp
