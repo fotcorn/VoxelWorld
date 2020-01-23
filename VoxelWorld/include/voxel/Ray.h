@@ -39,7 +39,7 @@ public:
         }
 
         t = tmin;
-        return std::optional(t);
+        return std::optional<float>(t);
     }
 
 private:

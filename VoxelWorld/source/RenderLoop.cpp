@@ -83,7 +83,9 @@ void RenderLoop::initGlew() {
 
 void RenderLoop::initOpenGL() {
     glEnable(GL_DEBUG_OUTPUT);
+#ifndef EMSCRIPTEN
     glDebugMessageCallback(openglErrorCallback, nullptr);
+#endif
 
     glEnable(GL_DEPTH_TEST); // enable depth testing
     glDepthFunc(GL_LESS); // smaller value is closer
