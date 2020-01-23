@@ -198,16 +198,16 @@ std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::canCreateBlock(std::sha
         return std::make_tuple(newChunkPosition, newBlockPosition);
     }
 
-    // if the block below the new block is not air and not lava, add the block
+    // if the block below the new block is not air and not water, add the block
     const auto blockBelowType = (*newChunk)(newBlockPosition + glm::ivec3(0, -1, 0));
-    if (blockBelowType != BLOCK_AIR && blockBelowType != TextureAtlas::LAVA) {
+    if (blockBelowType != BLOCK_AIR && blockBelowType != TextureAtlas::WATER) {
         return std::make_tuple(newChunkPosition, newBlockPosition);
     }
 
     // if the block below the new block is air, but the block below the origin block is not air/water, add block anyway
     // (think waterfall)
     const auto originBlockType = (*chunk)(originBlock + glm::ivec3(0, -1, 0));
-    if (originBlockType != TextureAtlas::LAVA && originBlockType != BLOCK_AIR) {
+    if (originBlockType != TextureAtlas::WATER && originBlockType != BLOCK_AIR) {
         return std::make_tuple(newChunkPosition, newBlockPosition);
     }
 
@@ -222,7 +222,7 @@ void World::simulationTick() {
         for (int x = 0; x < CHUNK_SIZE; x++) {
             for (int y = 0; y < CHUNK_HEIGHT; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
-                    if ((*chunk)(x, y, z) == TextureAtlas::LAVA) {
+                    if ((*chunk)(x, y, z) == TextureAtlas::WATER) {
                         // block below current block
                         glm::ivec3 blockPositionBelow = glm::ivec3(x, y - 1, z);
                         if (y != 0 && (*chunk)(blockPositionBelow) == BLOCK_AIR) {
@@ -257,7 +257,7 @@ void World::simulationTick() {
     for (const auto& [chunkPosition, blocks] : newBlocks) {
         const auto chunk = world[chunkPosition];
         for (const auto& block : blocks) {
-            (*chunk)(block.x, block.y, block.z) = TextureAtlas::LAVA;
+            (*chunk)(block.x, block.y, block.z) = TextureAtlas::WATER;
         }
         chunk->changed = true;
         simulationChunks.insert(chunkPosition);

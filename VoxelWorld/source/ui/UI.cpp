@@ -36,8 +36,8 @@ std::string blockTypeToString(BlockType type) {
         return "stone";
     case BlockType::GRASS:
         return "grass";
-    case BlockType::LAVA:
-        return "lava";
+    case BlockType::WATER:
+        return "water";
     }
     return "";
 }
@@ -52,7 +52,7 @@ void UI::handleKeyUp(Key key) {
         blockType = BlockType::STONE;
         break;
     case Key::THREE:
-        blockType = BlockType::LAVA;
+        blockType = BlockType::WATER;
         break;
     default:
         blockType = BlockType::NONE;

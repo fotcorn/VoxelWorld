@@ -16,7 +16,7 @@ enum class BlockType {
     NONE,
     STONE,
     GRASS,
-    LAVA,
+    WATER,
 };
 
 class UI {

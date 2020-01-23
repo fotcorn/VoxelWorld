@@ -223,8 +223,8 @@ void RenderLoop::handleInput() {
         case BlockType::GRASS:
             world.addBlock(TextureAtlas::GROUND_EARTH);
             break;
-        case BlockType::LAVA:
-            world.addBlock(TextureAtlas::LAVA);
+        case BlockType::WATER:
+            world.addBlock(TextureAtlas::WATER);
             break;
         case BlockType::STONE:
             world.addBlock(TextureAtlas::STONE_04);
