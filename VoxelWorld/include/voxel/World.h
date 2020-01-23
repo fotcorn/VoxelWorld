@@ -48,6 +48,9 @@ private:
     std::optional<std::tuple<glm::ivec3, glm::ivec3>> canCreateBlock(std::shared_ptr<Chunk> chunk,
                                                                      glm::ivec3 chunkPosition, glm::ivec3 originBlock,
                                                                      glm::ivec3 blockOffset);
+
+    std::tuple<glm::ivec3, glm::ivec3> getRelativeChunkPosition(glm::ivec3 chunkPosition, glm::ivec3 originBlock,
+                                                                glm::ivec3 blockOffset);
 };
 
 #endif /* WORLD_H */

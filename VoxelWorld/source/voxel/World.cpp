@@ -101,35 +101,37 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
 
 void World::addBlock(TextureAtlas blockType) {
     if (selectedChunkPosition) {
-        auto chunk = world[*selectedChunkPosition];
-
-        glm::ivec3 position = selectedBlockPosition.value();
+        glm::ivec3 blockOffset;
         switch (selectedBlockSide.value()) {
         case Side::RIGHT:
-            position += glm::ivec3(1, 0, 0);
+            blockOffset = glm::ivec3(1, 0, 0);
             break;
         case Side::LEFT:
-            position += glm::ivec3(-1, 0, 0);
+            blockOffset = glm::ivec3(-1, 0, 0);
             break;
         case Side::TOP:
-            position += glm::ivec3(0, 1, 0);
+            blockOffset = glm::ivec3(0, 1, 0);
             break;
         case Side::BOTTOM:
-            position += glm::ivec3(0, -1, 0);
+            blockOffset = glm::ivec3(0, -1, 0);
             break;
         case Side::FRONT:
-            position += glm::ivec3(0, 0, 1);
+            blockOffset = glm::ivec3(0, 0, 1);
             break;
         case Side::BACK:
-            position += glm::ivec3(0, 0, -1);
+            blockOffset = glm::ivec3(0, 0, -1);
             break;
         }
 
-        if ((*chunk)(position.x, position.y, position.z) == BLOCK_AIR) {
-            (*chunk)(position.x, position.y, position.z) = blockType;
+        const auto [newChunkPosition, newBlockPosition] =
+            this->getRelativeChunkPosition(selectedChunkPosition.value(), selectedBlockPosition.value(), blockOffset);
+
+        auto chunk = this->getChunk(newChunkPosition);
+        if ((*chunk)(newBlockPosition.x, newBlockPosition.y, newBlockPosition.z) == BLOCK_AIR) {
+            (*chunk)(newBlockPosition.x, newBlockPosition.y, newBlockPosition.z) = blockType;
             chunk->changed = true;
         }
-        simulationChunks.insert(selectedChunkPosition.value());
+        simulationChunks.insert(newChunkPosition);
     }
 }
 
@@ -141,12 +143,10 @@ void World::removeBlock() {
     }
 }
 
-std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::canCreateBlock(std::shared_ptr<Chunk> chunk,
-                                                                        glm::ivec3 chunkPosition,
-                                                                        glm::ivec3 originBlock,
-                                                                        glm::ivec3 blockOffset) {
+std::tuple<glm::ivec3, glm::ivec3> World::getRelativeChunkPosition(glm::ivec3 chunkPosition, glm::ivec3 originBlock,
+                                                                   glm::ivec3 blockOffset) {
     glm::ivec3 newChunkPosition = chunkPosition;
-    std::shared_ptr<Chunk> newChunk = chunk;
+    std::shared_ptr<Chunk> newChunk;
     glm::ivec3 newBlockPosition = originBlock + blockOffset;
 
     // handle possibilty that new block is outside of current chunk
@@ -173,6 +173,20 @@ std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::canCreateBlock(std::sha
         newChunk = this->getChunk(newChunkPosition);
         newBlockPosition = glm::ivec3(newBlockPosition.x, newBlockPosition.y, 0);
     }
+
+    if (!newChunk) {
+        newChunk = this->getChunk(chunkPosition);
+    }
+    return std::make_tuple(newChunkPosition, newBlockPosition);
+}
+
+std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::canCreateBlock(std::shared_ptr<Chunk> chunk,
+                                                                        glm::ivec3 chunkPosition,
+                                                                        glm::ivec3 originBlock,
+                                                                        glm::ivec3 blockOffset) {
+    const auto [newChunkPosition, newBlockPosition] =
+        this->getRelativeChunkPosition(chunkPosition, originBlock, blockOffset);
+    const auto newChunk = this->getChunk(newChunkPosition);
 
     // if new block is already occupied, do not overwrite block
     if ((*newChunk)(newBlockPosition) != BLOCK_AIR) {
