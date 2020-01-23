@@ -7,7 +7,7 @@
 
 class Ray {
 public:
-    Ray(const glm::vec3& origin, const glm::vec3& direction) : origin(origin), direction(direction) {
+    Ray(const glm::vec3& origin, const glm::vec3& direction) : origin(origin) {
         inverseDirection = glm::vec3(1.0f) / direction;
     }
 
@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    glm::vec3 origin, direction;
+    glm::vec3 origin;
     glm::vec3 inverseDirection;
 };
 
