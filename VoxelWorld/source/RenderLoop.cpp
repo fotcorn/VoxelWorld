@@ -32,7 +32,7 @@ const float CAMERA_FOV = 45.0f;
 const float NEAR_PLANE = 0.1f;
 const float FAR_PLANE = 100.0f;
 
-const int CAMERA_CHUNK_DISTANCE = 15;
+const int CAMERA_CHUNK_DISTANCE = 3;
 
 RenderLoop::RenderLoop() {
     this->initGlfw();
@@ -100,19 +100,20 @@ void RenderLoop::initGui() {
     /*
      IMGUI_CHECKVERSION();
      ImGui::CreateContext();
-     ImGui_ImplGlfw_InitForOpenGL(this->window, false);
-     glfwSetMouseButtonCallback(this->window, ImGui_ImplGlfw_MouseButtonCallback);
-     glfwSetCursorPosCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-         auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
-         loop->mouseCursorPositionCallback(xPosition, yPosition);
-     });
-     glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
-         ImGui_ImplGlfw_ScrollCallback(window, xPosition, yPosition);
-     });
-     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-     ImGui_ImplOpenGL3_Init();
-     ImGui::StyleColorsDark();
-     */
+     ImGui_ImplGlfw_InitForOpenGL(this->window, false);*/
+    // glfwSetMouseButtonCallback(this->window, ImGui_ImplGlfw_MouseButtonCallback);
+    glfwSetCursorPosCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
+        auto loop = static_cast<RenderLoop*>(glfwGetWindowUserPointer(window));
+        loop->mouseCursorPositionCallback(xPosition, yPosition);
+    });
+    // glfwSetScrollCallback(this->window, [](GLFWwindow* window, double xPosition, double yPosition) {
+    //     ImGui_ImplGlfw_ScrollCallback(window, xPosition, yPosition);
+    // });
+    glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    /*
+    ImGui_ImplOpenGL3_Init();
+    ImGui::StyleColorsDark();
+    */
 }
 
 void RenderLoop::updateCamera(int viewportWidth, int viewportHeight) {
@@ -129,7 +130,9 @@ void RenderLoop::mainLoop() {
 
     WorldRenderer worldRenderer(CAMERA_CHUNK_DISTANCE);
 
+#ifndef EMSCRIPTEN
     while (!glfwWindowShouldClose(window)) {
+#endif
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -178,9 +181,12 @@ void RenderLoop::mainLoop() {
 
         glfwPollEvents();
         glfwSwapBuffers(window);
+
+#ifndef EMSCRIPTEN
     }
 
     glfwTerminate();
+#endif
 }
 
 void RenderLoop::handleInput() {
@@ -284,8 +290,8 @@ void RenderLoop::mouseCursorPositionCallback(double xPositionDouble, double yPos
     float yPosition = static_cast<float>(yPositionDouble);
 
     if (firstMouse) {
-        lastX = xPosition;
-        lastY = yPosition;
+        lastX = 0;
+        lastY = 0;
         firstMouse = false;
     }
 

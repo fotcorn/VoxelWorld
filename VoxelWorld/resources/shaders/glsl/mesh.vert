@@ -1,4 +1,4 @@
-#version 410
+#version 300 es
 
 in vec3 vertex_position;
 in vec2 texture_coordinate;
