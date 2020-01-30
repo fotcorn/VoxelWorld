@@ -18,12 +18,12 @@ void UI::windowChanged(const int width, const int height) {
 }
 
 void UI::rebuild() {
-    this->rects = calculateLayout(root, width, height);
+    this->sprites = calculateLayout(root, width, height);
 }
 
 void UI::render() {
-    for (auto it = rects.rbegin(); it != rects.rend(); it++) {
-        it->render(projectionMatrix, false);
+    for (auto it = sprites.rbegin(); it != sprites.rend(); it++) {
+        (*it)->render(projectionMatrix, false);
     }
 }
 

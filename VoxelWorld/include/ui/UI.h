@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "2d/Rect.h"
+#include "2d/Sprite.h"
 #include "ui/DOMNode.h"
 
 enum class Key {
@@ -31,7 +31,7 @@ public:
 
 private:
     std::shared_ptr<DOMNode> root;
-    std::vector<Rect> rects;
+    std::vector<std::unique_ptr<Sprite>> sprites;
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
     BlockType blockType = BlockType::NONE;
     int width;

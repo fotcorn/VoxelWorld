@@ -1,9 +1,11 @@
 #include "ui/Layout.h"
 #include "2d/Rect.h"
 
+#include <memory>
+#include <regex>
+
 #include <boost/algorithm/string.hpp>
 #include <fmt/format.h>
-#include <regex>
 #include <yoga/Yoga.h>
 
 namespace {
@@ -125,10 +127,9 @@ void buildYogaTree(std::shared_ptr<DOMNode> node, const YGConfigRef config) {
         i++;
     }
 }
-} // namespace
 
-void buildRects(std::shared_ptr<DOMNode> node, std::vector<Rect>& rects,
-                std::optional<std::tuple<float, float>> parentPosition) {
+void buildSprites(std::shared_ptr<DOMNode> node, std::vector<std::unique_ptr<Sprite>>& sprites,
+                  std::optional<std::tuple<float, float>> parentPosition) {
     float x = YGNodeLayoutGetLeft(node->layoutNode);
     float y = YGNodeLayoutGetTop(node->layoutNode);
     float width = YGNodeLayoutGetWidth(node->layoutNode);
@@ -155,27 +156,28 @@ void buildRects(std::shared_ptr<DOMNode> node, std::vector<Rect>& rects,
 
     const auto renderProperty = node->styles.find("visibility");
     if (renderProperty == node->styles.end() || renderProperty->second != "hidden") {
-        rects.push_back(Rect(x, y, 0.0f, width, height, color));
+        sprites.push_back(std::make_unique<Rect>(x, y, 0.0f, width, height, color));
     }
 
     const auto position = std::make_optional(std::make_tuple(x, y));
     for (auto& child : node->children) {
-        buildRects(child, rects, position);
+        buildSprites(child, sprites, position);
     }
 }
+} // namespace
 
-std::vector<Rect> calculateLayout(std::shared_ptr<DOMNode> root, const int width, const int height) {
+std::vector<std::unique_ptr<Sprite>> calculateLayout(std::shared_ptr<DOMNode> root, const int width, const int height) {
     const YGConfigRef config = YGConfigNew();
 
     buildYogaTree(root, config);
 
     YGNodeCalculateLayout(root->layoutNode, static_cast<float>(width), static_cast<float>(height), YGDirectionLTR);
 
-    std::vector<Rect> rects;
-    buildRects(root, rects, std::nullopt);
+    std::vector<std::unique_ptr<Sprite>> sprites;
+    buildSprites(root, sprites, std::nullopt);
 
     YGNodeFreeRecursive(root->layoutNode);
     YGConfigFree(config);
 
-    return rects;
+    return sprites;
 }

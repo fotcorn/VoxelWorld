@@ -2,15 +2,16 @@
 #define IMAGE_H
 
 #include "ShaderProgram.h"
+#include "Sprite.h"
 #include "Texture.h"
 
 #include <memory>
 
-class Image {
+class Image : public Sprite {
 
 public:
     Image(float x, float y, float z, float width, float height, Texture texture);
-    void render(glm::mat4 projectionMatrix2D, bool wireframe);
+    void render(glm::mat4 projectionMatrix2D, bool wireframe) override;
 
 private:
     float x, y, z, width, height;
