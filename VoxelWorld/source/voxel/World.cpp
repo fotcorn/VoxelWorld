@@ -140,6 +140,7 @@ void World::removeBlock() {
         auto chunk = world[*selectedChunkPosition];
         (*chunk)(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) = BLOCK_AIR;
         chunk->changed = true;
+        simulationChunks.insert(selectedChunkPosition.value());
     }
 }
 
