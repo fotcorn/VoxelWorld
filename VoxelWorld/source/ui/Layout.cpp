@@ -1,5 +1,7 @@
 #include "ui/Layout.h"
+#include "2d/Image.h"
 #include "2d/Rect.h"
+#include "Texture.h"
 
 #include <memory>
 #include <regex>
@@ -156,7 +158,13 @@ void buildSprites(std::shared_ptr<DOMNode> node, std::vector<std::unique_ptr<Spr
 
     const auto renderProperty = node->styles.find("visibility");
     if (renderProperty == node->styles.end() || renderProperty->second != "hidden") {
-        sprites.push_back(std::make_unique<Rect>(x, y, 0.0f, width, height, color));
+        const auto srcAttribute = node->attributes.find("src");
+        if (node->name() == "img" && srcAttribute != node->attributes.end()) {
+            sprites.push_back(
+                std::make_unique<Image>(x, y, 0.0f, width, height, Texture::loadFromFile(srcAttribute->second)));
+        } else {
+            sprites.push_back(std::make_unique<Rect>(x, y, 0.0f, width, height, color));
+        }
     }
 
     const auto position = std::make_optional(std::make_tuple(x, y));
