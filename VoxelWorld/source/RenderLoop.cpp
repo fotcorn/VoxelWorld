@@ -65,7 +65,9 @@ void RenderLoop::initGlfw() {
     }
 
     glfwMakeContextCurrent(this->window);
+#ifndef EMSCRIPTEN
     glfwSwapInterval(0);
+#endif
 
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
