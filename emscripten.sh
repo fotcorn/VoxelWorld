@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euxo pipefail
 #mkdir build-emscripten
 #cd build-emscripten
 #conan install .. --build=missing -pr=../emscripten.profile
