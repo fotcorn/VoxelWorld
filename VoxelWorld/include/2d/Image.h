@@ -1,0 +1,25 @@
+#ifndef IMAGE_H
+#define IMAGE_H
+
+#include "ShaderProgram.h"
+#include "Texture.h"
+
+#include <memory>
+
+class Image {
+
+public:
+    Image(float x, float y, float z, float width, float height, Texture texture);
+    void render(glm::mat4 projectionMatrix2D, bool wireframe);
+
+private:
+    float x, y, z, width, height;
+    Texture texture;
+
+    static void init();
+    static std::shared_ptr<ShaderProgram> shaderProgram;
+    static GLuint vao;
+    static GLuint vbo;
+};
+
+#endif /* IMAGE_H */

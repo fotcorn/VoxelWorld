@@ -20,6 +20,7 @@ add_executable(VoxelWorld
 	${CMAKE_CURRENT_SOURCE_DIR}/source/voxel/World.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/2d/Rect.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/2d/Image.cpp
 
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/DOM.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/UI.cpp
