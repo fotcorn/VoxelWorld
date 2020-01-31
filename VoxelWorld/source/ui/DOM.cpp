@@ -68,10 +68,13 @@ std::shared_ptr<DOMNode> loadDOM(const std::string& filename) {
     sstr << in.rdbuf();
     auto content = sstr.str();
 
-    auto output = std::shared_ptr<GumboOutput>(gumbo_parse(content.c_str()));
+    GumboOutput* output = gumbo_parse(content.c_str());
     auto root = std::shared_ptr<GumboNode>(output->root);
 
     auto html = buildDOM(root);
+
+    gumbo_destroy_output(&kGumboDefaultOptions, output);
+
     return html->children[1]->children[0]; // html => body => div
 }
 
