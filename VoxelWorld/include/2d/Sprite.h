@@ -6,6 +6,7 @@
 class Sprite {
 public:
     virtual void render(glm::mat4 projectionMatrix2D, bool wireframe) = 0;
+    virtual ~Sprite() = default;
 };
 
 #endif /* SPRITE_H */
