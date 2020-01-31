@@ -1,5 +1,19 @@
 # VoxelWorld
 
+Play it in your browser now: https://fotcorn.github.io/VoxelWorld/
+
+## Screenshot
+
+![Screentshot](https://raw.githubusercontent.com/fotcorn/VoxelWorld/master/screenshot.png)
+
+## Features
+* Procedurally generated endless voxel world
+* Optimized vertex data generation from voxel world
+* OpenGL 4 based renderer
+* Simple water simulation
+* Adding/removing blocks with raycasting from mouse position to 3D block position
+* UI library based on HTML/CSS with flexbox layout support
+
 ## Dependencies
 
 Install the following tools:
@@ -37,6 +51,4 @@ cmake --build .
 - Perlin noise library: https://github.com/Reputeless/PerlinNoise
 - LearnOpenGL.com
 
-## Screenshot
 
-![Screentshot](https://raw.githubusercontent.com/fotcorn/VoxelWorld/master/screenshot.png)
