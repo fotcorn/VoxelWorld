@@ -9,7 +9,7 @@
 
 WorldRenderer::WorldRenderer(int cameraChunkDistance) {
     this->cameraChunkDistance = cameraChunkDistance;
-    texture = std::make_shared<Texture>(Texture::loadFromFile("texture_atlas.gif"));
+    texture = Texture::loadFromFile("texture_atlas.gif");
 
     // cache size is 10x the chunks that is visible at once
     int cacheSize = (cameraChunkDistance * 2) * (cameraChunkDistance * 2) * 10;

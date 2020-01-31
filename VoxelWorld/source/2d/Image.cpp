@@ -13,7 +13,7 @@ GLuint Image::vao = 0;
 GLuint Image::vbo = 0;
 std::shared_ptr<ShaderProgram> Image::shaderProgram = std::shared_ptr<ShaderProgram>();
 
-Image::Image(float x, float y, float z, float width, float height, Texture texture)
+Image::Image(float x, float y, float z, float width, float height, std::shared_ptr<Texture> texture)
     : x(x), y(y), z(z), width(width), height(height), texture(texture) {
     if (!Image::shaderProgram) {
         Image::init();
@@ -70,7 +70,7 @@ void Image::render(glm::mat4 projectionMatrix, bool wireframe) {
     auto mvp = projectionMatrix * modelMatrix;
 
     Image::shaderProgram->setUniform("mvp", mvp);
-    texture.bind();
+    texture->bind();
 
     glBindVertexArray(Image::vao);
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);

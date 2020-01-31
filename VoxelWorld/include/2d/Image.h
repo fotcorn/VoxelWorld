@@ -10,12 +10,12 @@
 class Image : public Sprite {
 
 public:
-    Image(float x, float y, float z, float width, float height, Texture texture);
+    Image(float x, float y, float z, float width, float height, std::shared_ptr<Texture> texture);
     void render(glm::mat4 projectionMatrix2D, bool wireframe) override;
 
 private:
     float x, y, z, width, height;
-    Texture texture;
+    std::shared_ptr<Texture> texture;
 
     static void init();
     static std::shared_ptr<ShaderProgram> shaderProgram;

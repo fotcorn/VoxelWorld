@@ -7,8 +7,16 @@
 
 #include <stdexcept>
 
-Texture Texture::loadFromFile(const std::string& path) {
-    Texture texture;
+std::unordered_map<std::string, std::shared_ptr<Texture>> Texture::textureCache =
+    std::unordered_map<std::string, std::shared_ptr<Texture>>();
+
+std::shared_ptr<Texture> Texture::loadFromFile(const std::string& path) {
+    auto cachedTexture = textureCache.find(path);
+    if (cachedTexture != textureCache.end()) {
+        return cachedTexture->second;
+    }
+
+    auto texture = std::shared_ptr<Texture>(new Texture());
 
     int width, height, nrChannels;
 
@@ -19,8 +27,8 @@ Texture Texture::loadFromFile(const std::string& path) {
         throw std::runtime_error(fmt::format("Failed to load texture {}", absPath));
     }
 
-    glGenTextures(1, &texture.handle);
-    glBindTexture(GL_TEXTURE_2D, texture.handle);
+    glGenTextures(1, &texture->handle);
+    glBindTexture(GL_TEXTURE_2D, texture->handle);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -32,6 +40,8 @@ Texture Texture::loadFromFile(const std::string& path) {
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(data);
+
+    textureCache[path] = texture;
 
     return texture;
 }
