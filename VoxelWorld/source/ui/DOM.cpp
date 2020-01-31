@@ -12,7 +12,7 @@
 #include <boost/algorithm/string.hpp>
 
 namespace {
-std::shared_ptr<DOMNode> buildDOM(std::shared_ptr<GumboNode> node) {
+std::shared_ptr<DOMNode> buildDOM(GumboNode* node) {
     if (node->type != GUMBO_NODE_ELEMENT) {
         return std::shared_ptr<DOMNode>();
     }
@@ -20,7 +20,7 @@ std::shared_ptr<DOMNode> buildDOM(std::shared_ptr<GumboNode> node) {
 
     GumboVector children = node->v.element.children;
     for (unsigned int i = 0; i < children.length; i++) {
-        auto childNode = buildDOM(std::shared_ptr<GumboNode>(static_cast<GumboNode*>(children.data[i])));
+        auto childNode = buildDOM(static_cast<GumboNode*>(children.data[i]));
         if (childNode) {
             domNode->children.push_back(childNode);
         }
@@ -69,12 +69,8 @@ std::shared_ptr<DOMNode> loadDOM(const std::string& filename) {
     auto content = sstr.str();
 
     GumboOutput* output = gumbo_parse(content.c_str());
-    auto root = std::shared_ptr<GumboNode>(output->root);
-
-    auto html = buildDOM(root);
-
+    auto html = buildDOM(output->root);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
-
     return html->children[1]->children[0]; // html => body => div
 }
 
