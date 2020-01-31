@@ -201,7 +201,7 @@ Module['FS_createPath']('/VoxelWorld/resources', 'meshes', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 1787, "filename": "/VoxelWorld/resources/texture_atlas/generate.py"}, {"start": 1787, "audio": 0, "end": 2132, "filename": "/VoxelWorld/resources/shaders/glsl/mesh_atlas.vert"}, {"start": 2132, "audio": 0, "end": 2325, "filename": "/VoxelWorld/resources/shaders/glsl/rect.vert"}, {"start": 2325, "audio": 0, "end": 2564, "filename": "/VoxelWorld/resources/shaders/glsl/image.vert"}, {"start": 2564, "audio": 0, "end": 2803, "filename": "/VoxelWorld/resources/shaders/glsl/mesh.vert"}, {"start": 2803, "audio": 0, "end": 2994, "filename": "/VoxelWorld/resources/shaders/glsl/cube.vert"}, {"start": 2994, "audio": 0, "end": 3139, "filename": "/VoxelWorld/resources/shaders/glsl/rect.frag"}, {"start": 3139, "audio": 0, "end": 3357, "filename": "/VoxelWorld/resources/shaders/glsl/image.frag"}, {"start": 3357, "audio": 0, "end": 3492, "filename": "/VoxelWorld/resources/shaders/glsl/cube.frag"}, {"start": 3492, "audio": 0, "end": 3710, "filename": "/VoxelWorld/resources/shaders/glsl/mesh.frag"}, {"start": 3710, "audio": 0, "end": 5232, "filename": "/VoxelWorld/resources/ui/main.html"}, {"start": 5232, "audio": 0, "end": 82588, "filename": "/VoxelWorld/resources/textures/menu_grass.png"}, {"start": 82588, "audio": 0, "end": 164474, "filename": "/VoxelWorld/resources/textures/texture_atlas.gif"}, {"start": 164474, "audio": 0, "end": 347287, "filename": "/VoxelWorld/resources/textures/menu_water.png"}, {"start": 347287, "audio": 0, "end": 355223, "filename": "/VoxelWorld/resources/textures/water_base_color.gif"}, {"start": 355223, "audio": 0, "end": 356804, "filename": "/VoxelWorld/resources/textures/groundEarth_base_color.gif"}, {"start": 356804, "audio": 0, "end": 357960, "filename": "/VoxelWorld/resources/textures/groundMud_base_color.gif"}, {"start": 357960, "audio": 0, "end": 359532, "filename": "/VoxelWorld/resources/textures/stone04_base_color.gif"}, {"start": 359532, "audio": 0, "end": 360539, "filename": "/VoxelWorld/resources/textures/snow_base_color.gif"}, {"start": 360539, "audio": 0, "end": 448792, "filename": "/VoxelWorld/resources/textures/menu_stone.png"}, {"start": 448792, "audio": 0, "end": 450069, "filename": "/VoxelWorld/resources/meshes/block.obj"}], "remote_package_size": 450069, "package_uuid": "e0173e45-91b8-4fba-a41c-dce3839395d9"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 1787, "filename": "/VoxelWorld/resources/texture_atlas/generate.py"}, {"start": 1787, "audio": 0, "end": 2132, "filename": "/VoxelWorld/resources/shaders/glsl/mesh_atlas.vert"}, {"start": 2132, "audio": 0, "end": 2325, "filename": "/VoxelWorld/resources/shaders/glsl/rect.vert"}, {"start": 2325, "audio": 0, "end": 2564, "filename": "/VoxelWorld/resources/shaders/glsl/image.vert"}, {"start": 2564, "audio": 0, "end": 2803, "filename": "/VoxelWorld/resources/shaders/glsl/mesh.vert"}, {"start": 2803, "audio": 0, "end": 2994, "filename": "/VoxelWorld/resources/shaders/glsl/cube.vert"}, {"start": 2994, "audio": 0, "end": 3139, "filename": "/VoxelWorld/resources/shaders/glsl/rect.frag"}, {"start": 3139, "audio": 0, "end": 3357, "filename": "/VoxelWorld/resources/shaders/glsl/image.frag"}, {"start": 3357, "audio": 0, "end": 3492, "filename": "/VoxelWorld/resources/shaders/glsl/cube.frag"}, {"start": 3492, "audio": 0, "end": 3710, "filename": "/VoxelWorld/resources/shaders/glsl/mesh.frag"}, {"start": 3710, "audio": 0, "end": 5232, "filename": "/VoxelWorld/resources/ui/main.html"}, {"start": 5232, "audio": 0, "end": 82588, "filename": "/VoxelWorld/resources/textures/menu_grass.png"}, {"start": 82588, "audio": 0, "end": 164474, "filename": "/VoxelWorld/resources/textures/texture_atlas.gif"}, {"start": 164474, "audio": 0, "end": 347287, "filename": "/VoxelWorld/resources/textures/menu_water.png"}, {"start": 347287, "audio": 0, "end": 355223, "filename": "/VoxelWorld/resources/textures/water_base_color.gif"}, {"start": 355223, "audio": 0, "end": 356804, "filename": "/VoxelWorld/resources/textures/groundEarth_base_color.gif"}, {"start": 356804, "audio": 0, "end": 357960, "filename": "/VoxelWorld/resources/textures/groundMud_base_color.gif"}, {"start": 357960, "audio": 0, "end": 359532, "filename": "/VoxelWorld/resources/textures/stone04_base_color.gif"}, {"start": 359532, "audio": 0, "end": 360539, "filename": "/VoxelWorld/resources/textures/snow_base_color.gif"}, {"start": 360539, "audio": 0, "end": 448792, "filename": "/VoxelWorld/resources/textures/menu_stone.png"}, {"start": 448792, "audio": 0, "end": 450069, "filename": "/VoxelWorld/resources/meshes/block.obj"}], "remote_package_size": 450069, "package_uuid": "0ec4de51-dcf8-4520-a792-eb126ac56178"});
 
 })();
 
@@ -1408,11 +1408,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 230496,
+    STACK_BASE = 230224,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5473376,
-    DYNAMIC_BASE = 5473376,
-    DYNAMICTOP_PTR = 230240;
+    STACK_MAX = 5473104,
+    DYNAMIC_BASE = 5473104,
+    DYNAMICTOP_PTR = 229968;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1884,7 +1884,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 229472;
+// STATICTOP = STATIC_BASE + 229200;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1895,7 +1895,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 230480
+var tempDoublePtr = 230208
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -3366,11 +3366,11 @@ function copyTempDouble(ptr) {
   
   var ERRNO_CODES={EPERM:1,ENOENT:2,ESRCH:3,EINTR:4,EIO:5,ENXIO:6,E2BIG:7,ENOEXEC:8,EBADF:9,ECHILD:10,EAGAIN:11,EWOULDBLOCK:11,ENOMEM:12,EACCES:13,EFAULT:14,ENOTBLK:15,EBUSY:16,EEXIST:17,EXDEV:18,ENODEV:19,ENOTDIR:20,EISDIR:21,EINVAL:22,ENFILE:23,EMFILE:24,ENOTTY:25,ETXTBSY:26,EFBIG:27,ENOSPC:28,ESPIPE:29,EROFS:30,EMLINK:31,EPIPE:32,EDOM:33,ERANGE:34,ENOMSG:42,EIDRM:43,ECHRNG:44,EL2NSYNC:45,EL3HLT:46,EL3RST:47,ELNRNG:48,EUNATCH:49,ENOCSI:50,EL2HLT:51,EDEADLK:35,ENOLCK:37,EBADE:52,EBADR:53,EXFULL:54,ENOANO:55,EBADRQC:56,EBADSLT:57,EDEADLOCK:35,EBFONT:59,ENOSTR:60,ENODATA:61,ETIME:62,ENOSR:63,ENONET:64,ENOPKG:65,EREMOTE:66,ENOLINK:67,EADV:68,ESRMNT:69,ECOMM:70,EPROTO:71,EMULTIHOP:72,EDOTDOT:73,EBADMSG:74,ENOTUNIQ:76,EBADFD:77,EREMCHG:78,ELIBACC:79,ELIBBAD:80,ELIBSCN:81,ELIBMAX:82,ELIBEXEC:83,ENOSYS:38,ENOTEMPTY:39,ENAMETOOLONG:36,ELOOP:40,EOPNOTSUPP:95,EPFNOSUPPORT:96,ECONNRESET:104,ENOBUFS:105,EAFNOSUPPORT:97,EPROTOTYPE:91,ENOTSOCK:88,ENOPROTOOPT:92,ESHUTDOWN:108,ECONNREFUSED:111,EADDRINUSE:98,ECONNABORTED:103,ENETUNREACH:101,ENETDOWN:100,ETIMEDOUT:110,EHOSTDOWN:112,EHOSTUNREACH:113,EINPROGRESS:115,EALREADY:114,EDESTADDRREQ:89,EMSGSIZE:90,EPROTONOSUPPORT:93,ESOCKTNOSUPPORT:94,EADDRNOTAVAIL:99,ENETRESET:102,EISCONN:106,ENOTCONN:107,ETOOMANYREFS:109,EUSERS:87,EDQUOT:122,ESTALE:116,ENOTSUP:95,ENOMEDIUM:123,EILSEQ:84,EOVERFLOW:75,ECANCELED:125,ENOTRECOVERABLE:131,EOWNERDEAD:130,ESTRPIPE:86};
   
-  var _stdin=230256;
+  var _stdin=229984;
   
-  var _stdout=230272;
+  var _stdout=230000;
   
-  var _stderr=230288;var FS={root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,trackingDelegate:{},tracking:{openFlags:{READ:1,WRITE:2}},ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,handleFSError:function(e) {
+  var _stderr=230016;var FS={root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,trackingDelegate:{},tracking:{openFlags:{READ:1,WRITE:2}},ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,handleFSError:function(e) {
         if (!(e instanceof FS.ErrnoError)) throw e + ' : ' + stackTrace();
         return ___setErrNo(e.errno);
       },lookupPath:function(path, opts) {
