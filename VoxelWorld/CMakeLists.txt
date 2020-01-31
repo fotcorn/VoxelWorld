@@ -63,4 +63,14 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER MATCHES "clang")
   target_compile_options(VoxelWorld PRIVATE -Wall -Wextra -pedantic)
 endif()
 
+
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
+
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=leak")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak")
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
