@@ -7,6 +7,9 @@
 
 #include <memory>
 
+/**
+ * A 2D Shape with an image texture.
+ */
 class Image : public Sprite {
 
 public:

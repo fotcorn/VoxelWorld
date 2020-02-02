@@ -6,6 +6,9 @@
 
 #include <memory>
 
+/**
+ * A rectangular 2D shape with a color.
+ */
 class Rect : public Sprite {
 
 public:
