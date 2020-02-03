@@ -69,7 +69,7 @@ void UI::handleKeyUp(Key key) {
     if (!node) {
         return;
     }
-    for (auto child : node->children) {
+    for (auto& child : node->children) {
         if (child->attributes[std::string("id")] == blockName) {
             child->styles["visibility"] = "visible";
         } else {
