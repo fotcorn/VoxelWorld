@@ -64,32 +64,29 @@ RenderChunkGenerator::RenderChunkGenerator(std::size_t cacheSize) : chunkCache(c
 }
 
 namespace {
-bool needsRender(const Chunk& chunk, const int x, const int y, const int z, const glm::ivec3& position, World& world) {
+bool needsRender(const Chunk& chunk, const int x, const int y, const int z, const Chunk& leftChunk,
+                 const Chunk& rightChunk, const Chunk& frontChunk, const Chunk& backChunk) {
 
     if (x < 0) {
-        const auto adjacentChunk = world.getChunk(position + glm::ivec3(-1, 0, 0));
-        return (*adjacentChunk)(CHUNK_SIZE - 1, y, z) == BLOCK_AIR;
+        return leftChunk(CHUNK_SIZE - 1, y, z) == BLOCK_AIR;
     }
     if (y < 0) {
         // never render a block below lowest point
         return false;
     }
     if (z < 0) {
-        const auto adjacentChunk = world.getChunk(position + glm::ivec3(0, 0, -1));
-        return (*adjacentChunk)(x, y, CHUNK_SIZE - 1) == BLOCK_AIR;
+        return backChunk(x, y, CHUNK_SIZE - 1) == BLOCK_AIR;
     }
 
     if (x == CHUNK_SIZE) {
-        const auto adjacentChunk = world.getChunk(position + glm::ivec3(1, 0, 0));
-        return (*adjacentChunk)(0, y, z) == BLOCK_AIR;
+        return rightChunk(0, y, z) == BLOCK_AIR;
     }
     if (y == CHUNK_HEIGHT) {
         // there will never be a block heigher than this, always render
         return true;
     }
     if (z == CHUNK_SIZE) {
-        const auto adjacentChunk = world.getChunk(position + glm::ivec3(0, 0, 1));
-        return (*adjacentChunk)(x, y, 0) == BLOCK_AIR;
+        return frontChunk(x, y, 0) == BLOCK_AIR;
     }
     return chunk(x, y, z) == BLOCK_AIR;
 }
@@ -106,6 +103,11 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
     std::vector<Vertex> vs;
 
     bool selectedBlockInChunk = world.selectedChunkPosition == position;
+
+    const auto leftChunk = world.getChunk(position + glm::ivec3(-1, 0, 0));
+    const auto rightChunk = world.getChunk(position + glm::ivec3(1, 0, 0));
+    const auto frontChunk = world.getChunk(position + glm::ivec3(0, 0, 1));
+    const auto backChunk = world.getChunk(position + glm::ivec3(0, 0, -1));
 
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_HEIGHT; y++) {
@@ -126,7 +128,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 bool thisBlockSelected = selectedBlockInChunk && world.selectedBlockPosition == glm::ivec3(x, y, z);
 
                 // top
-                if (needsRender(chunk, x, y + 1, z, position, world)) {
+                if (needsRender(chunk, x, y + 1, z, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::TOP) {
                         renderTCO = selectedBlockTextureOffset;
@@ -143,7 +145,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // bottom
-                if (needsRender(chunk, x, y - 1, z, position, world)) {
+                if (needsRender(chunk, x, y - 1, z, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::BOTTOM) {
                         renderTCO = selectedBlockTextureOffset;
@@ -160,7 +162,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // right
-                if (needsRender(chunk, x + 1, y, z, position, world)) {
+                if (needsRender(chunk, x + 1, y, z, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::RIGHT) {
                         renderTCO = selectedBlockTextureOffset;
@@ -177,7 +179,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // left
-                if (needsRender(chunk, x - 1, y, z, position, world)) {
+                if (needsRender(chunk, x - 1, y, z, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::LEFT) {
                         renderTCO = selectedBlockTextureOffset;
@@ -194,7 +196,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // front
-                if (needsRender(chunk, x, y, z + 1, position, world)) {
+                if (needsRender(chunk, x, y, z + 1, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::FRONT) {
                         renderTCO = selectedBlockTextureOffset;
@@ -211,7 +213,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // back
-                if (needsRender(chunk, x, y, z - 1, position, world)) {
+                if (needsRender(chunk, x, y, z - 1, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::BACK) {
                         renderTCO = selectedBlockTextureOffset;
