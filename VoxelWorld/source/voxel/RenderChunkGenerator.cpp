@@ -95,8 +95,7 @@ bool needsRender(const Chunk& chunk, const int x, const int y, const int z, cons
 }
 } // namespace
 
-std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3 position, Chunk& chunk,
-                                                                   World& world) {
+std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& position, Chunk& chunk, World& world) {
     if (!chunk.changed && !chunk.tempChanged) {
         auto cacheEntry = chunkCache.get(position);
         if (cacheEntry) {
