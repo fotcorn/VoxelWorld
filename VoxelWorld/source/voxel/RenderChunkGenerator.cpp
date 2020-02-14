@@ -64,8 +64,8 @@ RenderChunkGenerator::RenderChunkGenerator(std::size_t cacheSize) : chunkCache(c
 }
 
 namespace {
-bool needsRender(const Chunk& chunk, const int x, const int y, const int z, const Chunk& leftChunk,
-                 const Chunk& rightChunk, const Chunk& frontChunk, const Chunk& backChunk) {
+inline bool needsRender(const Chunk& chunk, const int x, const int y, const int z, const Chunk& leftChunk,
+                        const Chunk& rightChunk, const Chunk& frontChunk, const Chunk& backChunk) {
 
     if (x < 0) {
         return leftChunk(CHUNK_SIZE - 1, y, z) == BLOCK_AIR;
