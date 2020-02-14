@@ -1,4 +1,4 @@
-#include <list>
+#include <deque>
 #include <map>
 #include <memory>
 #include <unordered_map>
@@ -10,7 +10,7 @@
 template <typename Key, typename Value> class LimitedUnorderedMap {
 private:
     std::unordered_map<Key, std::shared_ptr<Value>> map;
-    std::list<Key> list;
+    std::deque<Key> list;
     std::size_t limit;
 
 public:
@@ -37,6 +37,9 @@ public:
 
     void remove(const Key& key) {
         map.erase(key);
-        list.remove(key);
+        auto it = std::find(list.begin(), list.end(), key);
+        if (it != list.end()) {
+            list.erase(it);
+        }
     }
 };
