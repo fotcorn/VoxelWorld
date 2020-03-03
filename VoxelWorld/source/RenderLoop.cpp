@@ -125,9 +125,21 @@ void RenderLoop::mainLoop() {
 
     WorldRenderer worldRenderer(CAMERA_CHUNK_DISTANCE);
 
+    // int frames = 0;
+
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
+
+        /*
+        if (frames < 3) {
+            frames++;
+            std::cout << deltaTime << std::endl;
+        } else {
+            break;
+        }
+        */
+
         lastFrame = currentFrame;
 
         if (currentFrame - lastSimulation >= 1.0f) {
