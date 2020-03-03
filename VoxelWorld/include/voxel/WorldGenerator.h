@@ -19,7 +19,7 @@ class WorldGenerator {
 
 public:
     WorldGenerator();
-    std::shared_ptr<Chunk> generateChunk(const glm::ivec3& position);
+    Chunk generateChunk(const glm::ivec3& position);
 };
 
 #endif // !WORLD_GENERATOR_H
