@@ -17,14 +17,6 @@
 #include "debug_ui/imgui_impl_glfw.h"
 #include "debug_ui/imgui_impl_opengl3.h"
 
-static void openglErrorCallback(GLenum /*unused*/, GLenum type, GLuint /*unused*/, GLenum severity, GLsizei /*unused*/,
-                                const GLchar* message, const void* /*unused*/) {
-    if (severity != GL_DEBUG_SEVERITY_NOTIFICATION) {
-        fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-                (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
-    }
-}
-
 const int INITIAL_WINDOW_WIDTH = 1280;
 const int INITIAL_WINDOW_HEIGHT = 800;
 
@@ -83,7 +75,19 @@ void RenderLoop::initGlew() {
 
 void RenderLoop::initOpenGL() {
     glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(openglErrorCallback, nullptr);
+
+    glDebugMessageCallback(
+        [](GLenum, GLenum type, GLuint, GLenum severity, GLsizei, const GLchar* message, const void*) {
+            if (severity != GL_DEBUG_SEVERITY_NOTIFICATION) {
+                if (type == GL_DEBUG_TYPE_ERROR) {
+                    std::cerr << "GL error: ";
+                } else {
+                    std::cerr << "GL debug: ";
+                }
+                std::cerr << fmt::format("type: {}, severity: {}, message: {}", type, severity, message) << std::endl;
+            }
+        },
+        nullptr);
 
     glEnable(GL_DEPTH_TEST); // enable depth testing
     glDepthFunc(GL_LESS); // smaller value is closer
