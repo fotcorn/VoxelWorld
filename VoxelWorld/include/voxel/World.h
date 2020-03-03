@@ -27,7 +27,7 @@ public:
     void cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, int cameraChunkDistance);
     void simulationTick();
 
-    std::shared_ptr<Chunk> getChunk(const glm::ivec3& position);
+    Chunk& getChunk(const glm::ivec3& position);
 
     std::optional<glm::ivec3> selectedChunkPosition;
     std::optional<glm::ivec3> selectedBlockPosition;
@@ -35,7 +35,7 @@ public:
 
 private:
     WorldGenerator worldGenerator;
-    std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> world;
+    std::unordered_map<glm::ivec3, Chunk> world;
     std::unordered_set<glm::ivec3> simulationChunks;
 
     std::vector<glm::ivec3> waterBlockUpdates = {
@@ -45,9 +45,10 @@ private:
         glm::ivec3(0, 0, -1),
     };
 
-    std::optional<std::tuple<glm::ivec3, glm::ivec3>> canCreateBlock(std::shared_ptr<Chunk> chunk,
-                                                                     glm::ivec3 chunkPosition, glm::ivec3 originBlock,
-                                                                     glm::ivec3 blockOffset);
+    std::optional<std::tuple<glm::ivec3, glm::ivec3>> canCreateBlock(const Chunk& chunk,
+                                                                     const glm::ivec3& chunkPosition,
+                                                                     const glm::ivec3& originBlock,
+                                                                     const glm::ivec3& blockOffset);
 
     std::tuple<glm::ivec3, glm::ivec3> getRelativeChunkPosition(glm::ivec3 chunkPosition, glm::ivec3 originBlock,
                                                                 glm::ivec3 blockOffset);

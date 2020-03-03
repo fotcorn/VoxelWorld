@@ -129,7 +129,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 bool thisBlockSelected = selectedBlockInChunk && world.selectedBlockPosition == glm::ivec3(x, y, z);
 
                 // top
-                if (needsRender(chunk, x, y + 1, z, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
+                if (needsRender(chunk, x, y + 1, z, leftChunk, rightChunk, frontChunk, backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::TOP) {
                         renderTCO = selectedBlockTextureOffset;
@@ -146,7 +146,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // bottom
-                if (needsRender(chunk, x, y - 1, z, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
+                if (needsRender(chunk, x, y - 1, z, leftChunk, rightChunk, frontChunk, backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::BOTTOM) {
                         renderTCO = selectedBlockTextureOffset;
@@ -163,7 +163,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // right
-                if (needsRender(chunk, x + 1, y, z, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
+                if (needsRender(chunk, x + 1, y, z, leftChunk, rightChunk, frontChunk, backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::RIGHT) {
                         renderTCO = selectedBlockTextureOffset;
@@ -180,7 +180,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // left
-                if (needsRender(chunk, x - 1, y, z, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
+                if (needsRender(chunk, x - 1, y, z, leftChunk, rightChunk, frontChunk, backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::LEFT) {
                         renderTCO = selectedBlockTextureOffset;
@@ -197,7 +197,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // front
-                if (needsRender(chunk, x, y, z + 1, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
+                if (needsRender(chunk, x, y, z + 1, leftChunk, rightChunk, frontChunk, backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::FRONT) {
                         renderTCO = selectedBlockTextureOffset;
@@ -214,7 +214,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
                 }
 
                 // back
-                if (needsRender(chunk, x, y, z - 1, *leftChunk, *rightChunk, *frontChunk, *backChunk)) {
+                if (needsRender(chunk, x, y, z - 1, leftChunk, rightChunk, frontChunk, backChunk)) {
                     glm::vec2 renderTCO;
                     if (thisBlockSelected && world.selectedBlockSide == Side::BACK) {
                         renderTCO = selectedBlockTextureOffset;

@@ -2,21 +2,17 @@
 #include "TextureAtlas.h"
 #include "voxel/Ray.h"
 
-std::shared_ptr<Chunk> World::getChunk(const glm::ivec3& position) {
-    std::shared_ptr<Chunk> chunk;
-
-    auto existingChunk = world.find(position);
-    if (existingChunk != world.end()) {
-        chunk = existingChunk->second;
-    } else {
-        chunk = worldGenerator.generateChunk(position);
+Chunk& World::getChunk(const glm::ivec3& position) {
+    auto it = world.find(position);
+    if (it == world.end()) {
+        Chunk chunk = worldGenerator.generateChunk(position);
+        it = world.emplace(position, std::move(chunk)).first;
     }
-    world[position] = chunk;
 
     if (selectedChunkPosition && selectedChunkPosition.value() == position) {
-        chunk->tempChanged = true;
+        it->second.tempChanged = true;
     }
-    return chunk;
+    return it->second;
 }
 
 void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, int cameraChunkDistance) {
@@ -40,7 +36,7 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
                 for (int x = 0; x < CHUNK_SIZE; x++) {
                     for (int y = 0; y < CHUNK_HEIGHT; y++) {
                         for (int z = 0; z < CHUNK_SIZE; z++) {
-                            if ((*chunk)(x, y, z) == BLOCK_AIR) {
+                            if (chunk(x, y, z) == BLOCK_AIR) {
                                 continue;
                             }
 
@@ -127,9 +123,9 @@ void World::addBlock(TextureAtlas blockType) {
             this->getRelativeChunkPosition(selectedChunkPosition.value(), selectedBlockPosition.value(), blockOffset);
 
         auto chunk = this->getChunk(newChunkPosition);
-        if ((*chunk)(newBlockPosition.x, newBlockPosition.y, newBlockPosition.z) == BLOCK_AIR) {
-            (*chunk)(newBlockPosition.x, newBlockPosition.y, newBlockPosition.z) = blockType;
-            chunk->changed = true;
+        if (chunk(newBlockPosition.x, newBlockPosition.y, newBlockPosition.z) == BLOCK_AIR) {
+            chunk(newBlockPosition.x, newBlockPosition.y, newBlockPosition.z) = blockType;
+            chunk.changed = true;
         }
         simulationChunks.insert(newChunkPosition);
     }
@@ -138,8 +134,8 @@ void World::addBlock(TextureAtlas blockType) {
 void World::removeBlock() {
     if (selectedChunkPosition) {
         auto chunk = world[*selectedChunkPosition];
-        (*chunk)(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) = BLOCK_AIR;
-        chunk->changed = true;
+        chunk(selectedBlockPosition->x, selectedBlockPosition->y, selectedBlockPosition->z) = BLOCK_AIR;
+        chunk.changed = true;
         simulationChunks.insert(selectedChunkPosition.value());
     }
 }
@@ -147,50 +143,50 @@ void World::removeBlock() {
 std::tuple<glm::ivec3, glm::ivec3> World::getRelativeChunkPosition(glm::ivec3 chunkPosition, glm::ivec3 originBlock,
                                                                    glm::ivec3 blockOffset) {
     glm::ivec3 newChunkPosition = chunkPosition;
-    std::shared_ptr<Chunk> newChunk;
+    Chunk* newChunk = nullptr;
     glm::ivec3 newBlockPosition = originBlock + blockOffset;
 
     // handle possibilty that new block is outside of current chunk
     if (newBlockPosition.x < 0) {
         newChunkPosition = chunkPosition + glm::ivec3(-1, 0, 0);
-        newChunk = this->getChunk(newChunkPosition);
+        newChunk = &this->getChunk(newChunkPosition);
         newBlockPosition = glm::ivec3(CHUNK_SIZE - 1, newBlockPosition.y, newBlockPosition.z);
     }
 
     if (newBlockPosition.x == CHUNK_SIZE) {
         newChunkPosition = chunkPosition + glm::ivec3(1, 0, 0);
-        newChunk = this->getChunk(newChunkPosition);
+        newChunk = &this->getChunk(newChunkPosition);
         newBlockPosition = glm::ivec3(0, newBlockPosition.y, newBlockPosition.z);
     }
 
     if (newBlockPosition.z < 0) {
         newChunkPosition = chunkPosition + glm::ivec3(0, 0, -1);
-        newChunk = this->getChunk(newChunkPosition);
+        newChunk = &this->getChunk(newChunkPosition);
         newBlockPosition = glm::ivec3(newBlockPosition.x, newBlockPosition.y, CHUNK_SIZE - 1);
     }
 
     if (newBlockPosition.z == CHUNK_SIZE) {
         newChunkPosition = chunkPosition + glm::ivec3(0, 0, 1);
-        newChunk = this->getChunk(newChunkPosition);
+        newChunk = &this->getChunk(newChunkPosition);
         newBlockPosition = glm::ivec3(newBlockPosition.x, newBlockPosition.y, 0);
     }
 
-    if (!newChunk) {
-        newChunk = this->getChunk(chunkPosition);
+    if (newChunk == nullptr) {
+        newChunk = &this->getChunk(chunkPosition);
     }
     return std::make_tuple(newChunkPosition, newBlockPosition);
 }
 
-std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::canCreateBlock(std::shared_ptr<Chunk> chunk,
-                                                                        glm::ivec3 chunkPosition,
-                                                                        glm::ivec3 originBlock,
-                                                                        glm::ivec3 blockOffset) {
+std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::canCreateBlock(const Chunk& chunk,
+                                                                        const glm::ivec3& chunkPosition,
+                                                                        const glm::ivec3& originBlock,
+                                                                        const glm::ivec3& blockOffset) {
     const auto [newChunkPosition, newBlockPosition] =
         this->getRelativeChunkPosition(chunkPosition, originBlock, blockOffset);
     const auto newChunk = this->getChunk(newChunkPosition);
 
     // if new block is already occupied, do not overwrite block
-    if ((*newChunk)(newBlockPosition) != BLOCK_AIR) {
+    if (newChunk(newBlockPosition) != BLOCK_AIR) {
         return std::nullopt;
     }
 
@@ -200,14 +196,14 @@ std::optional<std::tuple<glm::ivec3, glm::ivec3>> World::canCreateBlock(std::sha
     }
 
     // if the block below the new block is not air and not water, add the block
-    const auto blockBelowType = (*newChunk)(newBlockPosition + glm::ivec3(0, -1, 0));
+    const auto blockBelowType = newChunk(newBlockPosition + glm::ivec3(0, -1, 0));
     if (blockBelowType != BLOCK_AIR && blockBelowType != TextureAtlas::WATER) {
         return std::make_tuple(newChunkPosition, newBlockPosition);
     }
 
     // if the block below the new block is air, but the block below the origin block is not air/water, add block anyway
     // (think waterfall)
-    const auto originBlockType = (*chunk)(originBlock + glm::ivec3(0, -1, 0));
+    const auto originBlockType = chunk(originBlock + glm::ivec3(0, -1, 0));
     if (originBlockType != TextureAtlas::WATER && originBlockType != BLOCK_AIR) {
         return std::make_tuple(newChunkPosition, newBlockPosition);
     }
@@ -223,10 +219,10 @@ void World::simulationTick() {
         for (int x = 0; x < CHUNK_SIZE; x++) {
             for (int y = 0; y < CHUNK_HEIGHT; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
-                    if ((*chunk)(x, y, z) == TextureAtlas::WATER) {
+                    if (chunk(x, y, z) == TextureAtlas::WATER) {
                         // block below current block
                         glm::ivec3 blockPositionBelow = glm::ivec3(x, y - 1, z);
-                        if (y != 0 && (*chunk)(blockPositionBelow) == BLOCK_AIR) {
+                        if (y != 0 && chunk(blockPositionBelow) == BLOCK_AIR) {
                             if (newBlocks.find(chunkPosition) == newBlocks.end()) {
                                 newBlocks[chunkPosition] = std::vector<glm::ivec3>{blockPositionBelow};
                             } else {
@@ -256,11 +252,11 @@ void World::simulationTick() {
     simulationChunks.clear();
 
     for (const auto& [chunkPosition, blocks] : newBlocks) {
-        const auto chunk = world[chunkPosition];
+        auto chunk = world[chunkPosition];
         for (const auto& block : blocks) {
-            (*chunk)(block.x, block.y, block.z) = TextureAtlas::WATER;
+            chunk(block.x, block.y, block.z) = TextureAtlas::WATER;
         }
-        chunk->changed = true;
+        chunk.changed = true;
         simulationChunks.insert(chunkPosition);
     }
 }
