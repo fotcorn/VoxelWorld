@@ -32,7 +32,7 @@ void World::cameraChanged(glm::vec3 cameraPosition, glm::vec3 cameraDirection, i
             auto topRight = floatPosition + glm::vec3(1.0f, 4.0f, 1.0f);
 
             if (ray.AABBintersect(floatPosition, topRight).has_value()) {
-                auto chunk = this->getChunk(position);
+                Chunk& chunk = this->getChunk(position);
                 for (int x = 0; x < CHUNK_SIZE; x++) {
                     for (int y = 0; y < CHUNK_HEIGHT; y++) {
                         for (int z = 0; z < CHUNK_SIZE; z++) {
@@ -122,7 +122,7 @@ void World::addBlock(TextureAtlas blockType) {
         const auto [newChunkPosition, newBlockPosition] =
             this->getRelativeChunkPosition(selectedChunkPosition.value(), selectedBlockPosition.value(), blockOffset);
 
-        auto chunk = this->getChunk(newChunkPosition);
+        Chunk& chunk = this->getChunk(newChunkPosition);
         if (chunk(newBlockPosition.x, newBlockPosition.y, newBlockPosition.z) == BLOCK_AIR) {
             chunk(newBlockPosition.x, newBlockPosition.y, newBlockPosition.z) = blockType;
             chunk.changed = true;

@@ -105,10 +105,10 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
 
     bool selectedBlockInChunk = world.selectedChunkPosition == position;
 
-    const auto leftChunk = world.getChunk(position + glm::ivec3(-1, 0, 0));
-    const auto rightChunk = world.getChunk(position + glm::ivec3(1, 0, 0));
-    const auto frontChunk = world.getChunk(position + glm::ivec3(0, 0, 1));
-    const auto backChunk = world.getChunk(position + glm::ivec3(0, 0, -1));
+    const Chunk& leftChunk = world.getChunk(position + glm::ivec3(-1, 0, 0));
+    const Chunk& rightChunk = world.getChunk(position + glm::ivec3(1, 0, 0));
+    const Chunk& frontChunk = world.getChunk(position + glm::ivec3(0, 0, 1));
+    const Chunk& backChunk = world.getChunk(position + glm::ivec3(0, 0, -1));
 
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_HEIGHT; y++) {
