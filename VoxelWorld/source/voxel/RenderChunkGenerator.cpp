@@ -101,6 +101,7 @@ std::shared_ptr<RenderChunk> RenderChunkGenerator::fromChunk(const glm::ivec3& p
     }
 
     std::vector<Vertex> vs;
+    vs.reserve(CHUNK_SIZE * CHUNK_SIZE * 6); // minimal required memory when only to a flat layer is rendered
 
     bool selectedBlockInChunk = world.selectedChunkPosition == position;
 
