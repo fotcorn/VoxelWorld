@@ -1,2 +1,3 @@
 build*/
 VoxelWorld/resources/texture_atlas/unpacked
+.cache/
