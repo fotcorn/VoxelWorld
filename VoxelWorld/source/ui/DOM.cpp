@@ -28,7 +28,7 @@ std::shared_ptr<DOMNode> buildDOM(GumboNode* node) {
 
     GumboVector attributes = node->v.element.attributes;
     for (unsigned int i = 0; i < attributes.length; i++) {
-        auto attribute = static_cast<GumboAttribute*>(attributes.data[i]);
+        auto* attribute = static_cast<GumboAttribute*>(attributes.data[i]);
         auto name = std::string(attribute->name);
         auto value = std::string(attribute->value);
         domNode->attributes[name] = value;
@@ -39,7 +39,7 @@ std::shared_ptr<DOMNode> buildDOM(GumboNode* node) {
 
             for (const std::string& prop : properties) {
                 const auto property = boost::trim_copy(boost::to_lower_copy(prop));
-                if (property == "") {
+                if (property.empty()) {
                     continue;
                 }
                 std::vector<std::string> nameValue;
@@ -74,13 +74,13 @@ std::shared_ptr<DOMNode> loadDOM(const std::string& filename) {
     return html->children[1]->children[0]; // html => body => div
 }
 
-std::shared_ptr<DOMNode> getElementById(const std::shared_ptr<DOMNode> root, const std::string& id) {
-    for (const auto child : root->children) {
+std::shared_ptr<DOMNode> getElementById(const std::shared_ptr<DOMNode>& root, const std::string& id) {
+    for (const auto& child : root->children) {
         const auto attribute = child->attributes.find("id");
         if (attribute != child->attributes.end()) {
             return child;
         }
-        const auto node = getElementById(child, id);
+        auto node = getElementById(child, id);
         if (node) {
             return node;
         }

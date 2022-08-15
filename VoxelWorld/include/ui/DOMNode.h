@@ -4,15 +4,16 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <yoga/Yoga.h>
 
 class DOMNode {
 public:
-    DOMNode(const std::string& name) : _name(name) {
+    DOMNode(std::string  name) : _name(std::move(name)) {
     }
-    std::string name() const {
+    [[nodiscard]] std::string name() const {
         return this->_name;
     }
     void name(const std::string& name) {

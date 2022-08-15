@@ -7,6 +7,6 @@
 #include "2d/Sprite.h"
 #include "ui/DOMNode.h"
 
-std::vector<std::unique_ptr<Sprite>> calculateLayout(std::shared_ptr<DOMNode> root, const int width, const int height);
+std::vector<std::unique_ptr<Sprite>> calculateLayout(std::shared_ptr<DOMNode> root, int width, int height);
 
 #endif /* LAYOUT_H */
